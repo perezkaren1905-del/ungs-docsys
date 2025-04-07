@@ -1,0 +1,40 @@
+# compiled output
+ungs-docsys-bff/dist
+ungs-docsys-bff/node_modules
+
+# Logs
+ungs-docsys-bff/logs
+ungs-docsys-bff/*.log
+ungs-docsys-bff/npm-debug.log*
+ungs-docsys-bff/pnpm-debug.log*
+ungs-docsys-bff/yarn-debug.log*
+ungs-docsys-bff/yarn-error.log*
+ungs-docsys-bff/lerna-debug.log*
+
+# Lockfiles
+ungs-docsys-bff/pnpm-lock.yaml
+ungs-docsys-bff/yarn.lock
+
+# OS
+ungs-docsys-bff/.DS_Store
+
+# Tests
+ungs-docsys-bff/coverage
+ungs-docsys-bff/.nyc_output
+
+# IDEs and editors
+ungs-docsys-bff/.idea
+ungs-docsys-bff/*.iml
+ungs-docsys-bff/.project
+ungs-docsys-bff/.classpath
+ungs-docsys-bff/.c9/
+ungs-docsys-bff/*.launch
+ungs-docsys-bff/.settings/
+ungs-docsys-bff/*.sublime-workspace
+
+# IDE - VSCode
+ungs-docsys-bff/.vscode/*
+!ungs-docsys-bff/.vscode/settings.json
+!ungs-docsys-bff/.vscode/tasks.json
+!ungs-docsys-bff/.vscode/launch.json
+!ungs-docsys-bff/.vscode/extensions.json
