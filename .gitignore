@@ -59,3 +59,39 @@ ungs-docsys-bff/.vscode/*
 !ungs-docsys-bff/.vscode/tasks.json
 !ungs-docsys-bff/.vscode/launch.json
 !ungs-docsys-bff/.vscode/extensions.json
+
+# Springboot
+
+ungs-docsys-ms/HELP.md
+ungs-docsys-ms/target/
+!ungs-docsys-ms/.mvn/wrapper/maven-wrapper.jar
+!ungs-docsys-ms/**/src/main/**/target/
+!ungs-docsys-ms/**/src/test/**/target/
+
+### STS ###
+ungs-docsys-ms/.apt_generated
+ungs-docsys-ms/.classpath
+ungs-docsys-ms/.factorypath
+ungs-docsys-ms/.project
+ungs-docsys-ms/.settings
+ungs-docsys-ms/.springBeans
+ungs-docsys-ms/.sts4-cache
+
+### IntelliJ IDEA ###
+ungs-docsys-ms/.idea
+ungs-docsys-ms/*.iws
+ungs-docsys-ms/*.iml
+ungs-docsys-ms/*.ipr
+
+### NetBeans ###
+ungs-docsys-ms/nbproject/private/
+ungs-docsys-ms/nbbuild/
+ungs-docsys-ms/dist/
+ungs-docsys-ms/nbdist/
+ungs-docsys-ms/.nb-gradle/
+ungs-docsys-ms/build/
+!ungs-docsys-ms/**/src/main/**/build/
+!ungs-docsys-ms/**/src/test/**/build/
+
+### VS Code ###
+ungs-docsys-ms/.vscode/
