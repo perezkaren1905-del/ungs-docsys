@@ -1,6 +1,10 @@
 # compiled output
 ungs-docsys-bff/dist
 ungs-docsys-bff/node_modules
+ungs-docsys-front/node_modules
+ungs-docsys-front/dist
+ungs-docsys-front/dist-ssr
+ungs-docsys-front/*.local
 
 # Logs
 ungs-docsys-bff/logs
@@ -10,6 +14,13 @@ ungs-docsys-bff/pnpm-debug.log*
 ungs-docsys-bff/yarn-debug.log*
 ungs-docsys-bff/yarn-error.log*
 ungs-docsys-bff/lerna-debug.log*
+ungs-docsys-front/logs
+ungs-docsys-front/*.log
+ungs-docsys-front/npm-debug.log*
+ungs-docsys-front/pnpm-debug.log*
+ungs-docsys-front/yarn-debug.log*
+ungs-docsys-front/yarn-error.log*
+ungs-docsys-front/lerna-debug.log*
 
 # Lockfiles
 ungs-docsys-bff/pnpm-lock.yaml
@@ -31,6 +42,16 @@ ungs-docsys-bff/.c9/
 ungs-docsys-bff/*.launch
 ungs-docsys-bff/.settings/
 ungs-docsys-bff/*.sublime-workspace
+
+ungs-docsys-front/.vscode/*
+ungs-docsys-front/.idea
+!ungs-docsys-front/.vscode/extensions.json
+ungs-docsys-front/.DS_Store
+ungs-docsys-front/*.suo
+ungs-docsys-front/*.ntvs*
+ungs-docsys-front/*.njsproj
+ungs-docsys-front/*.sln
+ungs-docsys-front/*.sw?
 
 # IDE - VSCode
 ungs-docsys-bff/.vscode/*
