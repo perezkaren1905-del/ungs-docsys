@@ -34,6 +34,8 @@ public class AppUser {
     private List<LogingHistory> logingHistories;
     @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL)
     private List<UserInfo> userInfos;
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL)
+    private List<UserRole> userRoles;
 
     @PrePersist
     private void onCreate() {
