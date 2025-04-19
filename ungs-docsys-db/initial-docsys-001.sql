@@ -5,7 +5,7 @@
 -- Dumped from database version 17.4 (Debian 17.4-1.pgdg120+2)
 -- Dumped by pg_dump version 17.0
 
--- Started on 2025-04-18 23:38:45
+-- Started on 2025-04-19 11:19:38
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -378,8 +378,8 @@ ALTER SEQUENCE recruitment.role_permission_id_seq OWNED BY recruitment.role_perm
 CREATE TABLE recruitment.user_info (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
-    first_name bigint NOT NULL,
-    last_name timestamp without time zone NOT NULL,
+    first_name character varying(150) NOT NULL,
+    last_name character varying(150) NOT NULL,
     identification_type_id bigint NOT NULL,
     identification_number character varying(50) NOT NULL,
     phone character varying(50) NOT NULL,
@@ -940,7 +940,7 @@ ALTER TABLE ONLY recruitment.user_role
     ADD CONSTRAINT fk_user_role_user FOREIGN KEY (user_id) REFERENCES recruitment.app_user(id) ON DELETE CASCADE;
 
 
--- Completed on 2025-04-18 23:38:45
+-- Completed on 2025-04-19 11:19:38
 
 --
 -- PostgreSQL database dump complete
