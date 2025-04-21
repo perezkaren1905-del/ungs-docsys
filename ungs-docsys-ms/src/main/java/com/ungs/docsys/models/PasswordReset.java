@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "password_reset", schema = "recruitment")
@@ -27,4 +28,18 @@ public class PasswordReset {
     @LastModifiedDate
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
+
+    @PrePersist
+    private void onCreate() {
+        this.createdDate = LocalDateTime.now();
+        this.updatedDate = LocalDateTime.now();
+        if(Objects.isNull(this.used)) {
+            this.used = Boolean.FALSE;
+        }
+    }
+
+    @PreUpdate
+    private void onUpdate() {
+        this.updatedDate = LocalDateTime.now();
+    }
 }

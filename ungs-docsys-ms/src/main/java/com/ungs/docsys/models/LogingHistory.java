@@ -17,4 +17,9 @@ public class LogingHistory {
     private AppUser appUser;
     @Column(name="loging_time", nullable = false)
     private LocalDateTime logingTime;
+
+    @PrePersist
+    private void onCreate() {
+        this.logingTime = LocalDateTime.now();
+    }
 }
