@@ -1,47 +1,114 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { sendPasswordResetEmail } from '../../../api/auth'; // API call (see below)
+import { useState, useContext } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { ToastContext } from "../../../context/ToastContext";
+import initialUserData from "../../../data/users.json"; // Import your JSON data
+import "./login.css";
 
-export default function ResetPasswordEmail() {
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
+export default function SetNewPass() {
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const { showToast } = useContext(ToastContext);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleSubmit = async (e) => {
+  // Get email from location state or localStorage
+  const email = location.state?.email || localStorage.getItem("resetEmail");
+
+  const validatePassword = (password) => {
+    const hasMinLength = password.length >= 8;
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    return hasMinLength && hasNumber && hasSpecialChar;
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      await sendPasswordResetEmail(email);
-      setMessage('Se ha enviado un correo para restablecer tu contraseña.');
-    } catch (err) {
-      setMessage('Error: Verifica el correo electrónico.');
+    if (!newPassword || !confirmPassword) {
+      showToast("Por favor complete todos los campos", "warning");
+      return;
     }
+
+    if (!validatePassword(newPassword)) {
+      showToast(
+        "La contraseña debe tener al menos 8 caracteres, 1 número y 1 caracter especial",
+        "error"
+      );
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      showToast("Las contraseñas no coinciden", "error");
+      return;
+    }
+
+    // 1. Get current users from localStorage or initial data
+    const currentUsers = JSON.parse(localStorage.getItem('users')) || initialUserData;
+    
+    // 2. Update the specific user
+    const updatedUsers = {
+      users: currentUsers.users.map(user => 
+        user.email === email 
+          ? { ...user, password: newPassword } 
+          : user
+      )
+    };
+
+    // 3. Save to localStorage
+    localStorage.setItem('users', JSON.stringify(updatedUsers));
+
+    showToast("Contraseña actualizada correctamente", "success");
+    setTimeout(() => navigate("/"), 1500);
   };
 
   return (
-    <div className="auth-container">
-      <h1>Recuperar contraseña</h1>
-      <p>Por favor, ingrese el correo electrónico asociado a su cuenta.</p>
-      
-      <form onSubmit={handleSubmit}>
-        <div className="input-group">
-          <label htmlFor="email">Correo electrónico</label>
+    <div className="login-modal">
+      <h2>Crear nueva contraseña</h2>
+      <p>Por favor, ingrese una nueva contraseña para {email}</p>
+
+      <form onSubmit={handleSubmit} noValidate>
+        <div className="form-group">
+          <label>Nueva contraseña</label>
           <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            placeholder="Mínimo 8 caracteres con 1 número y 1 especial"
             required
           />
+          <div className="password-requirements">
+            <p>Deberá tener:</p>
+            <ul>
+              <li className={newPassword.length >= 8 ? "valid" : ""}>
+                Al menos 8 caracteres
+              </li>
+              <li className={/\d/.test(newPassword) ? "valid" : ""}>
+                Al menos 1 número
+              </li>
+              <li className={/[!@#$%^&*(),.?":{}|<>]/.test(newPassword) ? "valid" : ""}>
+                Al menos 1 caracter especial
+              </li>
+            </ul>
+          </div>
         </div>
 
-        <button type="submit" className="btn-primary">
-          Recuperar contraseña
+        <div className="form-group">
+          <label>Repita la contraseña</label>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Confirme su nueva contraseña"
+            required
+          />
+          {confirmPassword && newPassword !== confirmPassword && (
+            <p className="error-text">Las contraseñas no coinciden</p>
+          )}
+        </div>
+
+        <button type="submit" className="login-btn">
+          Crear nueva contraseña
         </button>
       </form>
-
-      {message && <p className="message">{message}</p>}
-      <Link to="/login" className="link-text">
-        Volver a iniciar sesión
-      </Link>
     </div>
   );
 }

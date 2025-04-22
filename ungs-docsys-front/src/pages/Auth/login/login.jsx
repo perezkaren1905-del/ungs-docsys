@@ -1,24 +1,38 @@
+import { useContext } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './login.css';
+import userData from '../../../data/users.json';
+import { ToastContext } from '../../../context/ToastContext';
+
+const currentUsers = JSON.parse(localStorage.getItem('users')) || userData;
 
 export default function Login({ onClose, onForgotPassword }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { showToast } = useContext(ToastContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
 
-    // Hardcoded test user
-    if (email === 'abc@123.com' && password === '12345678') {
-      // Successful login
+    const foundUser = currentUsers.users.find(user => 
+      user.email === email && user.password === password
+    );
+
+    if (!email || !password) {
+      showToast('Por favor complete todos los campos', 'warning');
+      return;
+    }
+  
+    if (foundUser) {
+      localStorage.setItem('loggedInUser', email);
       navigate('/dashboard');
-      if (onClose) onClose(); // Close modal if in modal view
+      if (onClose) onClose();
     } else {
-      setError('Credenciales incorrectas');
+      showToast('Correo y/o contraseña incorrectos', 'error');
     }
   };
 
@@ -27,7 +41,7 @@ export default function Login({ onClose, onForgotPassword }) {
       <button className="close-button" onClick={onClose}>×</button>
       <h2>Iniciar sesión</h2>
       {error && <div className="error-message">{error}</div>}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         <div className="form-group">
           <label>Correo electrónico</label>
           <input
