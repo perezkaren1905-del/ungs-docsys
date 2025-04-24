@@ -2,6 +2,7 @@ package com.ungs.docsys.services;
 
 import com.ungs.docsys.dtos.RoleResponseDto;
 import com.ungs.docsys.mappers.RoleMapper;
+import com.ungs.docsys.models.Role;
 import com.ungs.docsys.repositories.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,11 @@ import java.util.List;
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
+
+    @Override
+    public Role findById(Long id) {
+        return roleRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"));}
 
     @Override
     public RoleResponseDto getById(Long id) {

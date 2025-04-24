@@ -1,6 +1,5 @@
 package com.ungs.docsys.controllers;
 
-import com.ungs.docsys.dtos.PermissionResponseDto;
 import com.ungs.docsys.dtos.RoleResponseDto;
 import com.ungs.docsys.services.RoleService;
 import io.swagger.v3.oas.annotations.Operation;

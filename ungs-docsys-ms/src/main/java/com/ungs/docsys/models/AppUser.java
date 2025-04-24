@@ -1,7 +1,10 @@
 package com.ungs.docsys.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -12,6 +15,9 @@ import java.util.Objects;
 @Entity
 @Table(name = "app_user", schema = "recruitment")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +47,7 @@ public class AppUser {
     private void onCreate() {
         this.createdDate = LocalDateTime.now();
         this.updatedDate = LocalDateTime.now();
-        if(Objects.isNull(active)) {
+        if (Objects.isNull(active)) {
             this.active = Boolean.TRUE;
         }
     }
