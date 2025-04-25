@@ -1,0 +1,72 @@
+/* usertype.css */
+.usertype-modal {
+    width: 100%;
+    max-width: 800px;
+    padding: 2rem;
+    position: relative;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #555;
+  }
+  
+  .options-container {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    flex-direction: column;
+  }
+  
+  .option-card {
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+  }
+  
+  .option-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .option-card.docente:hover {
+    border-color: #4a6fa5;
+  }
+  
+  .option-card.admin:hover {
+    border-color: #6a4a8a;
+  }
+  
+  .option-card h2 {
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+  }
+  
+  .option-card p {
+    color: #666;
+    margin: 0;
+    font-size: 0.9rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (min-width: 768px) {
+    .options-container {
+      flex-direction: row;
+    }
+    
+    .option-card {
+      flex: 1;
+      min-width: 300px;
+    }
+  }

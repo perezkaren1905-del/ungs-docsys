@@ -1,18 +1,20 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Login from './pages/Auth/login/login';
 import ResetPassEmail from './pages/Auth/login/resetpassemail';
-import "./assets/styles/App.css";
-import { useLocation, Routes, Route } from 'react-router-dom';
+import UserType from './pages/Auth/register/usertype';
+import PersonalData from './pages/Auth/register/personaldata';
+import EmailPass from './pages/Auth/register/emailpass';
+import './assets/styles/App.css';
 
 function App() {
-  const [activeModal, setActiveModal] = useState(null); // null, 'login', or 'resetpass'
+  const [activeModal, setActiveModal] = useState(null);
+  const [registrationData, setRegistrationData] = useState({});
   const location = useLocation();
   const isDashboard = location.pathname === '/dashboard';
 
-  if (isDashboard) {
-    return null; // Don't show the main app content on dashboard
-  }
-  
+  if (isDashboard) return null;
+
   return (
     <div className="app-container">
       {/* Main Content */}
@@ -23,33 +25,77 @@ function App() {
         </div>
         <div className="auth-buttons">
           <button onClick={() => setActiveModal('login')}>Ingresar</button>
-          <button onClick={() => setActiveModal('register')}>Registrarme</button>
+          <button onClick={() => setActiveModal('usertype')}>Registrarme</button>
         </div>
       </div>
 
-      {/* Login Modal */}
+      {/* Auth Modals */}
       {activeModal === 'login' && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <Login 
-              onClose={() => setActiveModal(null)}
-              onForgotPassword={() => setActiveModal('resetpass')}
-            />
-          </div>
-        </div>
+        <ModalWrapper onClose={() => setActiveModal(null)}>
+          <Login 
+            onForgotPassword={() => setActiveModal('resetpass')}
+          />
+        </ModalWrapper>
       )}
 
-      {/* Reset Password Modal */}
       {activeModal === 'resetpass' && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <ResetPassEmail 
-              onClose={() => setActiveModal(null)}
-              onBackToLogin={() => setActiveModal('login')}
-            />
-          </div>
-        </div>
+        <ModalWrapper onClose={() => setActiveModal(null)}>
+          <ResetPassEmail 
+            onBackToLogin={() => setActiveModal('login')}
+          />
+        </ModalWrapper>
       )}
+
+      {/* Registration Flow Modals */}
+      {activeModal === 'usertype' && (
+        <ModalWrapper onClose={() => setActiveModal(null)}>
+          <UserType
+            onSelect={(userType) => {
+              setRegistrationData({ userType });
+              setActiveModal('personaldata');
+            }}
+          />
+        </ModalWrapper>
+      )}
+
+      {activeModal === 'personaldata' && (
+        <ModalWrapper onClose={() => setActiveModal(null)}>
+          <PersonalData
+            userType={registrationData.userType}
+            onBack={() => setActiveModal('usertype')}
+            onNext={(data) => {
+              setRegistrationData(prev => ({ ...prev, personalData: data }));
+              setActiveModal('emailpass');
+            }}
+          />
+        </ModalWrapper>
+      )}
+
+      {activeModal === 'emailpass' && (
+        <ModalWrapper onClose={() => setActiveModal(null)}>
+          <EmailPass
+            onBack={() => setActiveModal('personaldata')}
+            onSubmit={(data) => {
+              const completeData = { ...registrationData, ...data };
+              console.log('Registration complete:', completeData);
+              setActiveModal(null);
+              // API call would go here
+            }}
+          />
+        </ModalWrapper>
+      )}
+    </div>
+  );
+}
+
+// Reusable modal wrapper with transitions
+function ModalWrapper({ children, onClose }) {
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <button className="close-button" onClick={onClose}>×</button>
+        {children}
+      </div>
     </div>
   );
 }

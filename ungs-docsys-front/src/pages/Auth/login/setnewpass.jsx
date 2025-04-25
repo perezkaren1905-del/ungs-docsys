@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ToastContext } from "../../../context/ToastContext";
-import initialUserData from "../../../data/users.json"; // Import your JSON data
+import initialUserData from "../../../data/users.json";
 import "./login.css";
 
 export default function SetNewPass() {
@@ -11,7 +11,6 @@ export default function SetNewPass() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get email from location state or localStorage
   const email = location.state?.email || localStorage.getItem("resetEmail");
 
   const validatePassword = (password) => {
@@ -41,10 +40,14 @@ export default function SetNewPass() {
       return;
     }
 
-    // 1. Get current users from localStorage or initial data
-    const currentUsers = JSON.parse(localStorage.getItem('users')) || initialUserData;
-    
-    // 2. Update the specific user
+    let currentUsers = JSON.parse(localStorage.getItem('users')) || initialUserData;
+  
+    if (Array.isArray(currentUsers)) {
+      currentUsers = { users: currentUsers };
+    } else if (!currentUsers.users) {
+      currentUsers = { users: [] };
+    }
+  
     const updatedUsers = {
       users: currentUsers.users.map(user => 
         user.email === email 
@@ -52,10 +55,11 @@ export default function SetNewPass() {
           : user
       )
     };
-
-    // 3. Save to localStorage
+  
     localStorage.setItem('users', JSON.stringify(updatedUsers));
-
+  
+    localStorage.removeItem("resetEmail");
+  
     showToast("Contraseña actualizada correctamente", "success");
     setTimeout(() => navigate("/"), 1500);
   };
@@ -67,7 +71,6 @@ export default function SetNewPass() {
 
       <form onSubmit={handleSubmit} noValidate>
         <div className="form-group">
-          <label>Nueva contraseña</label>
           <input
             type="password"
             value={newPassword}
@@ -81,6 +84,9 @@ export default function SetNewPass() {
               <li className={newPassword.length >= 8 ? "valid" : ""}>
                 Al menos 8 caracteres
               </li>
+              <li className={/[a-zA-Z]/.test(newPassword) ? "valid" : ""}>
+                Al menos 1 letra
+              </li>
               <li className={/\d/.test(newPassword) ? "valid" : ""}>
                 Al menos 1 número
               </li>
@@ -92,7 +98,6 @@ export default function SetNewPass() {
         </div>
 
         <div className="form-group">
-          <label>Repita la contraseña</label>
           <input
             type="password"
             value={confirmPassword}

@@ -3,31 +3,64 @@ import { useEffect, useState } from 'react';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [userEmail, setUserEmail] = useState('');
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    // Get the logged-in user's email when component mounts
+    // Check both login methods
     const email = localStorage.getItem('loggedInUser');
-    if (!email) {
-      // If no user is logged in, redirect to home
+    const registeredUser = JSON.parse(localStorage.getItem('currentUser'));
+
+    if (!email && !registeredUser) {
       navigate('/');
     } else {
-      setUserEmail(email);
+      // Priority to registered users (more complete data)
+      setUserData(registeredUser || { email: email });
     }
   }, [navigate]);
 
   const handleLogout = () => {
-    // Clear user data on logout
     localStorage.removeItem('loggedInUser');
+    localStorage.removeItem('currentUser');
     navigate('/');
   };
 
+  const getUserType = () => {
+    if (!userData) return '';
+    if (userData.userType === 'docente') return 'Docente/Investigador';
+    if (userData.userType === 'admin') return 'Administrador';
+    return 'Usuario';
+  };
+  
   return (
     <div className="dashboard-container">
-      <h1>Bienvenido {userEmail}</h1>
-      <button onClick={handleLogout}>Cerrar sesión</button>
-      
-      {/* Add your dashboard content here */}
+      {userData && (
+        <>
+          <div className="user-welcome">
+            <h1>
+              Bienvenido,{' '}
+              {userData.nombre
+                ? `${userData.nombre} ${userData.apellido}`
+                : userData.email}
+            </h1>
+            <p className="user-role">
+              {userData.userType && (
+                <>
+                  Rol: <strong>{getUserType()}</strong>
+                </>
+              )}
+            </p>
+          </div>
+
+          <div className="dashboard-content">
+            {/* Your existing dashboard content */}
+            <p>Sistema de Gestión de Postulaciones y Dictámenes Docentes UNGS</p>
+          </div>
+        </>
+      )}
+
+      <button onClick={handleLogout} className="logout-button">
+        Cerrar sesión
+      </button>
     </div>
   );
 }
