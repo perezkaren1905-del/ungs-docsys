@@ -3,8 +3,8 @@ package com.ungs.docsys.dtos;
 import lombok.Data;
 
 @Data
-public class DictamenDataResponseDto {
+public class PermissionResponseDto {
     private Long id;
     private String name;
-    private String data;
+    private String description;
 }
