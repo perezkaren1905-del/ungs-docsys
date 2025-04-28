@@ -1,35 +1,103 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import Login from './pages/Auth/login/login';
+import ResetPassEmail from './pages/Auth/login/resetpassemail';
+import UserType from './pages/Auth/register/usertype';
+import PersonalData from './pages/Auth/register/personaldata';
+import EmailPass from './pages/Auth/register/emailpass';
+import './assets/styles/App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [activeModal, setActiveModal] = useState(null);
+  const [registrationData, setRegistrationData] = useState({});
+  const location = useLocation();
+  const isDashboard = location.pathname === '/dashboard';
+
+  if (isDashboard) return null;
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="app-container">
+      {/* Main Content */}
+      <div className="main-content">
+        <div className="logo">
+          <h1>docSYS</h1>
+          <h2>Sistema de Gestión de Postulaciones y Dictámenes Docentes UNGS</h2>
+        </div>
+        <div className="auth-buttons">
+          <button onClick={() => setActiveModal('login')}>Ingresar</button>
+          <button onClick={() => setActiveModal('usertype')}>Registrarme</button>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+
+      {/* Auth Modals */}
+      {activeModal === 'login' && (
+        <ModalWrapper onClose={() => setActiveModal(null)}>
+          <Login 
+            onForgotPassword={() => setActiveModal('resetpass')}
+          />
+        </ModalWrapper>
+      )}
+
+      {activeModal === 'resetpass' && (
+        <ModalWrapper onClose={() => setActiveModal(null)}>
+          <ResetPassEmail 
+            onBackToLogin={() => setActiveModal('login')}
+          />
+        </ModalWrapper>
+      )}
+
+      {/* Registration Flow Modals */}
+      {activeModal === 'usertype' && (
+        <ModalWrapper onClose={() => setActiveModal(null)}>
+          <UserType
+            onSelect={(userType) => {
+              setRegistrationData({ userType });
+              setActiveModal('personaldata');
+            }}
+          />
+        </ModalWrapper>
+      )}
+
+      {activeModal === 'personaldata' && (
+        <ModalWrapper onClose={() => setActiveModal(null)}>
+          <PersonalData
+            userType={registrationData.userType}
+            onBack={() => setActiveModal('usertype')}
+            onNext={(data) => {
+              setRegistrationData(prev => ({ ...prev, personalData: data }));
+              setActiveModal('emailpass');
+            }}
+          />
+        </ModalWrapper>
+      )}
+
+      {activeModal === 'emailpass' && (
+        <ModalWrapper onClose={() => setActiveModal(null)}>
+          <EmailPass
+            onBack={() => setActiveModal('personaldata')}
+            onSubmit={(data) => {
+              const completeData = { ...registrationData, ...data };
+              console.log('Registration complete:', completeData);
+              setActiveModal(null);
+              // API call would go here
+            }}
+          />
+        </ModalWrapper>
+      )}
+    </div>
+  );
 }
 
-export default App
+// Reusable modal wrapper with transitions
+function ModalWrapper({ children, onClose }) {
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <button className="close-button" onClick={onClose}>×</button>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+export default App;
