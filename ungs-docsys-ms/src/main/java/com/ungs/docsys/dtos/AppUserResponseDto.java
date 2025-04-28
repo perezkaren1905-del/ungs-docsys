@@ -1,2 +1,12 @@
-package com.ungs.docsys.dtos;public class AppUserResponseDto {
+package com.ungs.docsys.dtos;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class AppUserResponseDto {
+    private String token;
 }

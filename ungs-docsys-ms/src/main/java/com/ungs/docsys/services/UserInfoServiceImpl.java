@@ -1,8 +1,10 @@
 package com.ungs.docsys.services;
 
 import com.ungs.docsys.dtos.UserInfoRequestDto;
+import com.ungs.docsys.dtos.UserInfoResponseDto;
 import com.ungs.docsys.mappers.IdentificationTypeMapper;
 import com.ungs.docsys.mappers.NationalityMapper;
+import com.ungs.docsys.mappers.RoleMapper;
 import com.ungs.docsys.models.*;
 import com.ungs.docsys.repositories.AppUserRepository;
 import com.ungs.docsys.repositories.UserInfoRepository;
@@ -18,28 +20,30 @@ import org.springframework.stereotype.Service;
 public class UserInfoServiceImpl implements UserInfoService {
     private static final Logger logger = LoggerFactory.getLogger(UserInfoServiceImpl.class);
 
-    private final AppUserRepository appUserRepository;
-    private final UserInfoRepository userInfoRepository;
-    private final UserRoleRepository userRoleRepository;
+    private AppUserRepository appUserRepository;
+    private UserInfoRepository userInfoRepository;
+    private UserRoleRepository userRoleRepository;
 
     private IdentificationTypeService identificationTypeService;
     private NationalityService nationalityService;
     private RoleService roleService;
 
+    private RoleMapper roleMapper;
     private IdentificationTypeMapper identificationTypeMapper;
     private NationalityMapper nationalityMapper;
 
-    private final PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Override
-    public void signUp(UserInfoRequestDto request) {
+    public UserInfoResponseDto signUp(UserInfoRequestDto request) {
         logger.info("Signing up user with email: {}", request.getEmail());
 
         IdentificationType identificationType = identificationTypeMapper.toModel(
                 identificationTypeService.getById(request.getIdentificationTypeId()));
         Nationality nationality = nationalityMapper.toModel(
                 nationalityService.getById(request.getNationalityId()));
-        Role role = roleService.findById(request.getRoleId());
+        Role role = roleMapper.toModel(
+                roleService.getById(request.getRoleId()));
 
         AppUser appUser = AppUser.builder()
                 .email(request.getEmail())
@@ -65,5 +69,16 @@ public class UserInfoServiceImpl implements UserInfoService {
                 .nationality(nationality)
                 .build();
         userInfoRepository.save(userInfo);
+
+        return UserInfoResponseDto.builder()
+                .email(appUser.getEmail())
+                .firstName(userInfo.getFirstName())
+                .lastName(userInfo.getLastName())
+                .identificationType(userInfo.getIdentificationType().getDescription())
+                .identificationNumber(userInfo.getIdentificationNumber())
+                .phone(userInfo.getPhone())
+                .birthDate(userInfo.getBirthDate())
+                .nationality(userInfo.getNationality().getDescription())
+                .build();
     }
 }

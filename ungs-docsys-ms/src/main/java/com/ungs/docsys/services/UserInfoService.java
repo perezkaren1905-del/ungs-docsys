@@ -1,7 +1,8 @@
 package com.ungs.docsys.services;
 
 import com.ungs.docsys.dtos.UserInfoRequestDto;
+import com.ungs.docsys.dtos.UserInfoResponseDto;
 
 public interface UserInfoService {
-    void signUp(UserInfoRequestDto request);
+    UserInfoResponseDto signUp(UserInfoRequestDto request);
 }

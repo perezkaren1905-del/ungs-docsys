@@ -6,14 +6,14 @@ import java.time.LocalDate;
 
 @Data
 public class UserInfoRequestDto {
-    Long roleId;
-    String email;
-    String password;
-    String firstName;
-    String lastName;
-    Long identificationTypeId;
-    String identificationNumber;
-    String phone;
-    LocalDate birthDate;
-    Long nationalityId;
+    private Long roleId;
+    private String email;
+    private String password;
+    private String firstName;
+    private String lastName;
+    private Long identificationTypeId;
+    private String identificationNumber;
+    private String phone;
+    private LocalDate birthDate;
+    private Long nationalityId;
 }

@@ -1,6 +1,7 @@
 package com.ungs.docsys.controllers;
 
 import com.ungs.docsys.dtos.UserInfoRequestDto;
+import com.ungs.docsys.dtos.UserInfoResponseDto;
 import com.ungs.docsys.services.UserInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,8 +25,8 @@ public class UserInfoController {
     @ApiResponse(responseCode = "400", description = "Invalid input data")
     @ApiResponse(responseCode = "409", description = "User already exists")
     @PostMapping("/signUp")
-    public ResponseEntity<Void> signUp(@RequestBody @Valid UserInfoRequestDto request) {
-        userInfoService.signUp(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<UserInfoResponseDto> signUp(@RequestBody @Valid UserInfoRequestDto request) {
+        UserInfoResponseDto response = userInfoService.signUp(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
