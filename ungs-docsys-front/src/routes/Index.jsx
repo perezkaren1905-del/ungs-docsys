@@ -13,7 +13,7 @@ export const routes = [
     },
     {
       path: "/home",
-      element: <Home />
-      //requiredRoles: ['default']
+      element: <Home />,
+      requiredRoles: ['default']
     }
 ];
