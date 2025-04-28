@@ -1,41 +1,49 @@
-.login-container {
-    max-width: 400px;
-    margin: 2rem auto;
-    padding: 2rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+.container {
+    background-color: #d3d3d3; /* fondo gris claro */
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   }
-  
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-  
-  .form-group input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .login-button {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: #4CAF50;
+
+.form-group {
+    display: flex;
+    align-items: center; /* Alinea verticalmente los elementos */
+    margin-bottom: 15px; /* Ajusta el espacio entre los grupos */
+    text-align: left;
+    color: black;
+}
+
+.form-group label {
+    margin-right: 10px; /* Espacio entre el label y el input */
+    width: 120px; /* Ancho del label, ajusta según sea necesario */
+}
+
+.form-group input {
+    flex: 1; /* El input ocupará el resto del espacio disponible */
+}
+
+.buttons-section {
+    display: flex;
+    flex-direction: column; /* Los botones se apilarán verticalmente */
+    gap: 10px; /* Leve separación entre los botones */
+}
+
+.login-button {
+    background-color: #0C3A5B;
     color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .text-button {
-    background: none;
-    border: none;
-    color: #0066cc;
-    text-decoration: underline;
-    cursor: pointer;
-  }
+    font-size: 30px;
+}
+
+.forgot-2-password {
+    width: 80%; /* El segundo botón tendrá un ancho menor que el primero */
+    padding: 8px; /* Ajusta la altura del segundo botón */
+    font-size: 14px; /* Puedes ajustar el tamaño del texto si lo deseas */
+    align-self: center; /* Centra el segundo botón horizontalmente */
+    color: white;
+    background-color: #5D5D5D;
+}
+
+.title {
+    color: black;
+    padding-bottom: 30px;
+}

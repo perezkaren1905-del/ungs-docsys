@@ -29,7 +29,7 @@ export default function Login({ onClose, onForgotPassword }) {
   
     if (foundUser) {
       localStorage.setItem('loggedInUser', email);
-      navigate('/home');
+      navigate('/dashboard');
       if (onClose) onClose();
     } else {
       showToast('Correo y/o contraseña incorrectos', 'error');
@@ -37,13 +37,15 @@ export default function Login({ onClose, onForgotPassword }) {
   };
 
   return (
-    <div className="container">
-      <div className="title"><h2>Iniciar sesión</h2></div>
+    <div className="login-modal">
+      <button className="close-button" onClick={onClose}>×</button>
+      <h2>Iniciar sesión</h2>
+      {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit} noValidate>
         <div className="form-group">
-          <label>Email</label>
+          <label>Correo electrónico</label>
           <input
-            type="Email"
+            type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -58,18 +60,15 @@ export default function Login({ onClose, onForgotPassword }) {
             required
           />
         </div>
-        <div className="buttons-section">
-            <button type="submit" className="login-button">Iniciar sesión</button>
-            <button 
-                type="button" 
-                className="forgot-2-password"
-                onClick={onForgotPassword}
-                >
-                Olvidé mi contraseña
-            </button>
-        </div>
-        
+        <button type="submit" className="login-btn">Iniciar sesión</button>
+        <button 
+          type="button" 
+          className="forgot-password"
+          onClick={onForgotPassword}
+        >
+          Olvidé mi contraseña
+        </button>
       </form>
     </div>
   );
-};
+}
