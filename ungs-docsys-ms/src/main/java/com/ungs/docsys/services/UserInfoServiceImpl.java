@@ -2,13 +2,16 @@ package com.ungs.docsys.services;
 
 import com.ungs.docsys.dtos.UserInfoRequestDto;
 import com.ungs.docsys.dtos.UserInfoResponseDto;
+import com.ungs.docsys.exception.ConflictException;
 import com.ungs.docsys.mappers.IdentificationTypeMapper;
 import com.ungs.docsys.mappers.NationalityMapper;
 import com.ungs.docsys.mappers.RoleMapper;
+import com.ungs.docsys.mappers.UserInfoMapper;
 import com.ungs.docsys.models.*;
 import com.ungs.docsys.repositories.AppUserRepository;
 import com.ungs.docsys.repositories.UserInfoRepository;
 import com.ungs.docsys.repositories.UserRoleRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,12 +34,18 @@ public class UserInfoServiceImpl implements UserInfoService {
     private RoleMapper roleMapper;
     private IdentificationTypeMapper identificationTypeMapper;
     private NationalityMapper nationalityMapper;
+    private UserInfoMapper userInfoMapper;
 
     private PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public UserInfoResponseDto signUp(UserInfoRequestDto request) {
         logger.info("Signing up user with email: {}", request.getEmail());
+
+        if (appUserRepository.existsByEmail(request.getEmail())) {
+            throw new ConflictException("Email already registered");
+        }
 
         IdentificationType identificationType = identificationTypeMapper.toModel(
                 identificationTypeService.getById(request.getIdentificationTypeId()));
@@ -45,20 +54,35 @@ public class UserInfoServiceImpl implements UserInfoService {
         Role role = roleMapper.toModel(
                 roleService.getById(request.getRoleId()));
 
-        AppUser appUser = AppUser.builder()
-                .email(request.getEmail())
-                .passwordHash(passwordEncoder.encode(request.getPassword()))
-                .active(true)
-                .build();
+        AppUser appUser = buildAppUser(request.getEmail(), request.getPassword());
         appUserRepository.save(appUser);
 
-        UserRole userRole = UserRole.builder()
+        UserRole userRole = buildUserRole(appUser, role);
+        userRoleRepository.save(userRole);
+
+        UserInfo userInfo = buildUserInfo(appUser, request, identificationType, nationality);
+        userInfoRepository.save(userInfo);
+
+        return userInfoMapper.toResponse(userInfo);
+    }
+
+    private AppUser buildAppUser(String email, String password) {
+        return AppUser.builder()
+                .email(email)
+                .passwordHash(passwordEncoder.encode(password))
+                .active(true)
+                .build();
+    }
+
+    private UserRole buildUserRole(AppUser appUser, Role role) {
+        return UserRole.builder()
                 .appUser(appUser)
                 .role(role)
                 .build();
-        userRoleRepository.save(userRole);
+    }
 
-        UserInfo userInfo = UserInfo.builder()
+    private UserInfo buildUserInfo(AppUser appUser, UserInfoRequestDto request, IdentificationType identificationType, Nationality nationality) {
+        return UserInfo.builder()
                 .appUser(appUser)
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -68,17 +92,6 @@ public class UserInfoServiceImpl implements UserInfoService {
                 .birthDate(request.getBirthDate())
                 .nationality(nationality)
                 .build();
-        userInfoRepository.save(userInfo);
-
-        return UserInfoResponseDto.builder()
-                .email(appUser.getEmail())
-                .firstName(userInfo.getFirstName())
-                .lastName(userInfo.getLastName())
-                .identificationType(userInfo.getIdentificationType().getDescription())
-                .identificationNumber(userInfo.getIdentificationNumber())
-                .phone(userInfo.getPhone())
-                .birthDate(userInfo.getBirthDate())
-                .nationality(userInfo.getNationality().getDescription())
-                .build();
     }
+
 }
