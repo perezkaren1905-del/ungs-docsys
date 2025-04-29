@@ -3,7 +3,6 @@ package com.ungs.docsys.mappers;
 import com.ungs.docsys.dtos.RoleResponseDto;
 import com.ungs.docsys.models.Role;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
@@ -14,7 +13,6 @@ public interface RoleMapper {
 
     List<RoleResponseDto> toResponses(List<Role> roles);
 
-    @Mapping(target = "rolePermissions", ignore = true)
     Role toModel(RoleResponseDto roleResponseDto);
 
     List<Role> toModels(List<RoleResponseDto> roleResponseDtos);

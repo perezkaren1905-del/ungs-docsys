@@ -9,11 +9,13 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/users")
 @AllArgsConstructor
+@Validated
 public class AppUserController {
 
     private final AppUserService appUserService;
@@ -22,7 +24,7 @@ public class AppUserController {
     @ApiResponse(responseCode = "201", description = "Successfully signed in")
     @ApiResponse(responseCode = "400", description = "Invalid input data")
     @PostMapping("/signIn")
-    public ResponseEntity<AppUserResponseDto> signIn(@RequestBody @Valid AppUserRequestDto request) {
+    public ResponseEntity<AppUserResponseDto> signIn(@Valid @RequestBody AppUserRequestDto request) {
         AppUserResponseDto appUserResponseDto = appUserService.singIn(request);
         return ResponseEntity.status(HttpStatus.OK).body(appUserResponseDto);
     }
