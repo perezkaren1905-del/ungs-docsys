@@ -14,7 +14,6 @@ public interface IdentificationTypeMapper {
 
     List<IdentificationTypeResponseDto> toResponses(List<IdentificationType> identificationType);
 
-    @Mapping(target = "userInfos", ignore = true)
     IdentificationType toModel(IdentificationTypeResponseDto identificationTypeResponseDto);
 
     List<IdentificationType> toModels(List<IdentificationTypeResponseDto> identificationTypeResponseDtos);

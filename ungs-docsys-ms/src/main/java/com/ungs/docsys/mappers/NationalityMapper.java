@@ -14,7 +14,6 @@ public interface NationalityMapper {
 
     List<NationalityResponseDto> toResponses(List<Nationality> nationalities);
 
-    @Mapping(target = "userInfos", ignore = true)
     Nationality toModel(NationalityResponseDto nationalityResponseDto);
 
     List<Nationality> toModels(List<NationalityResponseDto> nationalityResponseDtos);
