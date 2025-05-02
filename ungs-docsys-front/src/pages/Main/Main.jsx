@@ -12,7 +12,7 @@ export default function Main() {
         </div>
         <div className="auth-buttons">
           <button onClick={() => navigate('/login')}>Ingresar</button>
-          <button onClick={() => navigate('/login')}>Registrarme</button>
+          <button onClick={() => navigate('/sign-up')}>Registrarme</button>
         </div>
       </div>
 
