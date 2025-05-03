@@ -4,7 +4,7 @@ import { UserInfoRequestDto } from "../dtos/user-info-request.dto";
 import { UserInfoResponseDto } from "../dtos/user-info-response.dto";
 import { ApiOperation, ApiResponse } from "@nestjs/swagger";
 
-@Controller('/v1/auth/register')
+@Controller('/v1/users/signUp')
 export class UserInfoController {
     constructor(private readonly userInfoService: UserInfoService) {}
 
