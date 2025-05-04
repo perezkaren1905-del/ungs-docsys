@@ -10,5 +10,10 @@ import java.util.List;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface PermissionMapper {
     PermissionResponseDto toResponse(Permission permission);
+
     List<PermissionResponseDto> toResponses(List<Permission> permissions);
+
+    Permission toModel(PermissionResponseDto permissionResponseDto);
+
+    List<Permission> toModels(List<PermissionResponseDto> permissionResponseDtos);
 }
