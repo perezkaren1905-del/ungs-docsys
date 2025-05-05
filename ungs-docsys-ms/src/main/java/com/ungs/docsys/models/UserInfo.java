@@ -33,6 +33,8 @@ public class UserInfo {
     private IdentificationType identificationType;
     @Column(name = "identification_number", nullable = false, length = 50)
     private String identificationNumber;
+    @Column(name = "cuil_cuit", nullable = false, length = 11)
+    private String cuilCuit;
     @Column(nullable = false, length = 50)
     private String phone;
     @Column(name="birth_date", nullable = false)

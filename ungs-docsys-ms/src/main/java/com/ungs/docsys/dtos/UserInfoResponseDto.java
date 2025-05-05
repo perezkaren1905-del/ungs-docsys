@@ -13,6 +13,7 @@ public class UserInfoResponseDto {
     private String lastName;
     private String identificationType;
     private String identificationNumber;
+    private String cuilCuit;
     private String phone;
     private LocalDate birthDate;
     private String nationality;

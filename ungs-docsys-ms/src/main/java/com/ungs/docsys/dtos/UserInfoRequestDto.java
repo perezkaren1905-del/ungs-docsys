@@ -36,6 +36,11 @@ public class UserInfoRequestDto {
     @Size(max = 50, message = "Identification number must not exceed 50 characters")
     private String identificationNumber;
 
+    @NotBlank(message = "El CUIL/CUIT es obligatorio.")
+    @Size(min = 11, max = 11, message = "El CUIL/CUIT debe tener exactamente 11 dígitos.")
+    @Pattern(regexp = "\\d{11}", message = "El CUIL/CUIT debe contener solo números.")
+    private String cuilCuit;
+
     @NotBlank(message = "Phone is required")
     @Size(max = 50, message = "Phone must not exceed 50 characters")
     private String phone;
@@ -46,4 +51,6 @@ public class UserInfoRequestDto {
     @NotNull(message = "Nationality is required")
     @Positive(message = "Nationality ID must be a positive number")
     private Long nationalityId;
+
+
 }
