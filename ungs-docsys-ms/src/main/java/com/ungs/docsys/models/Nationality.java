@@ -12,7 +12,7 @@ public class Nationality {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, length = 3)
+    @Column(nullable = false, length = 10)
     private String code;
     @Column(nullable = false, length = 150)
     private String description;

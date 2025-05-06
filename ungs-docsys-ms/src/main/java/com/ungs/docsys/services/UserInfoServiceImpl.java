@@ -88,6 +88,7 @@ public class UserInfoServiceImpl implements UserInfoService {
                 .lastName(request.getLastName())
                 .identificationType(identificationType)
                 .identificationNumber(request.getIdentificationNumber())
+                .cuilCuit(request.getCuilCuit())
                 .phone(request.getPhone())
                 .birthDate(request.getBirthDate())
                 .nationality(nationality)

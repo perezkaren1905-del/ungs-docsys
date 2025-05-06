@@ -7,6 +7,7 @@ import {
     IsNumber,
     IsPositive,
     IsDateString,
+    Matches
   } from 'class-validator';
 
 export class UserInfoRequestDto {
@@ -48,6 +49,11 @@ export class UserInfoRequestDto {
     @IsNotEmpty({ message: 'Identification number is required' })
     @MaxLength(50, { message: 'Identification number must not exceed 50 characters' })
     identificationNumber: string;
+
+    @ApiProperty({ example: '20123456783', description: 'CUIL/CUIT (11 digits)' })
+    @IsNotEmpty({ message: 'CUIL/CUIT is required' })
+    @Matches(/^\d{11}$/, { message: 'CUIL/CUIT must be a string of exactly 11 digits' })
+    cuilCuit: string;
 
     @ApiProperty({ example: '+123456789', maxLength: 50 })
     @IsNotEmpty({ message: 'Phone is required' })
