@@ -1,0 +1,33 @@
+package com.ungs.docsys.models;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "job_application_approval", schema = "recruitment")
+@Data
+public class JobApplicationApproval {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_application_id", nullable = false)
+    private JobApplication jobApplication;
+    @Column(nullable = true)
+    private Boolean code;
+    @Column(nullable = false, length = 500)
+    private String reason;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id_approval", nullable = false)
+    private AppUser appUser;
+    @CreatedDate
+    @Column(name = "created_date", updatable = false)
+    private LocalDateTime createdDate;
+    @LastModifiedDate
+    @Column(name = "updated_date")
+    private LocalDateTime updatedDate;
+}

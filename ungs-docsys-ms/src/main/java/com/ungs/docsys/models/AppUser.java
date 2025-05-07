@@ -42,6 +42,12 @@ public class AppUser {
     private List<UserInfo> userInfos;
     @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL)
     private List<UserRole> userRoles;
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL)
+    private List<Requirement> requirements;
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL)
+    private List<JobApplicationApproval> jobApplicationApprovals;
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL)
+    private List<JobApplication> jobApplications;
 
     @PrePersist
     private void onCreate() {
