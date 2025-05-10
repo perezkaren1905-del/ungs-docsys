@@ -16,6 +16,6 @@ public class Permission {
     private String name;
     @Column(nullable = false, length = 255)
     private String description;
-    @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RolePermission> rolePermissions;
 }

@@ -16,6 +16,6 @@ public class JobApplicationPeriod {
     private String code;
     @Column(nullable = true, length = 255)
     private String description;
-    @OneToMany(mappedBy = "jobApplicationPeriod", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "jobApplicationPeriod", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<JobApplication> jobApplications;
 }

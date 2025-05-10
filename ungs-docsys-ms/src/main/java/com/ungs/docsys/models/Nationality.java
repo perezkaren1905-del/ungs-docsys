@@ -20,6 +20,6 @@ public class Nationality {
     private String iso2;
     @Column(name="iso_3", nullable = false, length = 3)
     private String iso3;
-    @OneToMany(mappedBy = "nationality", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "nationality", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserInfo> userInfos;
 }
