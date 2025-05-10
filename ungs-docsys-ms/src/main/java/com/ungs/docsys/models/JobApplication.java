@@ -7,6 +7,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "job_application", schema = "recruitment")
@@ -15,7 +17,7 @@ public class JobApplication {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, length = 36)
+    @Column(nullable = false, length = 36, updatable = false)
     private String code;
     @Column(nullable = false, length = 150)
     private String title;
@@ -44,6 +46,21 @@ public class JobApplication {
     @LastModifiedDate
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
-    @OneToMany(mappedBy = "jobApplication", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "jobApplication", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RequirementJobApplication> requirementJobApplications;
+
+    @PrePersist
+    private void onCreate() {
+        this.createdDate = LocalDateTime.now();
+        this.updatedDate = LocalDateTime.now();
+        this.code = UUID.randomUUID().toString();
+        if (Objects.isNull(this.active)) {
+            this.active = Boolean.TRUE;
+        }
+    }
+
+    @PreUpdate
+    private void onUpdate() {
+        this.updatedDate = LocalDateTime.now();
+    }
 }

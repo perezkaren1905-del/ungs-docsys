@@ -16,6 +16,6 @@ public class IdentificationType {
     private String code;
     @Column(nullable = false, length = 100)
     private String description;
-    @OneToMany(mappedBy = "identificationType", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "identificationType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserInfo> userInfos;
 }

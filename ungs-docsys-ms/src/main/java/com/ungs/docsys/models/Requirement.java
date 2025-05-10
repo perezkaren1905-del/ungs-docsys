@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "requirement", schema = "recruitment")
@@ -35,6 +36,23 @@ public class Requirement {
     @LastModifiedDate
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
-    @OneToMany(mappedBy = "requirement", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "requirement", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RequirementJobApplication> requirementJobApplications;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "requirement_target_comparator_id", nullable = false)
+    private RequirementTargetComparator requirementTargetComparator;
+
+    @PrePersist
+    private void onCreate() {
+        this.createdDate = LocalDateTime.now();
+        this.updatedDate = LocalDateTime.now();
+        if(Objects.isNull(this.active)) {
+            this.active = Boolean.TRUE;
+        }
+    }
+
+    @PreUpdate
+    private void onUpdate() {
+        this.updatedDate = LocalDateTime.now();
+    }
 }

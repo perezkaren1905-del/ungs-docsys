@@ -18,7 +18,7 @@ public class JobApplicationApproval {
     @JoinColumn(name = "job_application_id", nullable = false)
     private JobApplication jobApplication;
     @Column(nullable = true)
-    private Boolean code;
+    private Boolean approved;
     @Column(nullable = false, length = 500)
     private String reason;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,4 +30,15 @@ public class JobApplicationApproval {
     @LastModifiedDate
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
+
+    @PrePersist
+    private void onCreate() {
+        this.createdDate = LocalDateTime.now();
+        this.updatedDate = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    private void onUpdate() {
+        this.updatedDate = LocalDateTime.now();
+    }
 }
