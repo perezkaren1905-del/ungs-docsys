@@ -18,7 +18,7 @@ public class Requirement {
     private Long id;
     @Column(nullable = false, length = 500)
     private String description;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "requirement_type_id", nullable = false)
     private RequirementType requirementType;
     @Column(nullable = false, length = 25)
@@ -27,7 +27,7 @@ public class Requirement {
     private String expectedValue;
     @Column(nullable = false)
     private Boolean active;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id_creator", nullable = false)
     private AppUser appUser;
     @CreatedDate
@@ -38,7 +38,7 @@ public class Requirement {
     private LocalDateTime updatedDate;
     @OneToMany(mappedBy = "requirement", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RequirementJobApplication> requirementJobApplications;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "requirement_target_comparator_id", nullable = false)
     private RequirementTargetComparator requirementTargetComparator;
 

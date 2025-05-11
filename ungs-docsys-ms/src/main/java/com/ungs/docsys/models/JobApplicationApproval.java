@@ -14,14 +14,14 @@ public class JobApplicationApproval {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "job_application_id", nullable = false)
     private JobApplication jobApplication;
     @Column(nullable = true)
     private Boolean approved;
     @Column(nullable = false, length = 500)
     private String reason;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id_approval", nullable = false)
     private AppUser appUser;
     @CreatedDate
