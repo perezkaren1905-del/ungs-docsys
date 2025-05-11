@@ -1,11 +1,13 @@
 package com.ungs.docsys.security;
 
-import com.ungs.docsys.models.AppUser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ungs.docsys.dtos.AppUserClaimDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -22,22 +24,20 @@ public class JwtUtil {
     @Value("${security.jwt.expiration-time}")
     private long jwtExpirationInMs;
 
+    private final ObjectMapper objectMapper;
+
+    public JwtUtil(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
-    public String generateToken(String username) {
-        return Jwts.builder()
-                .subject(username)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-    public String generateTokenV2(AppUser appUser) {
-        final Map<String, Object> claims = new HashMap<>();
-        claims.put("username", appUser.getEmail());
+    public String generateTokenV2(AppUserClaimDto appUser) {
+        Map<String, Object> claims = new HashMap<>();
+        Map<String, Object> userData = objectMapper.convertValue(appUser, Map.class);
+        claims.put("user-data", userData);
 
         return Jwts.builder()
                 .subject(appUser.getEmail())
@@ -57,8 +57,8 @@ public class JwtUtil {
                 .getSubject();
     }
 
-    public boolean isTokenValid(String token, String username) {
-        return extractUsername(token).equals(username) && !isTokenExpired(token);
+    public boolean isTokenValid(String token, UserDetails username) {
+        return extractUsername(token).equals(username.getUsername()) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {

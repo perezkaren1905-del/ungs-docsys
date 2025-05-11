@@ -12,14 +12,14 @@ public class LogingHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private AppUser appUser;
-    @Column(name="loging_time", nullable = false)
-    private LocalDateTime logingTime;
+    @Column(name="login_time", nullable = false)
+    private LocalDateTime loginTime;
 
     @PrePersist
     private void onCreate() {
-        this.logingTime = LocalDateTime.now();
+        this.loginTime = LocalDateTime.now();
     }
 }

@@ -23,10 +23,10 @@ public class JobApplication {
     private String title;
     @Column(nullable = false, length = 5000)
     private String description;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "job_application_status_id", nullable = false)
     private JobApplicationStatus jobApplicationStatus;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "job_application_period_id", nullable = false)
     private JobApplicationPeriod jobApplicationPeriod;
     @Column(name="min_approvers", nullable = true)
@@ -37,7 +37,7 @@ public class JobApplication {
     private Long yearPeriod;
     @Column(nullable = false, length = 5000)
     private Boolean active;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id_creator", nullable = false)
     private AppUser appUser;
     @CreatedDate

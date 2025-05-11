@@ -21,14 +21,14 @@ public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private AppUser appUser;
     @Column(name = "first_name", nullable = false, length = 150)
     private String firstName;
     @Column(name = "last_name", nullable = false, length = 150)
     private String lastName;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "identification_type_id", nullable = false)
     private IdentificationType identificationType;
     @Column(name = "identification_number", nullable = false, length = 50)
@@ -39,7 +39,7 @@ public class UserInfo {
     private String phone;
     @Column(name="birth_date", nullable = false)
     private LocalDate birthDate;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "nationality_id", nullable = false)
     private Nationality nationality;
     @CreatedDate
