@@ -38,12 +38,18 @@ public class SecurityConfig {
             "/configuration/**"
     };
 
+    private static final String[] ROLE_RECRUITER_ACCESS = {
+            "/v1/requirement-types",
+            "/v1/requirement-types/**"
+    };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(WHITELIST).permitAll()
+                        .requestMatchers(ROLE_RECRUITER_ACCESS).hasRole("RECRUITER")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
