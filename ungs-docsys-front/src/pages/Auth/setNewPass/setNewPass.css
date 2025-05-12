@@ -4,22 +4,24 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   }
-
 .form-group {
     display: flex;
-    align-items: center; /* Alinea verticalmente los elementos */
+    flex-direction: column; /* Cambia la dirección a columna para distribuir verticalmente */
+    align-items: center; /* Centra los elementos horizontalmente */
     margin-bottom: 15px; /* Ajusta el espacio entre los grupos */
-    text-align: left;
+    text-align: center;
     color: black;
 }
 
 .form-group label {
-    margin-right: 10px; /* Espacio entre el label y el input */
-    width: 120px; /* Ancho del label, ajusta según sea necesario */
+    margin-bottom: 5px; /* Espacio entre el label y el input */
+    width: auto; /* Ajusta el ancho automáticamente */
+    text-align: center; /* Centra el texto del label */
 }
 
 .form-group input {
-    flex: 1; /* El input ocupará el resto del espacio disponible */
+    width: 50%; /* El input ocupará el 50% del ancho */
+    text-align: center; /* Centra el texto dentro del input */
 }
 
 .buttons-section {

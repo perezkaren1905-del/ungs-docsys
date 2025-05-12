@@ -38,6 +38,10 @@ export default function Login({ onClose, onForgotPassword }) {
 
   return (
     <div className="container">
+      <button
+        className="back-button" 
+        onClick={() => navigate('/')}
+      >&lt;  Volver</button>
       <div className="title"><h2>Iniciar sesión</h2></div>
       <form onSubmit={handleSubmit} noValidate>
         <div className="form-group">
@@ -63,7 +67,7 @@ export default function Login({ onClose, onForgotPassword }) {
             <button 
                 type="button" 
                 className="forgot-2-password"
-                onClick={onForgotPassword}
+                onClick={() => navigate('/forgotPass')}
                 >
                 Olvidé mi contraseña
             </button>

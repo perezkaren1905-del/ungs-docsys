@@ -1,7 +1,9 @@
-import Login from '../pages/Auth/login/Login';
+import Login from '../pages/Auth/login/login';
 import Main from '../pages/Main/Main';
 import Home from '../pages/Home/Home';
 import SignUp from '../pages/Auth/signup/SignUp';
+import ForgotPassword from '../pages/Auth/forgotPass/forgotPass';
+import SetNewPass from '../pages/Auth/setNewPass/setNewPass';
 
 export const routes = [
     {
@@ -18,7 +20,15 @@ export const routes = [
       //requiredRoles: ['your_role_here']
     },
     {
-      path: "/sign-up",
+      path: "/signUp",
       element:<SignUp />
+    },
+    {
+      path: "forgotPass",
+      element: <ForgotPassword />
+    },
+    {
+      path: "setNewPass",
+      element: <SetNewPass />
     }
 ];
