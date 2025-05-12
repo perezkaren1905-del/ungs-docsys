@@ -10,5 +10,10 @@ import java.util.List;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface RoleMapper {
     RoleResponseDto toResponse(Role role);
+
     List<RoleResponseDto> toResponses(List<Role> roles);
+
+    Role toModel(RoleResponseDto roleResponseDto);
+
+    List<Role> toModels(List<RoleResponseDto> roleResponseDtos);
 }
