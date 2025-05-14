@@ -1,5 +1,6 @@
 package com.ungs.docsys.models;
 
+import com.ungs.docsys.enums.OperatorsEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
@@ -22,7 +23,8 @@ public class Requirement {
     @JoinColumn(name = "requirement_type_id", nullable = false)
     private RequirementType requirementType;
     @Column(nullable = false, length = 25)
-    private String operator;
+    @Enumerated(EnumType.STRING)
+    private OperatorsEnum operator;
     @Column(name="expected_value", nullable = false, length = 150)
     private String expectedValue;
     @Column(nullable = false)

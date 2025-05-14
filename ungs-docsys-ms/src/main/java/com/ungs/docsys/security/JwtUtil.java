@@ -18,6 +18,8 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
+    public static final String USER_DATA = "user-data";
+
     @Value("${security.jwt.secret-key}")
     private String jwtSecret;
 
@@ -37,7 +39,7 @@ public class JwtUtil {
     public String generateTokenV2(AppUserClaimDto appUser) {
         Map<String, Object> claims = new HashMap<>();
         Map<String, Object> userData = objectMapper.convertValue(appUser, Map.class);
-        claims.put("user-data", userData);
+        claims.put(USER_DATA, userData);
 
         return Jwts.builder()
                 .subject(appUser.getEmail())
@@ -46,6 +48,20 @@ public class JwtUtil {
                 .expiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public AppUserClaimDto extractUserClaim(String rawToken) {
+        final String token = rawToken != null && rawToken.startsWith("Bearer ")
+                ? rawToken.substring(7)
+                : rawToken;
+
+        final Claims claims = Jwts.parser()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return objectMapper.convertValue(claims.get(USER_DATA), AppUserClaimDto.class);
     }
 
     public String extractUsername(String token) {

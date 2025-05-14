@@ -1,9 +1,7 @@
 package com.ungs.docsys.services;
 
 import com.ungs.docsys.dtos.RequirementTypeResponseDto;
-import com.ungs.docsys.mappers.RequirementTargetComparatorMapper;
 import com.ungs.docsys.mappers.RequirementTypeMapper;
-import com.ungs.docsys.repositories.RequirementTargetComparatorRepository;
 import com.ungs.docsys.repositories.RequirementTypeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

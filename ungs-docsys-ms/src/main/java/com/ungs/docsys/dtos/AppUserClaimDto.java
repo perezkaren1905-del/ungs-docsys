@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 public class AppUserClaimDto {
+    private Long id;
     private String email;
     private String firstName;
     private String lastName;

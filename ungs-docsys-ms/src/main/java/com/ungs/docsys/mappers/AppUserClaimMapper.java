@@ -17,6 +17,7 @@ public abstract class AppUserClaimMapper {
     @Mapping(target = "email", expression = "java(getEmail(userInfo.getAppUser()))")
     @Mapping(target = "roles", expression = "java(getRoles(userInfo.getAppUser()))")
     @Mapping(target = "passwordHash", expression = "java(getPasswordHash(userInfo.getAppUser()))")
+    @Mapping(target = "id", expression = "java(getAppUserId(userInfo.getAppUser()))")
     public abstract AppUserClaimDto toDto(UserInfo userInfo);
 
     protected String getEmail(AppUser appUser) {
@@ -30,6 +31,10 @@ public abstract class AppUserClaimMapper {
 
     protected String getPasswordHash(AppUser appUser) {
         return appUser.getPasswordHash();
+    }
+
+    protected Long getAppUserId(AppUser appUser) {
+        return appUser.getId();
     }
 
 }
