@@ -40,7 +40,9 @@ public class SecurityConfig {
 
     private static final String[] ROLE_RECRUITER_ACCESS = {
             "/v1/requirement-types",
-            "/v1/requirement-types/**"
+            "/v1/requirement-types/**",
+            "/v1/job-applications",
+            "/v1/job-applications/**"
     };
 
     @Bean
