@@ -1,0 +1,92 @@
+.form-container {
+    background-color: #0a3c59; /* fondo exterior oscuro */
+    padding: 40px;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: auto;
+    color: white;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .form-inner {
+    background-color: #d6d6d6; /* fondo del bloque del formulario */
+    padding: 50px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    width: 40%;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .form-group input,
+  .form-group select {
+    width: 60%;
+    padding: 6px 10px;
+    border: 2px solid #00aaff;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+  }
+  
+  .form-group select {
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" fill="black" viewBox="0 0 4 5"><path d="M2 0L0 2h4L2 0z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+  }
+  
+  /* Fecha de nacimiento */
+  .date-group {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .date-group select {
+    width: 100%;
+  }
+  
+  /* Botón */
+  .next-button {
+    background-color: #003c5f;
+    color: white;
+    font-weight: bold;
+    border: 2px solid #00aaff;
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+  }
+  
+  .next-button:hover {
+    background-color: #005d89;
+  }
+
+  .input-error {
+    border-color: red !important;
+  }
+
+  .form-error-general {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+    text-align: center;
+  }
+  
