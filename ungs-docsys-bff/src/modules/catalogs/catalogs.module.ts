@@ -11,4 +11,4 @@ import { NationalitiesController } from './nationalities/controllers/nationaliti
     providers: [IdentificationTypesService, NationalitiesService],
     exports: [IdentificationTypesService, NationalitiesService]
 })
-export class CatalogsModule {}
+export class CatalogsModule { }
