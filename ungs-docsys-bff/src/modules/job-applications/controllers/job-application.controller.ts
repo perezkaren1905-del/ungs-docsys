@@ -1,4 +1,4 @@
-import { Controller, Post, Patch, Body, Param, Headers, HttpCode, HttpStatus, UnauthorizedException, HttpException } from '@nestjs/common';
+import { Controller, Post, Patch, Body, Param, Headers, HttpCode, HttpStatus, UnauthorizedException, HttpException, Delete } from '@nestjs/common';
 import { JobApplicationService } from '../services/job-application.service';
 import { JobApplicationRequestDto } from '../dtos/job-application-request.dto';
 import { JobApplicationUpdateRequestDto } from '../dtos/job-application-update-request.dts';
@@ -9,7 +9,7 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 export class JobApplicationController {
     constructor(private readonly jobApplicationService: JobApplicationService) {}
 
-    @Post('/create')
+    @Post()
     @ApiOperation({ summary: 'Create Job Application' })
     @ApiResponse({
         status: 200,
@@ -20,9 +20,9 @@ export class JobApplicationController {
         return this.jobApplicationService.create(request, authHeader);
     }
 
-    @Patch(':id/delete')
+    @Delete(':id')
     @HttpCode(HttpStatus.NO_CONTENT)
-    @ApiOperation({ summary: 'Soft delete Job Application by ID' })
+    @ApiOperation({ summary: 'Delete Job Application by ID' })
     @ApiResponse({
         status: 204,
         description: 'Successfully deleted (soft delete)'

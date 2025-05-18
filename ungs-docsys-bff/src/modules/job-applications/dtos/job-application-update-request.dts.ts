@@ -26,7 +26,6 @@ export class JobApplicationUpdateRequestDto {
   @IsOptional()
   @IsNumber()
   @Min(1)
-  @Max(5)
   minApprovers?: number;
 
   @IsOptional()

@@ -5,6 +5,8 @@ import com.ungs.docsys.dtos.JobApplicationResponseDto;
 import com.ungs.docsys.dtos.JobApplicationUpdateRequestDto;
 import com.ungs.docsys.services.JobApplicationService;
 import com.ungs.docsys.utils.SecurityUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,24 +22,37 @@ public class JobApplicationController {
 
     private final JobApplicationService jobApplicationService;
 
-    @PostMapping("/create")
+    @Operation(summary = "Create a job application", description = "Creates a new job application for the authenticated user.")
+    @ApiResponse(responseCode = "200", description = "Job application created successfully")
+    @ApiResponse(responseCode = "400", description = "Invalid request data")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    @PostMapping()
     public ResponseEntity<JobApplicationResponseDto> create(@Valid @RequestBody JobApplicationRequestDto request) {
         String username = SecurityUtils.getCurrentUsername();
         return ResponseEntity.ok(jobApplicationService.create(request, username));
     }
 
-    @PatchMapping("/{id}/delete")
+    @Operation(summary = "Delete a job application")
+    @ApiResponse(responseCode = "204", description = "Job application deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Job application not found")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         return jobApplicationService.delete(id)
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
     }
 
+    @Operation(summary = "Update a job application")
+    @ApiResponse(responseCode = "200", description = "Job application updated successfully")
+    @ApiResponse(responseCode = "404", description = "Job application not found")
+    @ApiResponse(responseCode = "403", description = "Forbidden - user not authorized to update this job application")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
     @PatchMapping("/{id}")
     public ResponseEntity<JobApplicationResponseDto> update(
             @PathVariable Long id,
             @Valid @RequestBody JobApplicationUpdateRequestDto request) {
-        JobApplicationResponseDto updated = jobApplicationService.update(id, request);
+        JobApplicationResponseDto updated = jobApplicationService.partiallyUpdate(id, request);
         return ResponseEntity.ok(updated);
     }
 }

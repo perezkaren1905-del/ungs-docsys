@@ -23,7 +23,6 @@ public class JobApplicationUpdateRequestDto {
     private Long jobApplicationPeriodId;
 
     @Min(value = 1, message = "Minimum Approvers must be at least one approver")
-    @Max(value = 5, message = "Minimum Approvers must not exceed 5")
     private Long minApprovers;
 
     @Size(max = 500, message = "Reason must not exceed 500 characters")

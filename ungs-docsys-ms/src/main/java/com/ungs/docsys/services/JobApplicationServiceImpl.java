@@ -70,23 +70,10 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     }
 
     @Override
-    public JobApplicationResponseDto update(Long id, JobApplicationUpdateRequestDto request) {
-        JobApplication jobApplication = getJobApplicationById(id);
-
-        if (request.getTitle() != null) jobApplication.setTitle(request.getTitle());
-        if (request.getDescription() != null) jobApplication.setDescription(request.getDescription());
-        if (request.getMinApprovers() != null) jobApplication.setMinApprovers(request.getMinApprovers());
-        if (request.getReason() != null) jobApplication.setReason(request.getReason());
-        if (request.getYearPeriod() != null) jobApplication.setYearPeriod(request.getYearPeriod());
-        if (request.getJobApplicationPeriodId() != null) {
-            JobApplicationPeriod period = jobApplicationPeriodMapper.toModel(
-                    jobApplicationPeriodService.getById(request.getJobApplicationPeriodId()));
-            jobApplication.setJobApplicationPeriod(period);
-        }
-
-        jobApplicationRepository.save(jobApplication);
-
-        return jobApplicationMapper.toResponse(jobApplication);
+    public JobApplicationResponseDto partiallyUpdate(Long id, JobApplicationUpdateRequestDto request) {
+        final JobApplication jobApplication = getJobApplicationById(id);
+        jobApplicationMapper.updateModelFromDto(request, jobApplication);
+        return jobApplicationMapper.toResponse(jobApplicationRepository.save(jobApplication));
     }
 
     private JobApplication getJobApplicationById(Long id) {

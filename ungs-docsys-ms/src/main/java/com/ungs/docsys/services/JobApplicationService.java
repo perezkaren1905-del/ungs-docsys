@@ -9,5 +9,5 @@ public interface JobApplicationService {
 
     boolean delete(Long id);
 
-    JobApplicationResponseDto update(Long id, JobApplicationUpdateRequestDto request);
+    JobApplicationResponseDto partiallyUpdate(Long id, JobApplicationUpdateRequestDto request);
 }
