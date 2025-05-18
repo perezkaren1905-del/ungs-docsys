@@ -1,7 +1,10 @@
 package com.ungs.docsys.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -13,6 +16,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "job_application", schema = "recruitment")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class JobApplication {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

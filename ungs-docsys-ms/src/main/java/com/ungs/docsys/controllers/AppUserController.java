@@ -1,7 +1,7 @@
 package com.ungs.docsys.controllers;
 
 import com.ungs.docsys.dtos.AppUserRequestDto;
-import com.ungs.docsys.dtos.AppUserResponseDto;
+import com.ungs.docsys.dtos.AppUserSignInResponseDto;
 import com.ungs.docsys.services.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,8 +24,8 @@ public class AppUserController {
     @ApiResponse(responseCode = "201", description = "Successfully signed in")
     @ApiResponse(responseCode = "400", description = "Invalid input data")
     @PostMapping("/signIn")
-    public ResponseEntity<AppUserResponseDto> signIn(@Valid @RequestBody AppUserRequestDto request) {
-        AppUserResponseDto appUserResponseDto = appUserService.singIn(request);
-        return ResponseEntity.status(HttpStatus.OK).body(appUserResponseDto);
+    public ResponseEntity<AppUserSignInResponseDto> signIn(@Valid @RequestBody AppUserRequestDto request) {
+        AppUserSignInResponseDto appUserSignInResponseDto = appUserService.singIn(request);
+        return ResponseEntity.status(HttpStatus.OK).body(appUserSignInResponseDto);
     }
 }
