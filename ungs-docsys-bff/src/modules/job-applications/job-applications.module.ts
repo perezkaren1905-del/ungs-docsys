@@ -10,11 +10,13 @@ import { JobApplicationStatusesController } from './job-application-statuses/con
 import { RequirementTargetComparatorsController } from './requirement-target-comparators/controllers/requirement-target-comparators.controller';
 import { RequirementTypesController } from './requirement-types/controllers/requirement-types.controller';
 import { RequirementsController } from './requirements/controllers/requirements.controller';
+import { JobApplicationService } from "./services/job-application.service";
+import { JobApplicationController } from "./controllers/job-application.controller";
 
 @Module({
-    controllers: [JobApplicationPeriodsController, JobApplicationStatusesController, RequirementTargetComparatorsController, RequirementTypesController, RequirementsController],
+    controllers: [JobApplicationPeriodsController, JobApplicationStatusesController, RequirementTargetComparatorsController, RequirementTypesController, RequirementsController, JobApplicationController],
     imports: [HttpModule],
     providers: [JobApplicationPeriodsService, JobApplicationStatusesService, RequirementTargetComparatorsService, RequirementTypesService, RequirementsService],
-    exports: [JobApplicationPeriodsService, JobApplicationStatusesService, RequirementTargetComparatorsService, RequirementTypesService, RequirementsService]
+    exports: [JobApplicationPeriodsService, JobApplicationStatusesService, RequirementTargetComparatorsService, RequirementTypesService, RequirementsService, JobApplicationService]
 })
 export class JobApplicationsModule { }
