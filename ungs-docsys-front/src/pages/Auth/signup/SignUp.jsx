@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import "./SignUp.css";
 import { NationalititesService } from "../../../commons/services/nationalities.service";
+import { IdentificationTypeService } from "../../../commons/services/identification-types.service";
+import { SignUpService } from "../../../commons/services/sign-up.service";
 
 export default function SignUp() {
   const {
@@ -17,6 +19,7 @@ export default function SignUp() {
 
   const [fecha, setFecha] = useState("");
   const [nationalities, setNationalities] = useState([]);
+  const [documentTypes, setDocumentTypes] = useState([]);
   const [step, setStep] = useState(1);
 
   const onSubmit = (data) => {
@@ -33,11 +36,22 @@ export default function SignUp() {
       }
     };
 
+    const getAllIdentificationTypes = async () => {
+      try {
+        const data = await IdentificationTypeService.getAll();
+        setDocumentTypes(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     getAllNationalities();
+    getAllIdentificationTypes();
   }, []);
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (step === 3) {
+      await SignUpService.signUp(null);
       window.location.href = "/home";
     } else {
       setStep((prevStep) => prevStep + 1);
@@ -113,9 +127,15 @@ export default function SignUp() {
                 className={errors.documentNumber ? "input-error" : ""}
                 {...register("documentType", { required: "Campo obligatorio" })}
               >
-                <option value="">Seleccione</option>
-                <option value="dni">DNI</option>
-                <option value="pasaporte">Pasaporte</option>
+                <option key="000" value="000">
+                  {" "}
+                  Seleccione
+                </option>
+                {documentTypes.map((documentType) => (
+                  <option key={documentType.code} value={documentType.code}>
+                    {documentType.code}
+                  </option>
+                ))}
               </select>
             </div>
 

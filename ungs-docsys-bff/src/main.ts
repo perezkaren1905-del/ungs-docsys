@@ -13,6 +13,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.enableCors();
   
   const config = new DocumentBuilder()
     .setTitle('DOCSYS BFF Swagger')
