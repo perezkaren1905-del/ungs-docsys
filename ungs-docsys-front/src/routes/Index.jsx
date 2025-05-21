@@ -8,6 +8,8 @@ import JobAppList from '../pages/jobAppMng/jobAppList/JobAppList';
 import CreateJobApp from '../pages/jobAppMng/createJobApp/CreateJobApp'; 
 import ViewJobApp from '../pages/jobAppMng/viewJobApp/ViewJobApp';
 
+const RECRUITER_ROLE = "RECRUITER";
+
 export const routes = [
     {
       path: "/",
@@ -20,7 +22,7 @@ export const routes = [
     {
       path: "/home",
       element: <Home />,
-      //requiredRoles: ['your_role_here']
+      requiredRoles: [RECRUITER_ROLE]
     },
     {
       path: "/signUp",

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../components/UI/Header";
 import "../../../assets/styles/Home.css";
+import { JwtService } from "../../../commons/utils/jwt.service";
 
 export default function JobAppList() {
   const navigate = useNavigate();
@@ -11,6 +12,14 @@ export default function JobAppList() {
     period: "",
     status: ""
   });
+
+  const getUserClaim = () => {
+    const claims = JwtService.getClaims();
+    return {
+      name: `${claims.firstName}, ${claims.lastName}`,
+      role: `${claims.roles}`
+    }
+  }
 
   // Sample data - replace with your actual data source
   const jobApplications = [
@@ -53,8 +62,8 @@ export default function JobAppList() {
     const normalizedKeywords = normalizeString(filters.keywords);
     const normalizedTitle = normalizeString(app.title); // <-- Calculate this here
     return (
-      (filters.keywords === "" || 
-       normalizedTitle.includes(normalizedKeywords)) &&
+      (filters.keywords === "" ||
+        normalizedTitle.includes(normalizedKeywords)) &&
       (filters.type === "" || app.type === filters.type) &&
       (filters.period === "" || app.period === filters.period) &&
       (filters.status === "" || app.status === filters.status)
@@ -63,31 +72,31 @@ export default function JobAppList() {
 
   return (
     <div className="home-container">
-      <Header 
-        user={{ name: "Doe, John", role: "Reclutador" }} 
+      <Header
+        user={getUserClaim()}
         navItems={["Gestión de Postulaciones", "Otras opciones", "Opción 2", "Opción 3"]}
       />
-      
+
       <div className="app-container">
         <h1>Lista de Postulaciones</h1>
         <p>Seleccione una postulación de la lista para visualizarla</p>
-        
+
         {/* Filters Section */}
         <div className="filters-section">
           <div className="filter-group">
             <label>Palabras clave:</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={filters.keywords}
-              onChange={(e) => setFilters({...filters, keywords: e.target.value})}
+              onChange={(e) => setFilters({ ...filters, keywords: e.target.value })}
             />
           </div>
-          
+
           <div className="filter-group">
             <label>Tipo:</label>
             <select
               value={filters.type}
-              onChange={(e) => setFilters({...filters, type: e.target.value})}
+              onChange={(e) => setFilters({ ...filters, type: e.target.value })}
             >
               <option value="">Todos</option>
               {typeOptions.map(option => (
@@ -95,12 +104,12 @@ export default function JobAppList() {
               ))}
             </select>
           </div>
-          
+
           <div className="filter-group">
             <label>Período:</label>
             <select
               value={filters.period}
-              onChange={(e) => setFilters({...filters, period: e.target.value})}
+              onChange={(e) => setFilters({ ...filters, period: e.target.value })}
             >
               <option value="">Todos</option>
               {periodOptions.map(option => (
@@ -108,12 +117,12 @@ export default function JobAppList() {
               ))}
             </select>
           </div>
-          
+
           <div className="filter-group">
             <label>Estado:</label>
             <select
               value={filters.status}
-              onChange={(e) => setFilters({...filters, status: e.target.value})}
+              onChange={(e) => setFilters({ ...filters, status: e.target.value })}
             >
               <option value="">Todos</option>
               {statusOptions.map(option => (
@@ -122,7 +131,7 @@ export default function JobAppList() {
             </select>
           </div>
         </div>
-        
+
         {/* Applications List */}
         <div className="applications-list">
           {filteredApplications.map(app => (
@@ -136,9 +145,9 @@ export default function JobAppList() {
             </div>
           ))}
         </div>
-        
+
         {/* Create New Application Button */}
-        <button 
+        <button
           className="create-button"
           onClick={() => navigate("/createJobApp")}
         >
