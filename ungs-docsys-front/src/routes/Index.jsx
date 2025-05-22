@@ -38,14 +38,17 @@ export const routes = [
     },
     {
       path: "jobAppList",
-      element: <JobAppList />
+      element: <JobAppList />,
+      requiredRoles: [RECRUITER_ROLE]
     },
     {
       path: "createJobApp",
-      element: <CreateJobApp />
+      element: <CreateJobApp />,
+      requiredRoles: [RECRUITER_ROLE]
     },
     {
       path: "viewJobApp",
-      element: <ViewJobApp />
+      element: <ViewJobApp />,
+      requiredRoles: [RECRUITER_ROLE]
     }
 ];
