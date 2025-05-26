@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -81,7 +82,9 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
     @Override
     public List<JobApplicationResponseDto> getAll() {
-        return new ArrayList<>();
+        return jobApplicationRepository.findAll().stream()
+                .map(jobApplicationMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     private JobApplication getJobApplicationById(Long id) {

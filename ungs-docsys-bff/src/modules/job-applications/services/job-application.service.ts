@@ -7,7 +7,7 @@ import { lastValueFrom } from "rxjs";
 
 @Injectable()
 export class JobApplicationService {
-    constructor(private readonly httpService: HttpService) {}
+    constructor(private readonly httpService: HttpService) { }
 
     private readonly urlBase: string = process.env.DOCSYS_URL_MS;
 
@@ -15,7 +15,7 @@ export class JobApplicationService {
         const url = `${this.urlBase}/v1/job-applications/create`;
         const response = await lastValueFrom(
             this.httpService.post(url, request, {
-            headers: { Authorization: authHeader },
+                headers: { Authorization: authHeader },
             }),
         );
         return response.data;
@@ -26,11 +26,11 @@ export class JobApplicationService {
 
         try {
             await lastValueFrom(
-            this.httpService.patch(url, null, {
-                headers: {
-                Authorization: `Bearer ${authToken}`,
-                },
-            }),
+                this.httpService.patch(url, null, {
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                }),
             );
             return true;
         } catch (error) {
@@ -40,16 +40,23 @@ export class JobApplicationService {
             throw error;
         }
     }
-      
+
     async update(id: number, request: JobApplicationUpdateRequestDto, authToken: string): Promise<JobApplicationResponseDto> {
         const url = `${this.urlBase}/v1/job-applications/${id}`;
         const response = await lastValueFrom(
-          this.httpService.patch(url, request, {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          }),
+            this.httpService.patch(url, request, {
+                headers: {
+                    Authorization: `Bearer ${authToken}`,
+                },
+            }),
         );
+        return response.data;
+    }
+
+    async getAll(authorization: string): Promise<JobApplicationResponseDto[]> {
+        const url = `${this.urlBase}/v1/job-applications`;
+        const headers = { authorization };
+        const response = await lastValueFrom(this.httpService.get(url, { headers }));
         return response.data;
     }
 }

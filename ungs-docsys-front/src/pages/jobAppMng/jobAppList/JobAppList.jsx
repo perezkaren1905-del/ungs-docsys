@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import Header from "../../../components/UI/Header";
 import "../../../assets/styles/Home.css";
 import { JwtService } from "../../../commons/utils/jwt.service";
+import { JobApplicationsService } from '../../../commons/services/job-applications.service';
 
 export default function JobAppList() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ export default function JobAppList() {
     period: "",
     status: ""
   });
+  const [jobApplications, setJobApplications] = useState([]);
 
   const getUserClaim = () => {
     const claims = JwtService.getClaims();
@@ -19,10 +21,20 @@ export default function JobAppList() {
       name: `${claims.firstName}, ${claims.lastName}`,
       role: `${claims.roles}`
     }
-  }
+  };
+
+  const fetchJobApplications = async () => {
+    try {
+      const jobApplicationsResponse = await JobApplicationsService.getAll();
+      setJobApplications(jobApplicationsResponse);
+    } catch(error) {
+      console.error(error);
+      jobApplicationsResponse([]);
+    }
+  };
 
   // Sample data - replace with your actual data source
-  const jobApplications = [
+  const jobApplicationsSample = [
     {
       id: 1,
       type: "Docente 1º",
@@ -58,7 +70,7 @@ export default function JobAppList() {
       .toLowerCase();
   };
 
-  const filteredApplications = jobApplications.filter(app => {
+  const filteredApplications = jobApplicationsSample.filter(app => {
     const normalizedKeywords = normalizeString(filters.keywords);
     const normalizedTitle = normalizeString(app.title); // <-- Calculate this here
     return (
@@ -69,6 +81,10 @@ export default function JobAppList() {
       (filters.status === "" || app.status === filters.status)
     );
   });
+
+  useEffect(() => {
+    fetchJobApplications();
+  }, []);
 
   return (
     <div className="home-container">
@@ -134,13 +150,13 @@ export default function JobAppList() {
 
         {/* Applications List */}
         <div className="applications-list">
-          {filteredApplications.map(app => (
-            <div key={app.id} className="application-card" onClick={() => navigate('/viewJobApp')}>
-              <h3>{app.type}</h3>
-              <h2>{app.title}</h2>
-              <p>{app.period}</p>
-              <div className={`status-badge ${app.status.toLowerCase().replace(/\s/g, '-')}`}>
-                {app.status}
+          {jobApplications.map(jobApplication => (
+            <div key={jobApplication.id} className="application-card" onClick={() => navigate('/viewJobApp')}>
+              <h3>{'--'}</h3>
+              <h2>{jobApplication.title}</h2>
+              <p>{`${jobApplication.periodDescription} ${jobApplication.yearPeriod}`}</p>
+              <div className={`status-badge ${jobApplication.statusName.toLowerCase().replace(/\s/g, '-')}`}>
+                {jobApplication.statusName}
               </div>
             </div>
           ))}

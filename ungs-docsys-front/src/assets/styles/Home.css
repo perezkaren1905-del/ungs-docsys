@@ -94,22 +94,22 @@
     font-weight: 500;
   }
   
-  .status-badge.aprobada {
+  .status-badge.approved {
     background-color: #e6f7e6;
     color: #2e7d32;
   }
   
-  .status-badge.pendiente {
+  .status-badge.pending_approval {
     background-color: #fff8e1;
     color: #ff8f00;
   }
   
-  .status-badge.rechazada {
+  .status-badge.declined {
     background-color: #ffebee;
     color: #c62828;
   }
   
-  .status-badge.en-revisión {
+  .status-badge.published {
     background-color: #e3f2fd;
     color: #1565c0;
   }
