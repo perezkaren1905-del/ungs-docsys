@@ -1,4 +1,4 @@
-import { Controller, Post, Patch, Body, Param, Headers, HttpCode, HttpStatus, UnauthorizedException, HttpException, Delete } from '@nestjs/common';
+import { Controller, Post, Patch, Body, Param, Headers, HttpCode, HttpStatus, UnauthorizedException, HttpException, Delete, Get } from '@nestjs/common';
 import { JobApplicationService } from '../services/job-application.service';
 import { JobApplicationRequestDto } from '../dtos/job-application-request.dto';
 import { JobApplicationUpdateRequestDto } from '../dtos/job-application-update-request.dts';
@@ -7,7 +7,7 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller("/v1/job-applications")
 export class JobApplicationController {
-    constructor(private readonly jobApplicationService: JobApplicationService) {}
+    constructor(private readonly jobApplicationService: JobApplicationService) { }
 
     @Post()
     @ApiOperation({ summary: 'Create Job Application' })
@@ -34,9 +34,9 @@ export class JobApplicationController {
     async delete(@Param('id') id: number, @Headers('authorization') authHeader: string): Promise<void> {
         const token = this.extractToken(authHeader);
         const deleted = await this.jobApplicationService.delete(id, token);
-      
+
         if (!deleted) {
-          throw new HttpException('Not modified', HttpStatus.NOT_MODIFIED);
+            throw new HttpException('Not modified', HttpStatus.NOT_MODIFIED);
         }
     }
 
@@ -53,10 +53,21 @@ export class JobApplicationController {
         return this.jobApplicationService.update(id, request, token);
     }
 
+    @Get()
+    @ApiOperation({ summary: 'Get all Requirement types' })
+    @ApiResponse({
+        status: 200,
+        description: 'Requirement type details',
+        type: [JobApplicationResponseDto],
+    })
+    async getAll(@Headers('authorization') authorization: string,): Promise<JobApplicationResponseDto[]> {
+        return await this.jobApplicationService.getAll(authorization);
+    }
+
     private extractToken(authHeader: string): string {
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-          throw new UnauthorizedException('Authorization token is missing or malformed');
+            throw new UnauthorizedException('Authorization token is missing or malformed');
         }
         return authHeader.replace('Bearer ', '');
-      }
+    }
 }

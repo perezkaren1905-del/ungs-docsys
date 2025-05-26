@@ -15,6 +15,7 @@ async function bootstrap() {
     }),
   );
 
+  app.enableCors();
   app.useGlobalInterceptors(new HttpExceptionInterceptor());
   
   const config = new DocumentBuilder()

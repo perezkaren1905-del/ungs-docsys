@@ -16,6 +16,10 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class JobApplicationServiceImpl implements JobApplicationService {
@@ -74,6 +78,13 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         final JobApplication jobApplication = getJobApplicationById(id);
         jobApplicationMapper.updateModelFromDto(request, jobApplication);
         return jobApplicationMapper.toResponse(jobApplicationRepository.save(jobApplication));
+    }
+
+    @Override
+    public List<JobApplicationResponseDto> getAll() {
+        return jobApplicationRepository.findAll().stream()
+                .map(jobApplicationMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     private JobApplication getJobApplicationById(Long id) {

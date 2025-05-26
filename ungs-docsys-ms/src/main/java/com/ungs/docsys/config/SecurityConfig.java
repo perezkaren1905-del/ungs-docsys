@@ -2,13 +2,11 @@ package com.ungs.docsys.config;
 
 import com.ungs.docsys.security.JwtRequestFilter;
 import com.ungs.docsys.security.JwtUtil;
-import com.ungs.docsys.security.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -35,14 +33,21 @@ public class SecurityConfig {
             "/swagger-ui.html",
             "/swagger-resources/**",
             "/webjars/**",
-            "/configuration/**"
+            "/configuration/**",
+            "/v1/roles",
+            "/v1/roles/**",
+            "/v1/nationalities",
+            "/v1/nationalities/**",
+            "/v1/identification-types",
+            "/v1/identification-types/**"
     };
 
-    private static final String[] ROLE_RECRUITER_ACCESS = {
-            "/v1/requirement-types",
-            "/v1/requirement-types/**",
-            "/v1/job-applications",
-            "/v1/job-applications/**"
+    private static final String[] ROLE_RECRUITER_POST_ACCESS = {
+            "/v1/requirements"
+    };
+
+    private static final String[] ROLE_RECRUITER_PATCH_ACCESS = {
+            "/v1/requirements/**"
     };
 
     @Bean
@@ -51,7 +56,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(WHITELIST).permitAll()
-                        .requestMatchers(ROLE_RECRUITER_ACCESS).hasRole("RECRUITER")
+                        .requestMatchers(HttpMethod.POST, ROLE_RECRUITER_POST_ACCESS).hasRole("RECRUITER")
+                        .requestMatchers(HttpMethod.PATCH, ROLE_RECRUITER_PATCH_ACCESS).hasRole("RECRUITER")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

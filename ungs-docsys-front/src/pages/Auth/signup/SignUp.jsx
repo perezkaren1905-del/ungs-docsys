@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import "./SignUp.css";
 import { NationalititesService } from "../../../commons/services/nationalities.service";
+import { IdentificationTypeService } from "../../../commons/services/identification-types.service";
+import { SignUpService } from "../../../commons/services/sign-up.service";
 
 export default function SignUp() {
   const {
     register,
     handleSubmit,
+    setValue,
     control,
     formState: { errors },
   } = useForm({
@@ -17,9 +20,35 @@ export default function SignUp() {
 
   const [fecha, setFecha] = useState("");
   const [nationalities, setNationalities] = useState([]);
+  const [documentTypes, setDocumentTypes] = useState([]);
   const [step, setStep] = useState(1);
 
-  const onSubmit = (data) => {
+  const onNext = async (data) => {
+    console.log(JSON.stringify(data));
+    if(step === 3 ) {
+      console.log('Json final para hacer post: ' + JSON.stringify(data));
+      const signUpRequest = {
+        roleId: Number(data.roleId),
+        email: data.email,
+        password: data.password,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        identificationTypeId: Number(data.identificationTypeId),
+        identificationNumber: data.identificationNumber,
+        cuilCuit: data.cuil,
+        phone: data.phone,
+        birthDate: data.birthDate,
+        nationalityId: Number(data.nationalityId)
+      }
+      await SignUpService.signUp(signUpRequest);
+      window.location.href = "/home";
+    } else {
+      setStep((prevStep) => prevStep + 1);
+    }
+    console.log(step);
+  };
+
+  const onSubmit = async (data) => {
     onNext(data);
   };
 
@@ -33,16 +62,19 @@ export default function SignUp() {
       }
     };
 
+    const getAllIdentificationTypes = async () => {
+      try {
+        const data = await IdentificationTypeService.getAll();
+        setDocumentTypes(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     getAllNationalities();
+    getAllIdentificationTypes();
   }, []);
 
-  const handleNext = () => {
-    if (step === 3) {
-      window.location.href = "/home";
-    } else {
-      setStep((prevStep) => prevStep + 1);
-    }
-  };
   const handleBack = () => {
     if (step === 1) {
       window.location.href = "/";
@@ -58,9 +90,14 @@ export default function SignUp() {
     return true;
   };
 
+  const handleRole = (roleId) => {
+    setValue("roleId", roleId);
+    setStep((prevStep) => prevStep + 1);
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="form-container">
-      <button className="back-button" onClick={handleBack}>
+      <button className="back-button" type="button" onClick={handleBack}>
         &lt; Volver
       </button>
       {step === 1 && (
@@ -70,17 +107,22 @@ export default function SignUp() {
             <button
               className="option-button"
               type="button"
-              onClick={handleNext}
+              onClick={() => handleRole(1)}
             >
               Gestionar las vacantes de trabajo
             </button>
             <button
               className="option-button"
               type="button"
-              onClick={handleNext}
+              onClick={() => handleRole(2)}
             >
               Buscar y postularte a vacantes de trabajo
             </button>
+            <input
+                className={errors.firstName ? "input-error" : ""}
+                type="hidden"
+                {...register("roleId", { required: "Campo obligatorio" })}
+              />
           </div>
         </div>
       )}
@@ -111,20 +153,26 @@ export default function SignUp() {
               <label>Tipo de Documento</label>
               <select
                 className={errors.documentNumber ? "input-error" : ""}
-                {...register("documentType", { required: "Campo obligatorio" })}
+                {...register("identificationTypeId", { required: "Campo obligatorio" })}
               >
-                <option value="">Seleccione</option>
-                <option value="dni">DNI</option>
-                <option value="pasaporte">Pasaporte</option>
+                <option key="000" value="0">
+                  {" "}
+                  Seleccione
+                </option>
+                {documentTypes.map((documentType) => (
+                  <option key={documentType.code} value={documentType.id}>
+                    {documentType.code}
+                  </option>
+                ))}
               </select>
             </div>
 
             <div className="form-group">
               <label>N° de Documento</label>
               <input
-                className={errors.documentNumber ? "input-error" : ""}
+                className={errors.identificationTypeId ? "input-error" : ""}
                 type="text"
-                {...register("documentNumber", {
+                {...register("identificationNumber", {
                   required: "Campo obligatorio",
                 })}
               />
@@ -153,11 +201,11 @@ export default function SignUp() {
               <input
                 type="text"
                 className={errors.fecha ? "input-error" : ""}
-                {...register("fecha", {
+                {...register("birthDate", {
                   required: "La fecha es obligatoria.",
                   validate: validateFecha,
                 })}
-                placeholder="DD/MM/YYYY"
+                placeholder="YYYY-MM-DD"
                 value={fecha}
                 onChange={(e) => setFecha(e.target.value)}
               />
@@ -165,24 +213,23 @@ export default function SignUp() {
 
             <div className="form-group">
               <label>Nacionalidad</label>
-
               <select
                 className={errors.nationality ? "input-error" : ""}
-                {...register("nationality", { required: "Campo obligatorio" })}
+                {...register("nationalityId", { required: "Campo obligatorio" })}
               >
-                <option key="000" value="000">
+                <option key="000" value="0">
                   {" "}
                   Seleccione su nacionalidad
                 </option>
                 {nationalities.map((nationality) => (
-                  <option key={nationality.code} value={nationality.code}>
+                  <option key={nationality.code} value={nationality.id}>
                     {nationality.description}
                   </option>
                 ))}
               </select>
             </div>
 
-            <button className="next-button" type="button" onClick={handleNext}>
+            <button className="next-button" type="submit">
               Siguiente
             </button>
           </div>
@@ -198,7 +245,9 @@ export default function SignUp() {
               <input
                 type="email"
                 placeholder="Ingresa tu correo electrónico"
+                {...register("email", { required: "Campo obligatorio" })}
               ></input>
+              
             </div>
 
             <div class="form-group">
@@ -211,7 +260,7 @@ export default function SignUp() {
                   <li>Al menos 1 caracter especial</li>
                 </ul>
               </div>
-              <input type="password" placeholder="Crea una contraseña"></input>
+              <input type="password" placeholder="Crea una contraseña" {...register("password", { required: "Campo obligatorio" })}></input>
             </div>
 
             <div class="form-group">
@@ -219,7 +268,7 @@ export default function SignUp() {
               <input type="password" placeholder="Repite tu contraseña"></input>
             </div>
 
-            <button type="submit" className="login-button" onClick={handleNext}>
+            <button type="submit" className="login-button">
               Registrarme
             </button>
           </div>

@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/v1/job-applications")
 @Validated
@@ -54,5 +56,14 @@ public class JobApplicationController {
             @Valid @RequestBody JobApplicationUpdateRequestDto request) {
         JobApplicationResponseDto updated = jobApplicationService.partiallyUpdate(id, request);
         return ResponseEntity.ok(updated);
+    }
+    @Operation(summary = "Get all jobs applications")
+    @ApiResponse(responseCode = "200", description = "Job application updated successfully")
+    @ApiResponse(responseCode = "404", description = "Job application not found")
+    @ApiResponse(responseCode = "403", description = "Forbidden - user not authorized to update this job application")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    @GetMapping()
+    public ResponseEntity<List<JobApplicationResponseDto>> getAll() {
+        return ResponseEntity.ok(jobApplicationService.getAll());
     }
 }

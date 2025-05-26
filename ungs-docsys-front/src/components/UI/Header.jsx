@@ -8,7 +8,7 @@ const Header = ({ user = { name: "Doe, John", role: "Reclutador" }, navItems = [
   const navigate = useNavigate();
 
   const handleNavClick = (item) => {
-    switch(item) {
+    switch (item) {
       case "Gestión de Postulaciones":
         navigate("/jobAppList");
         break;
@@ -18,46 +18,51 @@ const Header = ({ user = { name: "Doe, John", role: "Reclutador" }, navItems = [
     }
   };
 
-return (
+  const logout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  };
+
+  return (
     <header className="header">
-        <div className="header-top">
-            <img 
-                src="/src/assets/media/logodocsys.jpg" 
-                alt="docSYS Logo" 
-                className="logo" 
-                style={{ cursor: 'pointer' }}
-                onClick={() => navigate('/home')}
-            />
+      <div className="header-top">
+        <img
+          src="/src/assets/media/logodocsys.jpg"
+          alt="docSYS Logo"
+          className="logo"
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/home')}
+        />
 
-            <div className="user-dropdown">
-                <button
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="user-button"
-                >
-                    <FaUser className='user-icon' />
-                    <div className="user-info">
-                        <p className="user-name">{user.name}</p>
-                        <p className="user-role">{user.role}</p>
-                    </div>
-                    <span className={`chevron ${isDropdownOpen ? 'open' : ''}`}>▼</span>
-                </button>
-
-                {isDropdownOpen && (
-                    <div className="dropdown-menu">
-                        <button className="dropdown-item">
-                            <FaCog />
-                            Config. usuario
-                        </button>
-                        <button className="dropdown-item logout" onClick={() => navigate('/')}>
-                            <FaSignOutAlt />
-                            Cerrar sesión
-                        </button>
-                    </div>
-                )}
+        <div className="user-dropdown">
+          <button
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="user-button"
+          >
+            <FaUser className='user-icon' />
+            <div className="user-info">
+              <p className="user-name">{user.name}</p>
+              <p className="user-role">{user.role}</p>
             </div>
-        </div>
+            <span className={`chevron ${isDropdownOpen ? 'open' : ''}`}>▼</span>
+          </button>
 
-        <nav className="navbar">
+          {isDropdownOpen && (
+            <div className="dropdown-menu">
+              <button className="dropdown-item">
+                <FaCog />
+                Config. usuario
+              </button>
+              <button className="dropdown-item logout" onClick={() => logout()}>
+                <FaSignOutAlt />
+                Cerrar sesión
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <nav className="navbar">
         {navItems.map((item) => (
           <button
             key={item}
@@ -69,7 +74,7 @@ return (
         ))}
       </nav>
     </header>
-);
+  );
 };
 
 export default Header;

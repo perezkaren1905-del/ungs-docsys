@@ -8,6 +8,8 @@ import JobAppList from '../pages/jobAppMng/jobAppList/JobAppList';
 import CreateJobApp from '../pages/jobAppMng/createJobApp/CreateJobApp'; 
 import ViewJobApp from '../pages/jobAppMng/viewJobApp/ViewJobApp';
 
+const RECRUITER_ROLE = "RECRUITER";
+
 export const routes = [
     {
       path: "/",
@@ -20,7 +22,7 @@ export const routes = [
     {
       path: "/home",
       element: <Home />,
-      //requiredRoles: ['your_role_here']
+      requiredRoles: [RECRUITER_ROLE]
     },
     {
       path: "/signUp",
@@ -36,14 +38,17 @@ export const routes = [
     },
     {
       path: "jobAppList",
-      element: <JobAppList />
+      element: <JobAppList />,
+      requiredRoles: [RECRUITER_ROLE]
     },
     {
       path: "createJobApp",
-      element: <CreateJobApp />
+      element: <CreateJobApp />,
+      requiredRoles: [RECRUITER_ROLE]
     },
     {
       path: "viewJobApp",
-      element: <ViewJobApp />
+      element: <ViewJobApp />,
+      requiredRoles: [RECRUITER_ROLE]
     }
 ];
