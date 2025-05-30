@@ -7,6 +7,8 @@ import SetNewPass from '../pages/Auth/setNewPass/setNewPass';
 import JobAppList from '../pages/jobAppMng/jobAppList/JobAppList';
 import CreateJobApp from '../pages/jobAppMng/createJobApp/CreateJobApp'; 
 import ViewJobApp from '../pages/jobAppMng/viewJobApp/ViewJobApp';
+import ViewResume from '../pages/resumeMng/viewResume/ViewResume';
+import LoadResume from '../pages/resumeMng/loadResume/LoadResume';
 
 const RECRUITER_ROLE = "RECRUITER";
 
@@ -50,5 +52,13 @@ export const routes = [
       path: "viewJobApp",
       element: <ViewJobApp />,
       requiredRoles: [RECRUITER_ROLE]
+    },
+    {
+      path: "viewResume",
+      element: <ViewResume />
+    },
+    {
+      path: "loadResume",
+      element: <LoadResume />
     }
 ];

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import "./SignUp.css";
 import { NationalititesService } from "../../../commons/services/nationalities.service";
@@ -6,6 +7,7 @@ import { IdentificationTypeService } from "../../../commons/services/identificat
 import { SignUpService } from "../../../commons/services/sign-up.service";
 
 export default function SignUp() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -22,6 +24,7 @@ export default function SignUp() {
   const [nationalities, setNationalities] = useState([]);
   const [documentTypes, setDocumentTypes] = useState([]);
   const [step, setStep] = useState(1);
+  const [isGestionarVacantes, setIsGestionarVacantes] = useState(null);
 
   const onNext = async (data) => {
     console.log(JSON.stringify(data));
@@ -75,9 +78,21 @@ export default function SignUp() {
     getAllIdentificationTypes();
   }, []);
 
+  const handleNext = () => {
+    if (step === 3) {
+      if (!isGestionarVacantes) {
+        navigate("/viewResume")
+      }
+      else {
+        navigate("/jobAppList");
+      }
+    } else {
+      setStep((prevStep) => prevStep + 1);
+    }
+  };
   const handleBack = () => {
     if (step === 1) {
-      window.location.href = "/";
+      navigate("/");
     } else {
       setStep((prevStep) => prevStep - 1);
     }
@@ -107,6 +122,10 @@ export default function SignUp() {
             <button
               className="option-button"
               type="button"
+              /*onClick={() => {
+                setIsGestionarVacantes(true);
+                handleNext();
+              }}*/
               onClick={() => handleRole(1)}
             >
               Gestionar las vacantes de trabajo
@@ -114,6 +133,10 @@ export default function SignUp() {
             <button
               className="option-button"
               type="button"
+             /* onClick={() => {
+                setIsGestionarVacantes(false);
+                handleNext();
+              }}*/
               onClick={() => handleRole(2)}
             >
               Buscar y postularte a vacantes de trabajo
