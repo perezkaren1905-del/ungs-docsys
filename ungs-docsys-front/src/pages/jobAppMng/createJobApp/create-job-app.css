@@ -8,7 +8,7 @@
 .requirement-row input,
 .requirement-row select {
   flex: 1;
-  min-width: 200px; /* opcional para mantener tamaño decente */
+  min-width: 90px; /* opcional para mantener tamaño decente */
 }
 
 .remove-button {
