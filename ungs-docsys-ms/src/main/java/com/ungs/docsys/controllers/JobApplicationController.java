@@ -2,9 +2,8 @@ package com.ungs.docsys.controllers;
 
 import com.ungs.docsys.dtos.JobApplicationRequestDto;
 import com.ungs.docsys.dtos.JobApplicationResponseDto;
-import com.ungs.docsys.dtos.JobApplicationUpdateRequestDto;
+import com.ungs.docsys.security.JwtUtil;
 import com.ungs.docsys.services.JobApplicationService;
-import com.ungs.docsys.utils.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
@@ -23,15 +22,17 @@ import java.util.List;
 public class JobApplicationController {
 
     private final JobApplicationService jobApplicationService;
+    private final JwtUtil jwtUtil;
 
     @Operation(summary = "Create a job application", description = "Creates a new job application for the authenticated user.")
     @ApiResponse(responseCode = "200", description = "Job application created successfully")
     @ApiResponse(responseCode = "400", description = "Invalid request data")
     @ApiResponse(responseCode = "500", description = "Internal server error")
     @PostMapping()
-    public ResponseEntity<JobApplicationResponseDto> create(@Valid @RequestBody JobApplicationRequestDto request) {
-        String username = SecurityUtils.getCurrentUsername();
-        return ResponseEntity.ok(jobApplicationService.create(request, username));
+    public ResponseEntity<JobApplicationResponseDto> create(
+            @RequestHeader("Authorization") String authorization,
+            @Valid @RequestBody JobApplicationRequestDto request) {
+        return ResponseEntity.ok(jobApplicationService.create(request, jwtUtil.extractUserClaim(authorization)));
     }
 
     @Operation(summary = "Delete a job application")
@@ -53,7 +54,7 @@ public class JobApplicationController {
     @PatchMapping("/{id}")
     public ResponseEntity<JobApplicationResponseDto> update(
             @PathVariable Long id,
-            @Valid @RequestBody JobApplicationUpdateRequestDto request) {
+            @Valid @RequestBody JobApplicationRequestDto request) {
         JobApplicationResponseDto updated = jobApplicationService.partiallyUpdate(id, request);
         return ResponseEntity.ok(updated);
     }

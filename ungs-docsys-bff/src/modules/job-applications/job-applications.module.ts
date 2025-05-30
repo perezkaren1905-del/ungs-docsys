@@ -12,11 +12,13 @@ import { RequirementTypesController } from './requirement-types/controllers/requ
 import { RequirementsController } from './requirements/controllers/requirements.controller';
 import { JobApplicationService } from "./services/job-application.service";
 import { JobApplicationController } from "./controllers/job-application.controller";
+import { JobProfileLevelsService } from './job-profile-levels/services/job-profile-levels.service';
+import { JobProfileLevelController } from './job-profile-levels/controllers/job-profile-level.controllers';
 
 @Module({
-    controllers: [JobApplicationPeriodsController, JobApplicationStatusesController, RequirementTargetComparatorsController, RequirementTypesController, RequirementsController, JobApplicationController],
+    controllers: [JobApplicationPeriodsController, JobApplicationStatusesController, RequirementTargetComparatorsController, RequirementTypesController, RequirementsController, JobApplicationController, JobProfileLevelController],
     imports: [HttpModule],
-    providers: [JobApplicationPeriodsService, JobApplicationStatusesService, RequirementTargetComparatorsService, RequirementTypesService, RequirementsService, JobApplicationService],
-    exports: [JobApplicationPeriodsService, JobApplicationStatusesService, RequirementTargetComparatorsService, RequirementTypesService, RequirementsService, JobApplicationService]
+    providers: [JobApplicationPeriodsService, JobApplicationStatusesService, RequirementTargetComparatorsService, RequirementTypesService, RequirementsService, JobApplicationService, JobProfileLevelsService],
+    exports: [JobApplicationPeriodsService, JobApplicationStatusesService, RequirementTargetComparatorsService, RequirementTypesService, RequirementsService, JobApplicationService, JobProfileLevelsService]
 })
 export class JobApplicationsModule { }

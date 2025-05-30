@@ -1,22 +1,18 @@
 package com.ungs.docsys.services;
 
-import com.ungs.docsys.dtos.AppUserResponseDto;
-import com.ungs.docsys.dtos.JobApplicationRequestDto;
-import com.ungs.docsys.dtos.JobApplicationResponseDto;
-import com.ungs.docsys.dtos.JobApplicationUpdateRequestDto;
-import com.ungs.docsys.mappers.AppUserMapper;
+import com.ungs.docsys.dtos.*;
 import com.ungs.docsys.mappers.JobApplicationMapper;
-import com.ungs.docsys.mappers.JobApplicationPeriodMapper;
-import com.ungs.docsys.mappers.JobApplicationStatusMapper;
+import com.ungs.docsys.mappers.RequirementMapper;
 import com.ungs.docsys.models.JobApplication;
-import com.ungs.docsys.models.JobApplicationPeriod;
-import com.ungs.docsys.models.JobApplicationStatus;
+import com.ungs.docsys.models.RequirementJobApplication;
+import com.ungs.docsys.repositories.AppUserRepository;
 import com.ungs.docsys.repositories.JobApplicationRepository;
+import com.ungs.docsys.repositories.RequirementJobApplicationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,41 +20,35 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class JobApplicationServiceImpl implements JobApplicationService {
 
+    public static final Long PENDING_APPROVAL_ID = 1L;
     private final JobApplicationRepository jobApplicationRepository;
-
-    private final JobApplicationPeriodService jobApplicationPeriodService;
-    private final JobApplicationStatusService jobApplicationStatusService;
-    private final AppUserService appUserService;
-
+    private final RequirementJobApplicationRepository requirementJobApplicationRepository;
+    private final RequirementService requirementService;
     private final JobApplicationMapper jobApplicationMapper;
-    private final JobApplicationPeriodMapper jobApplicationPeriodMapper;
-    private final JobApplicationStatusMapper jobApplicationStatusMapper;
-    private final AppUserMapper appUserMapper;
+    private final RequirementMapper requirementMapper;
+    private final AppUserRepository appUserRepository;
 
     @Override
-    public JobApplicationResponseDto create(JobApplicationRequestDto request, String username) {
-        JobApplicationPeriod jobApplicationPeriod = jobApplicationPeriodMapper.toModel(
-                jobApplicationPeriodService.getById(request.getJobApplicationPeriodId()));
-
-        JobApplicationStatus jobApplicationStatus = jobApplicationStatusMapper.toModel(
-                jobApplicationStatusService.getById(1L));
-
-        AppUserResponseDto appUser = appUserService.getByUsername(username);
-
-        JobApplication jobApplication = JobApplication.builder()
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .jobApplicationStatus(jobApplicationStatus)
-                .jobApplicationPeriod(jobApplicationPeriod)
-                .minApprovers(request.getMinApprovers())
-                .reason(request.getReason())
-                .yearPeriod(request.getYearPeriod())
-                .active(false)
-                .appUser(appUserMapper.toModel(appUser))
-                .build();
-        jobApplicationRepository.save(jobApplication);
-
-        return jobApplicationMapper.toResponse(jobApplication);
+    @Transactional
+    public JobApplicationResponseDto create(JobApplicationRequestDto request, AppUserClaimDto appUserClaimDto) {
+        request.setJobApplicationStatusId(PENDING_APPROVAL_ID);
+        final List<RequirementResponseDto> requirementResponseDtos = request.getRequirements()
+                .stream()
+                .map(requirementRequestDto -> requirementService.save(requirementRequestDto, appUserClaimDto))
+                .toList();
+        final JobApplication jobApplication = jobApplicationMapper.toModel(request);
+        jobApplication.setAppUser(appUserRepository
+                .findById(appUserClaimDto.getId()).orElseThrow(() -> new EntityNotFoundException("User not found")));
+        final JobApplication jobApplicationSaved = jobApplicationRepository.save(jobApplication);
+        requirementResponseDtos.forEach(requirementResponseDto -> {
+            requirementJobApplicationRepository.save(RequirementJobApplication.builder()
+                    .requirement(requirementMapper.responseToModel(requirementResponseDto))
+                    .jobApplication(jobApplicationSaved)
+                    .build());
+        });
+        final JobApplicationResponseDto jobApplicationResponseDto = jobApplicationMapper.toResponse(jobApplicationSaved);
+        jobApplicationResponseDto.setRequirements(requirementResponseDtos);
+        return jobApplicationResponseDto;
     }
 
     @Override
@@ -74,16 +64,31 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     }
 
     @Override
-    public JobApplicationResponseDto partiallyUpdate(Long id, JobApplicationUpdateRequestDto request) {
+    public JobApplicationResponseDto partiallyUpdate(Long id, JobApplicationRequestDto request) {
         final JobApplication jobApplication = getJobApplicationById(id);
+        if(request.getRequirements() != null) {
+
+        }
         jobApplicationMapper.updateModelFromDto(request, jobApplication);
         return jobApplicationMapper.toResponse(jobApplicationRepository.save(jobApplication));
     }
 
     @Override
     public List<JobApplicationResponseDto> getAll() {
+        return getJobApplicationsResponse();
+    }
+
+    private List<JobApplicationResponseDto> getJobApplicationsResponse() {
+
         return jobApplicationRepository.findAll().stream()
-                .map(jobApplicationMapper::toResponse)
+                .map(jobApplication -> {
+                    JobApplicationResponseDto dto = jobApplicationMapper.toResponse(jobApplication);
+                    final List<RequirementResponseDto> requirements = requirementJobApplicationRepository.findByJobApplicationId(jobApplication.getId())
+                                    .stream().map(requirementJobApplication -> requirementMapper.toResponse(requirementJobApplication.getRequirement()))
+                                    .collect(Collectors.toList());
+                    dto.setRequirements(requirements);
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 

@@ -26,7 +26,6 @@ export default function SignUp() {
   const onNext = async (data) => {
     console.log(JSON.stringify(data));
     if(step === 3 ) {
-      console.log('Json final para hacer post: ' + JSON.stringify(data));
       const signUpRequest = {
         roleId: Number(data.roleId),
         email: data.email,

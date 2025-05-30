@@ -29,7 +29,7 @@ export default function JobAppList() {
       setJobApplications(jobApplicationsResponse);
     } catch(error) {
       console.error(error);
-      jobApplicationsResponse([]);
+      setJobApplications([]);
     }
   };
 
@@ -152,11 +152,11 @@ export default function JobAppList() {
         <div className="applications-list">
           {jobApplications.map(jobApplication => (
             <div key={jobApplication.id} className="application-card" onClick={() => navigate('/viewJobApp')}>
-              <h3>{'--'}</h3>
+              <h3>{`Cargo: ${jobApplication.jobProfileLevel?.description}`}</h3>
               <h2>{jobApplication.title}</h2>
-              <p>{`${jobApplication.periodDescription} ${jobApplication.yearPeriod}`}</p>
-              <div className={`status-badge ${jobApplication.statusName.toLowerCase().replace(/\s/g, '-')}`}>
-                {jobApplication.statusName}
+              <p>{`Periodo: ${jobApplication.jobApplicationPeriod?.description} ${jobApplication.yearPeriod}`}</p>
+              <div className={`status-badge ${jobApplication.jobApplicationStatus?.name.toLowerCase().replace(/\s/g, '-')}`}>
+                {jobApplication.jobApplicationStatus?.description}
               </div>
             </div>
           ))}
