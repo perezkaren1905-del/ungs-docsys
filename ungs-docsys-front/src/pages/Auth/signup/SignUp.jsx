@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import "./SignUp.css";
 import { NationalititesService } from "../../../commons/services/nationalities.service";
 
 export default function SignUp() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -38,14 +40,19 @@ export default function SignUp() {
 
   const handleNext = () => {
     if (step === 3) {
-      window.location.href = "/home";
+      if (!isGestionarVacantes) {
+        navigate("/viewResume")
+      }
+      else {
+        navigate("/jobAppList");
+      }
     } else {
       setStep((prevStep) => prevStep + 1);
     }
   };
   const handleBack = () => {
     if (step === 1) {
-      window.location.href = "/";
+      navigate("/");
     } else {
       setStep((prevStep) => prevStep - 1);
     }
@@ -57,6 +64,8 @@ export default function SignUp() {
     }
     return true;
   };
+
+  const [isGestionarVacantes, setIsGestionarVacantes] = useState(null);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="form-container">
@@ -70,14 +79,20 @@ export default function SignUp() {
             <button
               className="option-button"
               type="button"
-              onClick={handleNext}
+              onClick={() => {
+                setIsGestionarVacantes(true);
+                handleNext();
+              }}
             >
               Gestionar las vacantes de trabajo
             </button>
             <button
               className="option-button"
               type="button"
-              onClick={handleNext}
+              onClick={() => {
+                setIsGestionarVacantes(false);
+                handleNext();
+              }}
             >
               Buscar y postularte a vacantes de trabajo
             </button>
