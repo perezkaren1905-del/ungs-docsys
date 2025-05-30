@@ -6,14 +6,7 @@ export class NationalititesService {
 
     public static async getAll(): Promise<NationalityResponseDto[]> {
         try {
-            //const response = await axios.get<NationalityResponseDto[]>(`${this.apiUrl}/nationalities`);
-            const response = {
-                data: [
-                    {code: '001', description: 'Argentina', iso3: 'ARG'},
-                    {code: '002', description: 'Bolivia', iso3: 'BOL'},
-                    {code: '003', description: 'Chile', iso3: 'CHL'}
-                ]
-            }
+            const response = await axios.get<NationalityResponseDto[]>(`${this.apiUrl}/v1/nationalities`);
             return response.data;
         } catch (error) {
             console.error("Error al obtener países:", error);

@@ -8,10 +8,7 @@ export default function App() {
     <Router>
       <Routes>
         {routes.map((route, index) => {
-          // Verificamos si la ruta tiene roles requeridos
           const { requiredRoles } = route;
-          console.log(requiredRoles);
-          // Si la ruta requiere roles, usamos PrivateRoute
           if (requiredRoles) {
             return (
               <Route
@@ -25,8 +22,6 @@ export default function App() {
               />
             );
           }
-
-          // Si no, la ruta es pública y la mostramos directamente
           return <Route key={index} path={route.path} element={route.element} />;
         })}
       </Routes>

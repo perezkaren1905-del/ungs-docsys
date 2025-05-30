@@ -1,13 +1,13 @@
 import { Navigate  } from 'react-router-dom';
+import { JwtService } from '../../commons/utils/jwt.service';
 
 const getUserRoles = () => {
-  const token = localStorage.getItem('jwtToken');
+  const token = localStorage.getItem('token');
   if (!token) return null;
 
   try {
-    //TODO colocar conversion de jwt a objeto con permisos de usuario.
-    const decoded = {roles: ['default']};
-    return decoded.roles;
+    const userClaim = JwtService.getClaims(token);
+    return userClaim.roles;
   } catch (error) {
     console.error("Error al decodificar el token:", error);
     return null;
