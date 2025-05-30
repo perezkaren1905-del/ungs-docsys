@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../components/UI/Header";
 import "../../../assets/styles/Home.css";
 import { JwtService } from "../../../commons/utils/jwt.service";
+import { useParams } from "react-router-dom";
 
 export default function ViewJobApp() {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [isEditing, setIsEditing] = useState(false);
   const [jobApp, setJobApp] = useState({
     title: "Laboratorio de Construcción de Software/ Proyecto Profesional I",
@@ -21,6 +23,7 @@ export default function ViewJobApp() {
       "Experiencia en gestión de proyectos"
     ]
   });
+  const [jobApplication, setJobApplication] = useState({});
   const [newExclusiveReq, setNewExclusiveReq] = useState("");
   const [newDesiredReq, setNewDesiredReq] = useState("");
 
@@ -78,6 +81,10 @@ export default function ViewJobApp() {
     console.log("Saved changes:", jobApp);
     setIsEditing(false);
   };
+
+  useEffect(() => {
+    // Buscar los datos por ID usando ese id
+  }, [id]);
 
   return (
     <div className="home-container">

@@ -47,7 +47,7 @@ export const routes = [
       requiredRoles: [RECRUITER_ROLE]
     },
     {
-      path: "viewJobApp",
+      path: "viewJobApp/:id",
       element: <ViewJobApp />,
       requiredRoles: [RECRUITER_ROLE]
     }

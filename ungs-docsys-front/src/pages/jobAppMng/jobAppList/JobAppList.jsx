@@ -14,6 +14,7 @@ export default function JobAppList() {
     status: ""
   });
   const [jobApplications, setJobApplications] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null);
 
   const getUserClaim = () => {
     const claims = JwtService.getClaims();
@@ -151,7 +152,7 @@ export default function JobAppList() {
         {/* Applications List */}
         <div className="applications-list">
           {jobApplications.map(jobApplication => (
-            <div key={jobApplication.id} className="application-card" onClick={() => navigate('/viewJobApp')}>
+            <div key={jobApplication.id} className="application-card" onClick={() => navigate(`/viewJobApp/${jobApplication.id}`)}>
               <h3>{`Cargo: ${jobApplication.jobProfileLevel?.description}`}</h3>
               <h2>{jobApplication.title}</h2>
               <p>{`Periodo: ${jobApplication.jobApplicationPeriod?.description} ${jobApplication.yearPeriod}`}</p>
