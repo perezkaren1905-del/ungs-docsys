@@ -40,7 +40,7 @@ export default function SignUp() {
         nationalityId: Number(data.nationalityId)
       }
       await SignUpService.signUp(signUpRequest);
-      window.location.href = "/home";
+      window.location.href = "/";
     } else {
       setStep((prevStep) => prevStep + 1);
     }

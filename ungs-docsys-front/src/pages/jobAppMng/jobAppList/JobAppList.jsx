@@ -14,7 +14,6 @@ export default function JobAppList() {
     status: ""
   });
   const [jobApplications, setJobApplications] = useState([]);
-  const [selectedJob, setSelectedJob] = useState(null);
 
   const getUserClaim = () => {
     const claims = JwtService.getClaims();
@@ -91,7 +90,6 @@ export default function JobAppList() {
     <div className="home-container">
       <Header
         user={getUserClaim()}
-        navItems={["Gestión de Postulaciones", "Otras opciones", "Opción 2", "Opción 3"]}
       />
 
       <div className="app-container">

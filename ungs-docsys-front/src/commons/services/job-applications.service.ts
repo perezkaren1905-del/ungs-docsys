@@ -25,4 +25,14 @@ export class JobApplicationsService {
             throw error;
         }
     }
+
+    public static async getById(id: number): Promise<JobApplicationResponseDto> {
+        try {
+            const response = await axios.get<JobApplicationResponseDto>(`${this.apiUrl}/v1/job-applications/${id}`, HttpUtilsService.getAuthHeaders());
+            return response.data;
+        } catch (error) {
+            console.error("Error al obtener postulacion:", error);
+            throw error;
+        }
+    }
 }

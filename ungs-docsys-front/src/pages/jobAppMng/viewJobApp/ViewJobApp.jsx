@@ -4,28 +4,15 @@ import Header from "../../../components/UI/Header";
 import "../../../assets/styles/Home.css";
 import { JwtService } from "../../../commons/utils/jwt.service";
 import { useParams } from "react-router-dom";
+import { JobApplicationsService } from "../../../commons/services/job-applications.service";
 
 export default function ViewJobApp() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [isEditing, setIsEditing] = useState(false);
-  const [jobApp, setJobApp] = useState({
-    title: "Laboratorio de Construcción de Software/ Proyecto Profesional I",
-    type: "Docente 1º",
-    period: "2do cuatrimestre 2025",
-    status: "Aprobada",
-    exclusiveReqs: [
-      "2 años de antigüedad en el puesto",
-      "Título de Tec. Universitaria en Informática (o afines)"
-    ],
-    desiredReqs: [
-      "Manejo de entornos ágiles",
-      "Experiencia en gestión de proyectos"
-    ]
-  });
   const [jobApplication, setJobApplication] = useState({});
-  const [newExclusiveReq, setNewExclusiveReq] = useState("");
-  const [newDesiredReq, setNewDesiredReq] = useState("");
+  const [mandatoryRequirements, setMandatoryRequirements] = useState([]);
+  const [preferredRequirements, setPreferredRequirements] = useState([]);
 
   const getUserClaim = () => {
     const claims = JwtService.getClaims();
@@ -35,55 +22,34 @@ export default function ViewJobApp() {
     }
   }
 
-  const exclusiveOptions = [
-    "Título universitario en Informática",
-    "2 años de experiencia docente",
-    "Publicaciones en el área",
-    "Certificaciones relevantes"
-  ];
-
-  const handleAddExclusiveReq = () => {
-    if (newExclusiveReq) {
-      setJobApp(prev => ({
-        ...prev,
-        exclusiveReqs: [...prev.exclusiveReqs, newExclusiveReq]
-      }));
-      setNewExclusiveReq("");
-    }
-  };
-
-  const handleAddDesiredReq = () => {
-    if (newDesiredReq) {
-      setJobApp(prev => ({
-        ...prev,
-        desiredReqs: [...prev.desiredReqs, newDesiredReq]
-      }));
-      setNewDesiredReq("");
-    }
-  };
-
-  const handleRemoveReq = (list, index) => {
-    if (list === 'exclusive') {
-      setJobApp(prev => ({
-        ...prev,
-        exclusiveReqs: prev.exclusiveReqs.filter((_, i) => i !== index)
-      }));
-    } else {
-      setJobApp(prev => ({
-        ...prev,
-        desiredReqs: prev.desiredReqs.filter((_, i) => i !== index)
-      }));
-    }
-  };
-
   const handleSaveChanges = () => {
-    // Here you would typically send the updated data to your backend
-    console.log("Saved changes:", jobApp);
     setIsEditing(false);
   };
 
+  const fetchJobApplication = async () => {
+      try {
+        const jobApplicationResponse = await JobApplicationsService.getById(id);
+        if (!jobApplicationResponse?.requirements) return;
+        const { mandatory, preferred } = jobApplicationResponse.requirements.reduce(
+          (acc, req) => {
+            if (req.requirementType.name === "MANDATORY") acc.mandatory.push(req);
+            else if (req.requirementType.name === "PREFERRED") acc.preferred.push(req);
+            return acc;
+          },
+          { mandatory: [], preferred: [] }
+        );
+
+        setJobApplication(jobApplicationResponse);
+        setMandatoryRequirements(mandatory);
+        setPreferredRequirements(preferred);
+      } catch(error) {
+        console.error(error);
+        setJobApplication({});
+      }
+    };
+
   useEffect(() => {
-    // Buscar los datos por ID usando ese id
+    fetchJobApplication();
   }, [id]);
 
   return (
@@ -120,116 +86,55 @@ export default function ViewJobApp() {
           </div>
         </div>
 
-        <h1>{jobApp.title}</h1>
+        <h1 style={{textAlign: 'center'}}>{jobApplication.title}</h1>
+
+        
 
         <div className="jobapp-info">
           <div className="info-row">
             <span className="label">Tipo de docente:</span>
-            <span className="value">{jobApp.type}</span>
+            <span className="value">{`${jobApplication.jobProfileLevel?.level}, ${jobApplication.jobProfileLevel?.description}`}</span>
           </div>
           <div className="info-row">
             <span className="label">Período de búsqueda:</span>
-            <span className="value">{jobApp.period}</span>
+            <span className="value">{jobApplication.jobApplicationPeriod?.description}</span>
           </div>
           <div className="info-row">
             <span className="label">Estado:</span>
-            <span className="value">{jobApp.status}</span>
+            <span className="value">{jobApplication.jobApplicationStatus?.description}</span>
           </div>
+          
+        </div>
+
+        <h2 style={{textAlign: 'center'}}>Descripción</h2>
+        <div className="jobapp-info">
+          <div className="info-row">
+            
+            <span className="value">{jobApplication.description}</span>
+          </div>
+          
         </div>
 
         <div className="requirements-section">
           <h2>Requisitos excluyentes</h2>
           <ul className="requirements-list">
-            {jobApp.exclusiveReqs.map((req, index) => (
+            {mandatoryRequirements.map((req, index) => (
               <li key={index}>
-                {req}
-                {isEditing && (
-                  <button
-                    className="remove-req"
-                    onClick={() => handleRemoveReq('exclusive', index)}
-                  >
-                    ✕
-                  </button>
-                )}
+                {req.description}
               </li>
             ))}
           </ul>
-
-          {isEditing && (
-            <div className="add-req-container">
-              <select
-                value={newExclusiveReq}
-                onChange={(e) => setNewExclusiveReq(e.target.value)}
-                className="form-input"
-              >
-                <option value="">Seleccione un requisito</option>
-                {exclusiveOptions.map((option, index) => (
-                  <option key={index} value={option}>{option}</option>
-                ))}
-              </select>
-              <button
-                className="add-req-button"
-                onClick={handleAddExclusiveReq}
-                disabled={!newExclusiveReq}
-              >
-                +
-              </button>
-            </div>
-          )}
         </div>
 
         <div className="requirements-section">
           <h2>Valoraciones / Deseables</h2>
           <ul className="requirements-list">
-            {jobApp.desiredReqs.map((req, index) => (
+            {preferredRequirements.map((req, index) => (
               <li key={index}>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={req}
-                    onChange={(e) => {
-                      const updated = [...jobApp.desiredReqs];
-                      updated[index] = e.target.value;
-                      setJobApp(prev => ({
-                        ...prev,
-                        desiredReqs: updated
-                      }));
-                    }}
-                    className="editable-req"
-                  />
-                ) : (
-                  req
-                )}
-                {isEditing && (
-                  <button
-                    className="remove-req"
-                    onClick={() => handleRemoveReq('desired', index)}
-                  >
-                    ✕
-                  </button>
-                )}
+                {req.description}
               </li>
             ))}
           </ul>
-
-          {isEditing && (
-            <div className="add-req-container">
-              <input
-                type="text"
-                value={newDesiredReq}
-                onChange={(e) => setNewDesiredReq(e.target.value)}
-                className="form-input"
-                placeholder="Agregar valoración/requisito deseable"
-              />
-              <button
-                className="add-req-button"
-                onClick={handleAddDesiredReq}
-                disabled={!newDesiredReq}
-              >
-                +
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </div>

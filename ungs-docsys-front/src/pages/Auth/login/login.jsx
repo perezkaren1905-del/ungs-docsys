@@ -27,7 +27,7 @@ export default function Login({ onClose, onForgotPassword }) {
     try {
       const foundUser = await SignInService.signIn(email, password);
       localStorage.setItem('token', foundUser.token);
-      navigate('/home');
+      navigate('/jobAppList');
       if (onClose) onClose();
     } catch (error) {
       showToast('Correo y/o contraseña incorrectos', 'error');
@@ -36,10 +36,6 @@ export default function Login({ onClose, onForgotPassword }) {
 
   return (
     <div className="container">
-      <button
-        className="back-button"
-        onClick={() => navigate('/')}
-      >&lt;  Volver</button>
       <div className="title"><h2>Iniciar sesión</h2></div>
       <form onSubmit={handleSubmit} noValidate>
         <div className="form-group">
@@ -62,6 +58,13 @@ export default function Login({ onClose, onForgotPassword }) {
         </div>
         <div className="buttons-section">
           <button type="submit" className="login-button">Iniciar sesión</button>
+          <button
+            type="button"
+            className="forgot-2-password"
+            onClick={() => navigate('/signUp')}
+          >
+            Registrarme
+          </button>
           <button
             type="button"
             className="forgot-2-password"

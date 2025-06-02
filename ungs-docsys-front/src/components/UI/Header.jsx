@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaUser, FaCog, FaSignOutAlt } from 'react-icons/fa';
 import './Header.css';
 
-const Header = ({ user = { name: "Doe, John", role: "Reclutador" }, navItems = ["Gestión de Postulaciones", "Otras opciones", "Opción 2"] }) => {
+const Header = ({ user = { name: "Doe, John", role: "Reclutador" }, navItems = [] }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ const Header = ({ user = { name: "Doe, John", role: "Reclutador" }, navItems = [
           alt="docSYS Logo"
           className="logo"
           style={{ cursor: 'pointer' }}
-          onClick={() => navigate('/home')}
+          onClick={() => navigate('/jobAppList')}
         />
 
         <div className="user-dropdown">
@@ -61,18 +61,6 @@ const Header = ({ user = { name: "Doe, John", role: "Reclutador" }, navItems = [
           )}
         </div>
       </div>
-
-      <nav className="navbar">
-        {navItems.map((item) => (
-          <button
-            key={item}
-            className="nav-button"
-            onClick={() => handleNavClick(item)}
-          >
-            {item}
-          </button>
-        ))}
-      </nav>
     </header>
   );
 };
