@@ -106,7 +106,7 @@ export default function ViewJobApp() {
           
         </div>
 
-        <h2 style={{textAlign: 'center'}}>Descripción</h2>
+        <h2 style={{textAlign: 'center', color: 'black'}}>Descripción</h2>
         <div className="jobapp-info">
           <div className="info-row">
             
