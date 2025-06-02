@@ -67,4 +67,12 @@ public class JobApplicationController {
     public ResponseEntity<List<JobApplicationResponseDto>> getAll() {
         return ResponseEntity.ok(jobApplicationService.getAll());
     }
+
+    @Operation(summary = "Get identification type by id")
+    @ApiResponse(responseCode = "200", description = "Success")
+    @ApiResponse(responseCode = "404", description = "Not found")
+    @GetMapping("/{id}")
+    public ResponseEntity<JobApplicationResponseDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(jobApplicationService.getById(id));
+    }
 }

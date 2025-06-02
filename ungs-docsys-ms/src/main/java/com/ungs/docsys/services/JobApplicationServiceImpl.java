@@ -10,8 +10,10 @@ import com.ungs.docsys.repositories.JobApplicationRepository;
 import com.ungs.docsys.repositories.RequirementJobApplicationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,18 +80,31 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         return getJobApplicationsResponse();
     }
 
+    @Override
+    public JobApplicationResponseDto getById(Long id) {
+        final JobApplication jobApplication = jobApplicationRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job Application not found"));
+        final JobApplicationResponseDto jobApplicationResponseDto = jobApplicationMapper.toResponse(jobApplication);
+        jobApplicationResponseDto.setRequirements(getRequirementResponseDtos(jobApplication));
+        return jobApplicationResponseDto;
+    }
+
     private List<JobApplicationResponseDto> getJobApplicationsResponse() {
 
         return jobApplicationRepository.findAll().stream()
                 .map(jobApplication -> {
                     JobApplicationResponseDto dto = jobApplicationMapper.toResponse(jobApplication);
-                    final List<RequirementResponseDto> requirements = requirementJobApplicationRepository.findByJobApplicationId(jobApplication.getId())
-                                    .stream().map(requirementJobApplication -> requirementMapper.toResponse(requirementJobApplication.getRequirement()))
-                                    .collect(Collectors.toList());
+                    final List<RequirementResponseDto> requirements = getRequirementResponseDtos(jobApplication);
                     dto.setRequirements(requirements);
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    private List<RequirementResponseDto> getRequirementResponseDtos(JobApplication jobApplication) {
+        return requirementJobApplicationRepository.findByJobApplicationId(jobApplication.getId())
+                        .stream().map(requirementJobApplication -> requirementMapper.toResponse(requirementJobApplication.getRequirement()))
+                        .collect(Collectors.toList());
     }
 
     private JobApplication getJobApplicationById(Long id) {

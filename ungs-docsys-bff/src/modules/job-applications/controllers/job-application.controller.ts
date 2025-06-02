@@ -70,4 +70,15 @@ export class JobApplicationController {
         }
         return authHeader.replace('Bearer ', '');
     }
+
+    @Get(':id')
+      @ApiOperation({ summary: 'Get Job application by id' })
+      @ApiResponse({
+        status: 200,
+        description: 'Job application details',
+        type: JobApplicationResponseDto,
+      })
+      async getById(@Headers('authorization') authorization: string, @Param('id') id: number): Promise<JobApplicationResponseDto> {
+        return await this.jobApplicationService.getById(id, authorization);
+      }
 }

@@ -59,4 +59,11 @@ export class JobApplicationService {
         const response = await lastValueFrom(this.httpService.get(url, { headers }));
         return response.data;
     }
+
+    async getById(id: number, authorization: string): Promise<JobApplicationResponseDto> {
+        const url = `${this.urlBase}/v1/job-applications/${id}`;
+        const headers = { authorization };
+        const response = await lastValueFrom(this.httpService.get(url, { headers }));
+        return response.data;
+    }
 }

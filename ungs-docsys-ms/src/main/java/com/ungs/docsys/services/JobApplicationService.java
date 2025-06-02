@@ -12,4 +12,5 @@ public interface JobApplicationService {
     boolean delete(Long id);
     JobApplicationResponseDto partiallyUpdate(Long id, JobApplicationRequestDto request);
     List<JobApplicationResponseDto> getAll();
+    JobApplicationResponseDto getById(Long id);
 }
