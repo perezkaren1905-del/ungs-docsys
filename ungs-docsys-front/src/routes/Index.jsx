@@ -11,20 +11,12 @@ import ViewResume from '../pages/resumeMng/viewResume/ViewResume';
 import LoadResume from '../pages/resumeMng/loadResume/LoadResume';
 
 const RECRUITER_ROLE = "RECRUITER";
+const CANDIDATE_ROLE = "CANDIDATE";
 
 export const routes = [
     {
       path: "/",
-      element: <Main />
-    },
-    {
-      path: "/login",
       element: <Login />
-    },
-    {
-      path: "/home",
-      element: <Home />,
-      requiredRoles: [RECRUITER_ROLE]
     },
     {
       path: "/signUp",
@@ -41,7 +33,7 @@ export const routes = [
     {
       path: "jobAppList",
       element: <JobAppList />,
-      requiredRoles: [RECRUITER_ROLE]
+      requiredRoles: [RECRUITER_ROLE, CANDIDATE_ROLE]
     },
     {
       path: "createJobApp",
@@ -49,7 +41,7 @@ export const routes = [
       requiredRoles: [RECRUITER_ROLE]
     },
     {
-      path: "viewJobApp",
+      path: "viewJobApp/:id",
       element: <ViewJobApp />,
       requiredRoles: [RECRUITER_ROLE]
     },

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -35,4 +37,11 @@ public class JobApplicationRequestDto {
 
     @NotNull(message = "Year Period is required")
     private Long yearPeriod;
+
+    @NotNull(message = "Job profile leve is required")
+    private Long jobProfileLevelId;
+
+    private Long jobApplicationStatusId;
+
+    private List<RequirementRequestDto> requirements;
 }

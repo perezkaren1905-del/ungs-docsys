@@ -1,0 +1,26 @@
+.requirement-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap; /* opcional si querés que se acomode en pantallas chicas */
+}
+
+.requirement-row input,
+.requirement-row select {
+  flex: 1;
+  min-width: 90px; /* opcional para mantener tamaño decente */
+}
+
+.remove-button {
+    padding: 0.75rem 1.5rem;
+    background: rgb(253, 105, 105);
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.remove-button:hover {
+    background: #f38c8c;
+  }

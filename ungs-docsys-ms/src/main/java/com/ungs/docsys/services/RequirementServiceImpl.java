@@ -6,6 +6,7 @@ import com.ungs.docsys.dtos.RequirementResponseDto;
 import com.ungs.docsys.mappers.RequirementMapper;
 import com.ungs.docsys.models.Requirement;
 import com.ungs.docsys.repositories.AppUserRepository;
+import com.ungs.docsys.repositories.RequirementJobApplicationRepository;
 import com.ungs.docsys.repositories.RequirementRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,10 +15,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class RequirementServiceImpl implements RequirementService {
     private final RequirementRepository requirementRepository;
+    private final RequirementJobApplicationRepository requirementJobApplicationRepository;
     private final AppUserRepository appUserRepository;
     private final RequirementMapper requirementMapper;
 
@@ -48,5 +52,10 @@ public class RequirementServiceImpl implements RequirementService {
         requirementMapper.updateModelFromDto(requirementRequestDto, requirement);
         requirement.setAppUser(appUserRepository.findById(appUserClaimDto.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")));
         return requirementMapper.toResponse(requirementRepository.save(requirement));
+    }
+
+    @Override
+    public List<RequirementResponseDto> getByJobApplicationId(Long jobApplicationId) {
+        return List.of();
     }
 }

@@ -29,7 +29,6 @@ export default function SignUp() {
   const onNext = async (data) => {
     console.log(JSON.stringify(data));
     if(step === 3 ) {
-      console.log('Json final para hacer post: ' + JSON.stringify(data));
       const signUpRequest = {
         roleId: Number(data.roleId),
         email: data.email,
@@ -44,7 +43,7 @@ export default function SignUp() {
         nationalityId: Number(data.nationalityId)
       }
       await SignUpService.signUp(signUpRequest);
-      window.location.href = "/home";
+      window.location.href = "/";
     } else {
       setStep((prevStep) => prevStep + 1);
     }

@@ -30,4 +30,5 @@ public class JobApplicationUpdateRequestDto {
     private String reason;
 
     private Long yearPeriod;
+    private Long jobProfileLevelId;
 }

@@ -12,7 +12,7 @@ export class JobApplicationService {
     private readonly urlBase: string = process.env.DOCSYS_URL_MS;
 
     async create(request: JobApplicationRequestDto, authHeader: string): Promise<JobApplicationResponseDto> {
-        const url = `${this.urlBase}/v1/job-applications/create`;
+        const url = `${this.urlBase}/v1/job-applications`;
         const response = await lastValueFrom(
             this.httpService.post(url, request, {
                 headers: { Authorization: authHeader },
@@ -22,7 +22,7 @@ export class JobApplicationService {
     }
 
     async delete(id: number, authToken: string): Promise<boolean> {
-        const url = `${this.urlBase}/v1/job-applications/${id}/delete`;
+        const url = `${this.urlBase}/v1/job-applications/${id}`;
 
         try {
             await lastValueFrom(
@@ -55,6 +55,13 @@ export class JobApplicationService {
 
     async getAll(authorization: string): Promise<JobApplicationResponseDto[]> {
         const url = `${this.urlBase}/v1/job-applications`;
+        const headers = { authorization };
+        const response = await lastValueFrom(this.httpService.get(url, { headers }));
+        return response.data;
+    }
+
+    async getById(id: number, authorization: string): Promise<JobApplicationResponseDto> {
+        const url = `${this.urlBase}/v1/job-applications/${id}`;
         const headers = { authorization };
         const response = await lastValueFrom(this.httpService.get(url, { headers }));
         return response.data;

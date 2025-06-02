@@ -29,6 +29,8 @@ public abstract class RequirementMapper {
     @Mapping(target = "requirementTargetComparator", source = "requirementTargetComparatorId")
     public abstract void updateModelFromDto(RequirementRequestDto dto, @MappingTarget Requirement entity);
 
+    public abstract Requirement responseToModel(RequirementResponseDto requirementResponseDto);
+
     protected RequirementType mapRequirementType(Long requirementTypeId) {
         return requirementTypeRepository.findById(requirementTypeId)
                 .orElseThrow(() -> new IllegalArgumentException("Requirement type not found"));
