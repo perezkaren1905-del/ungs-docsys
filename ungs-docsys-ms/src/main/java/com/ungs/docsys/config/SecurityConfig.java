@@ -53,6 +53,11 @@ public class SecurityConfig {
     private static final String[] ROLE_CANDIDATE_POST_ACCESS = {
             "/v1/resume-user"
     };
+
+    private static final String[] ROLE_CANDIDATE_GET_ACCESS = {
+            "/v1/resume-user/**"
+    };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
@@ -62,6 +67,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, ROLE_RECRUITER_POST_ACCESS).hasRole("RECRUITER")
                         .requestMatchers(HttpMethod.PATCH, ROLE_RECRUITER_PATCH_ACCESS).hasRole("RECRUITER")
                         .requestMatchers(HttpMethod.POST, ROLE_CANDIDATE_POST_ACCESS).hasRole("CANDIDATE")
+                        .requestMatchers(HttpMethod.GET, ROLE_CANDIDATE_GET_ACCESS).hasRole("CANDIDATE")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

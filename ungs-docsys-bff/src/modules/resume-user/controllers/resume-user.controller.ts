@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Headers } from '@nestjs/common';
+import { Controller, Post, Get, Param, Body, Headers } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ResumeUserService } from '../services/resume-user.service';
 import { ResumeUserRequestDto } from '../dtos/resume-user-request.dto';
@@ -20,5 +20,16 @@ export class ResumeUserController {
     @Body() request: ResumeUserRequestDto,
   ): Promise<ResumeUserResponseDto> {
     return await this.resumeUserService.save(request, authorization);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get Resume user by id'})
+  @ApiResponse({
+      status: 200,
+      description: 'Resume user by id',
+      type: ResumeUserResponseDto,
+    })
+  getById(@Headers('authorization') authorization: string, @Param('id') id: number): Promise<ResumeUserResponseDto> {
+    return this.resumeUserService.getById(id, authorization);
   }
 }

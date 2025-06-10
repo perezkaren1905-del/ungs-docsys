@@ -16,4 +16,11 @@ export class ResumeUserService {
     const response = await lastValueFrom(this.httpService.post(url, request, { headers }));
     return response.data;
   }
+
+  async getById(id: number, authorization: string): Promise<ResumeUserResponseDto> {
+    const url = `${this.urlBase}/v1/resume-user/${id}`;
+    const headers = { authorization };
+    const response = await lastValueFrom(this.httpService.get(url, {headers}));
+    return response.data;
+  }
 }
