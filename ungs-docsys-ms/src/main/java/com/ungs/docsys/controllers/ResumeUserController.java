@@ -1,5 +1,6 @@
 package com.ungs.docsys.controllers;
 
+import com.ungs.docsys.dtos.AppUserClaimDto;
 import com.ungs.docsys.dtos.ResumeUserRequestDto;
 import com.ungs.docsys.dtos.ResumeUserResponseDto;
 import com.ungs.docsys.security.JwtUtil;
@@ -28,5 +29,13 @@ public class ResumeUserController {
             @RequestHeader("Authorization") String authorization,
             @RequestBody @Valid ResumeUserRequestDto resumeUserRequestDto) {
         return ResponseEntity.ok(resumeUserService.save(resumeUserRequestDto, jwtUtil.extractUserClaim(authorization)));
+    }
+
+    @Operation(summary = "Get resume by user ID")
+    @ApiResponse(responseCode = "200", description = "Resume retrieved successfully")
+    @GetMapping("/{id}")
+    public ResponseEntity<ResumeUserResponseDto> getResumeByUserId(
+            @PathVariable Long id) {
+        return ResponseEntity.ok(resumeUserService.getById(id));
     }
 }

@@ -7,6 +7,7 @@ import com.ungs.docsys.mappers.AppUserMapper;
 import com.ungs.docsys.mappers.ResumeUserMapper;
 import com.ungs.docsys.models.*;
 import com.ungs.docsys.repositories.*;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -66,7 +67,9 @@ public class ResumeUserServiceImpl implements ResumeUserService {
 
     @Override
     public ResumeUserResponseDto getById(Long resumeUserId) {
-        return null;
+        ResumeUser resumeUser = resumeUserRepository.findByAppUserId(resumeUserId)
+                .orElseThrow(() -> new EntityNotFoundException("Resume not found for user ID: " + resumeUserId));
+        return resumeUserMapper.toResponse(resumeUser);
     }
 
     @Override
