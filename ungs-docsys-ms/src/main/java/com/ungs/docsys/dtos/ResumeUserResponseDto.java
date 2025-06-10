@@ -12,7 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResumeUserResponseDto {
-    private Long userId;
     private ContactResponseDto contact;
     private List<EducationResponseDto> educations;
     private List<ExperienceResponseDto> experiences;

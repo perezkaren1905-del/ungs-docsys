@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,41 +35,64 @@ public class ResumeUserServiceImpl implements ResumeUserService {
 
     @Override
     public ResumeUserResponseDto save(ResumeUserRequestDto request, AppUserClaimDto appUserClaimDto) {
-        ResumeUser resumeUser = resumeUserMapper.toResumeUser(request);
-
         AppUser appUser = appUserMapper.toModel(appUserService.getByUsername(appUserClaimDto.getEmail()));
+
+        if (appUser == null) {
+            throw new IllegalArgumentException("User not found for email: " + appUserClaimDto.getEmail());
+        }
+
+        if (resumeUserRepository.findByAppUserId(appUser.getId()).isPresent()) {
+            throw new IllegalStateException("Resume already exists for user ID: " + appUserClaimDto.getId());
+        }
+
+        ResumeUser resumeUser = resumeUserMapper.toResumeUser(request);
         resumeUser.setAppUser(appUser);
 
         if (request.getContact() != null) {
             Contact contact = resumeUserMapper.toContact(request.getContact(), resumeUser);
-            resumeUser.setContacts(List.of(contact));
+            resumeUser.setContacts(new ArrayList<>(List.of(contact)));
+        } else {
+            resumeUser.setContacts(new ArrayList<>());
         }
 
-        resumeUser.setEducations(request.getEducations().stream()
+        List<Education> educations = request.getEducations().stream()
                 .map(dto -> resumeUserMapper.toEducation(dto, resumeUser))
-                .collect(Collectors.toList()));
+                .toList();
+        resumeUser.setEducations(new ArrayList<>());
+        resumeUser.getEducations().addAll(educations);
 
-        resumeUser.setExperiences(request.getExperiences().stream()
+        List<Experience> experiences = request.getExperiences().stream()
                 .map(dto -> resumeUserMapper.toExperience(dto, resumeUser))
-                .collect(Collectors.toList()));
+                .toList();
+        resumeUser.setExperiences(new ArrayList<>());
+        resumeUser.getExperiences().addAll(experiences);
 
-        resumeUser.setLanguages(request.getLanguages().stream()
+        List<Language> languages = request.getLanguages().stream()
                 .map(dto -> resumeUserMapper.toLanguage(dto, resumeUser))
-                .collect(Collectors.toList()));
+                .toList();
+        resumeUser.setLanguages(new ArrayList<>());
+        resumeUser.getLanguages().addAll(languages);
 
-        resumeUser.setTechnicalSkills(request.getTechnicalSkills().stream()
+        List<TechnicalSkill> technicalSkills = request.getTechnicalSkills().stream()
                 .map(dto -> resumeUserMapper.toTechnicalSkill(dto, resumeUser))
-                .collect(Collectors.toList()));
+                .toList();
+        resumeUser.setTechnicalSkills(new ArrayList<>());
+        resumeUser.getTechnicalSkills().addAll(technicalSkills);
 
-        resumeUser.setCertifications(request.getCertifications().stream()
+        List<Certification> certifications = request.getCertifications().stream()
                 .map(dto -> resumeUserMapper.toCertification(dto, resumeUser))
-                .collect(Collectors.toList()));
+                .toList();
+        resumeUser.setCertifications(new ArrayList<>());
+        resumeUser.getCertifications().addAll(certifications);
 
-        resumeUser.setResumeFiles(request.getResumeFiles().stream()
+        List<ResumeFile> resumeFiles = request.getResumeFiles().stream()
                 .map(dto -> resumeUserMapper.toResumeFile(dto, resumeUser))
-                .collect(Collectors.toList()));
+                .toList();
+        resumeUser.setResumeFiles(new ArrayList<>());
+        resumeUser.getResumeFiles().addAll(resumeFiles);
 
-        return resumeUserMapper.toResponse(resumeUserRepository.save(resumeUser));
+        ResumeUser savedResumeUser = resumeUserRepository.save(resumeUser);
+        return resumeUserMapper.toResponse(savedResumeUser);
     }
 
     @Override
@@ -83,6 +107,11 @@ public class ResumeUserServiceImpl implements ResumeUserService {
 
     @Override
     public ResumeUserResponseDto partiallyUpdate(ResumeUserRequestDto resumeUserRequestDto, Long resumeUserId, AppUserClaimDto appUserClaimDto) {
+        return null;
+    }
+
+    @Override
+    public ResumeUserResponseDto getResumeByUserId(Long userId) {
         return null;
     }
 }

@@ -15,4 +15,6 @@ public interface ResumeUserService {
     Page<ResumeUserRequestDto> getByParams(Pageable pageable);
 
     ResumeUserResponseDto partiallyUpdate(ResumeUserRequestDto resumeUserRequestDto, Long resumeUserId, AppUserClaimDto appUserClaimDto);
+
+    ResumeUserResponseDto getResumeByUserId(Long userId);
 }

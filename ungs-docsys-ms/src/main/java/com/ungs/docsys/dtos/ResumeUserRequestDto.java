@@ -15,8 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResumeUserRequestDto {
-    @NotNull(message = "User ID must not be null")
-    private Long userId;
     @NotNull(message = "Contact must not be null")
     @Valid
     private ContactRequestDto contact;

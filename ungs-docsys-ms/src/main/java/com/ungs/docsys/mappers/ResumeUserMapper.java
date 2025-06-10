@@ -77,7 +77,6 @@ public abstract class ResumeUserMapper {
                 .collect(Collectors.toList());
     }
 
-    @Mapping(target = "userId", source = "appUser.id")
     @Mapping(target = "contact", expression = "java(toContactResponse(resumeUser.getContacts()))")
     @Mapping(target = "educations", expression = "java(toEducationResponseList(resumeUser.getEducations()))")
     @Mapping(target = "experiences", expression = "java(toExperienceResponseList(resumeUser.getExperiences()))")
