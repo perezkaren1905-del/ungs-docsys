@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 @Service
 @AllArgsConstructor
@@ -25,13 +27,6 @@ public class ResumeUserServiceImpl implements ResumeUserService {
 
     private final AppUserService appUserService;
     private final ResumeUserRepository resumeUserRepository;
-    private final ContactRepository contactRepository;
-    private final EducationRepository educationRepository;
-    private final ExperienceRepository experienceRepository;
-    private final LanguageRepository languageRepository;
-    private final TechnicalSkillRepository technicalSkillRepository;
-    private final CertificationRepository certificationRepository;
-    private final ResumeFileRepository resumeFileRepository;
 
     @Override
     public ResumeUserResponseDto save(ResumeUserRequestDto request, AppUserClaimDto appUserClaimDto) {
@@ -48,51 +43,25 @@ public class ResumeUserServiceImpl implements ResumeUserService {
         ResumeUser resumeUser = resumeUserMapper.toResumeUser(request);
         resumeUser.setAppUser(appUser);
 
-        if (request.getContact() != null) {
-            Contact contact = resumeUserMapper.toContact(request.getContact(), resumeUser);
-            resumeUser.setContacts(new ArrayList<>(List.of(contact)));
-        } else {
-            resumeUser.setContacts(new ArrayList<>());
-        }
+        resumeUser.setContacts(
+                Optional.ofNullable(request.getContact())
+                        .map(c -> new ArrayList<>(List.of(resumeUserMapper.toContact(c, resumeUser))))
+                        .orElseGet(ArrayList::new)
+        );
 
-        List<Education> educations = request.getEducations().stream()
-                .map(dto -> resumeUserMapper.toEducation(dto, resumeUser))
-                .toList();
-        resumeUser.setEducations(new ArrayList<>());
-        resumeUser.getEducations().addAll(educations);
-
-        List<Experience> experiences = request.getExperiences().stream()
-                .map(dto -> resumeUserMapper.toExperience(dto, resumeUser))
-                .toList();
-        resumeUser.setExperiences(new ArrayList<>());
-        resumeUser.getExperiences().addAll(experiences);
-
-        List<Language> languages = request.getLanguages().stream()
-                .map(dto -> resumeUserMapper.toLanguage(dto, resumeUser))
-                .toList();
-        resumeUser.setLanguages(new ArrayList<>());
-        resumeUser.getLanguages().addAll(languages);
-
-        List<TechnicalSkill> technicalSkills = request.getTechnicalSkills().stream()
-                .map(dto -> resumeUserMapper.toTechnicalSkill(dto, resumeUser))
-                .toList();
-        resumeUser.setTechnicalSkills(new ArrayList<>());
-        resumeUser.getTechnicalSkills().addAll(technicalSkills);
-
-        List<Certification> certifications = request.getCertifications().stream()
-                .map(dto -> resumeUserMapper.toCertification(dto, resumeUser))
-                .toList();
-        resumeUser.setCertifications(new ArrayList<>());
-        resumeUser.getCertifications().addAll(certifications);
-
-        List<ResumeFile> resumeFiles = request.getResumeFiles().stream()
-                .map(dto -> resumeUserMapper.toResumeFile(dto, resumeUser))
-                .toList();
-        resumeUser.setResumeFiles(new ArrayList<>());
-        resumeUser.getResumeFiles().addAll(resumeFiles);
+        mapAndSetList(request.getEducations(), dto -> resumeUserMapper.toEducation(dto, resumeUser), resumeUser::setEducations);
+        mapAndSetList(request.getExperiences(), dto -> resumeUserMapper.toExperience(dto, resumeUser), resumeUser::setExperiences);
+        mapAndSetList(request.getLanguages(), dto -> resumeUserMapper.toLanguage(dto, resumeUser), resumeUser::setLanguages);
+        mapAndSetList(request.getTechnicalSkills(), dto -> resumeUserMapper.toTechnicalSkill(dto, resumeUser), resumeUser::setTechnicalSkills);
+        mapAndSetList(request.getCertifications(), dto -> resumeUserMapper.toCertification(dto, resumeUser), resumeUser::setCertifications);
+        mapAndSetList(request.getResumeFiles(), dto -> resumeUserMapper.toResumeFile(dto, resumeUser), resumeUser::setResumeFiles);
 
         ResumeUser savedResumeUser = resumeUserRepository.save(resumeUser);
         return resumeUserMapper.toResponse(savedResumeUser);
+    }
+
+    private <D, E> void mapAndSetList(List<D> dtos, Function<D, E> mapper, Consumer<List<E>> setter) {
+        setter.accept(dtos == null ? List.of() : dtos.stream().map(mapper).toList());
     }
 
     @Override

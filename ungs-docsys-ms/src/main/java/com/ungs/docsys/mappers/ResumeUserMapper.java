@@ -2,12 +2,14 @@ package com.ungs.docsys.mappers;
 
 import com.ungs.docsys.dtos.*;
 import com.ungs.docsys.models.*;
+import java.util.Collections;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public abstract class ResumeUserMapper {
@@ -35,46 +37,29 @@ public abstract class ResumeUserMapper {
     @Mapping(target = "resumeUser", source = "resumeUser")
     public abstract TechnicalSkill toTechnicalSkill(TechnicalSkillRequestDto dto, ResumeUser resumeUser);
 
+
     public List<Education> toEducationList(List<EducationRequestDto> dtos, ResumeUser resumeUser) {
-        if (dtos == null) return null;
-        return dtos.stream()
-                .map(dto -> toEducation(dto, resumeUser))
-                .collect(Collectors.toList());
+        return mapList(dtos, this::toEducation, resumeUser);
     }
 
     public List<Experience> toExperienceList(List<ExperienceRequestDto> dtos, ResumeUser resumeUser) {
-        if (dtos == null) return null;
-        return dtos.stream()
-                .map(dto -> toExperience(dto, resumeUser))
-                .collect(Collectors.toList());
+        return mapList(dtos, this::toExperience, resumeUser);
     }
 
     public List<Certification> toCertificationList(List<CertificationRequestDto> dtos, ResumeUser resumeUser) {
-        if (dtos == null) return null;
-        return dtos.stream()
-                .map(dto -> toCertification(dto, resumeUser))
-                .collect(Collectors.toList());
+        return mapList(dtos, this::toCertification, resumeUser);
     }
 
     public List<Language> toLanguageList(List<LanguageRequestDto> dtos, ResumeUser resumeUser) {
-        if (dtos == null) return null;
-        return dtos.stream()
-                .map(dto -> toLanguage(dto, resumeUser))
-                .collect(Collectors.toList());
+        return mapList(dtos, this::toLanguage, resumeUser);
     }
 
     public List<ResumeFile> toResumeFileList(List<ResumeFileRequestDto> dtos, ResumeUser resumeUser) {
-        if (dtos == null) return null;
-        return dtos.stream()
-                .map(dto -> toResumeFile(dto, resumeUser))
-                .collect(Collectors.toList());
+        return mapList(dtos, this::toResumeFile, resumeUser);
     }
 
     public List<TechnicalSkill> toTechnicalSkillList(List<TechnicalSkillRequestDto> dtos, ResumeUser resumeUser) {
-        if (dtos == null) return null;
-        return dtos.stream()
-                .map(dto -> toTechnicalSkill(dto, resumeUser))
-                .collect(Collectors.toList());
+        return mapList(dtos, this::toTechnicalSkill, resumeUser);
     }
 
     @Mapping(target = "contact", expression = "java(toContactResponse(resumeUser.getContacts()))")
@@ -96,55 +81,50 @@ public abstract class ResumeUserMapper {
     public abstract EducationResponseDto toEducationResponse(Education education);
 
     public List<EducationResponseDto> toEducationResponseList(List<Education> educations) {
-        if (educations == null) return null;
-        return educations.stream()
-                .map(this::toEducationResponse)
-                .collect(Collectors.toList());
+        return mapResponseList(educations, this::toEducationResponse);
     }
 
     public abstract ExperienceResponseDto toExperienceResponse(Experience experience);
 
     public List<ExperienceResponseDto> toExperienceResponseList(List<Experience> experiences) {
-        if (experiences == null) return null;
-        return experiences.stream()
-                .map(this::toExperienceResponse)
-                .collect(Collectors.toList());
+        return mapResponseList(experiences, this::toExperienceResponse);
     }
 
     public abstract CertificationResponseDto toCertificationResponse(Certification certification);
 
     public List<CertificationResponseDto> toCertificationResponseList(List<Certification> certifications) {
-        if (certifications == null) return null;
-        return certifications.stream()
-                .map(this::toCertificationResponse)
-                .collect(Collectors.toList());
+        return mapResponseList(certifications, this::toCertificationResponse);
     }
 
     public abstract LanguageResponseDto toLanguageResponse(Language language);
 
     public List<LanguageResponseDto> toLanguageResponseList(List<Language> languages) {
-        if (languages == null) return null;
-        return languages.stream()
-                .map(this::toLanguageResponse)
-                .collect(Collectors.toList());
+        return mapResponseList(languages, this::toLanguageResponse);
     }
 
     public abstract ResumeFileResponseDto toResumeFileResponse(ResumeFile resumeFile);
 
     public List<ResumeFileResponseDto> toResumeFileResponseList(List<ResumeFile> resumeFiles) {
-        if (resumeFiles == null) return null;
-        return resumeFiles.stream()
-                .map(this::toResumeFileResponse)
-                .collect(Collectors.toList());
+        return mapResponseList(resumeFiles, this::toResumeFileResponse);
     }
 
     public abstract TechnicalSkillResponseDto toTechnicalSkillResponse(TechnicalSkill skill);
 
     public List<TechnicalSkillResponseDto> toTechnicalSkillResponseList(List<TechnicalSkill> skills) {
-        if (skills == null) return null;
-        return skills.stream()
-                .map(this::toTechnicalSkillResponse)
-                .collect(Collectors.toList());
+        return mapResponseList(skills, this::toTechnicalSkillResponse);
     }
 
+    protected <D, E> List<E> mapList(List<D> source, BiFunction<D, ResumeUser, E> mapper, ResumeUser resumeUser) {
+        if (source == null) return Collections.emptyList();
+        return source.stream()
+                .map(dto -> mapper.apply(dto, resumeUser))
+                .toList();
+    }
+
+    protected <E, R> List<R> mapResponseList(List<E> source, Function<E, R> mapper) {
+        if (source == null) return Collections.emptyList();
+        return source.stream()
+                .map(mapper)
+                .toList();
+    }
 }
