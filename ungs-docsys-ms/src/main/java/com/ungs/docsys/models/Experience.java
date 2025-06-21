@@ -22,30 +22,30 @@ public class Experience {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "job_title", nullable = false, length = 150)
+    @Column(name = "job_title", nullable = true, length = 150)
     private String jobTitle;
 
-    @Column(name = "company_name", nullable = false, length = 150)
+    @Column(name = "company_name", nullable = true, length = 150)
     private String companyName;
 
-    @Column(length = 5000)
+    @Column(length = 5000, nullable = true)
     private String description;
 
-    @Column(name = "start_date")
+    @Column(name = "start_date", nullable = true)
     private LocalDate startDate;
 
-    @Column(name = "end_date")
+    @Column(name = "end_date", nullable = true)
     private LocalDate endDate;
 
-    @Column(name = "is_current")
-    private Boolean isCurrent;
+    @Column(name = "is_current", nullable = true)
+    private Boolean isCurrentJob;
 
     @CreatedDate
-    @Column(name = "created_date", updatable = false)
+    @Column(name = "created_date", updatable = false, nullable = true)
     private LocalDateTime createdDate;
 
     @LastModifiedDate
-    @Column(name = "updated_date")
+    @Column(name = "updated_date", nullable = true)
     private LocalDateTime updatedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)

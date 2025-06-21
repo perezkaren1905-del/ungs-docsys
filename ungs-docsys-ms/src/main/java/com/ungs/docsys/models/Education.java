@@ -21,16 +21,16 @@ public class Education {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "institute_name", nullable = false, length = 150)
+    @Column(name = "institute_name", nullable = true, length = 150)
     private String instituteName;
 
-    @Column(name = "degree_level", length = 20)
+    @Column(name = "degree_level", nullable = true, length = 20)
     private String degreeLevel;
 
-    @Column(name = "degree", length = 50)
+    @Column(name = "degree", nullable = true, length = 50)
     private String degree;
 
-    @Column(name = "field_of_study", length = 150)
+    @Column(name = "field_of_study", nullable = true, length = 150)
     private String fieldOfStudy;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,11 +38,11 @@ public class Education {
     private ResumeUser resumeUser;
 
     @CreatedDate
-    @Column(name = "created_date", updatable = false)
+    @Column(name = "created_date", updatable = false, nullable = true)
     private LocalDateTime createdDate;
 
     @LastModifiedDate
-    @Column(name = "updated_date")
+    @Column(name = "updated_date", nullable = true)
     private LocalDateTime updatedDate;
 
     @PrePersist

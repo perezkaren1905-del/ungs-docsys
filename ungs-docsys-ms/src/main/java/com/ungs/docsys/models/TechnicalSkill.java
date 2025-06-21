@@ -21,18 +21,18 @@ public class TechnicalSkill {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 150)
+    @Column(length = 150, nullable = true)
     private String name;
 
-    @Column(length = 50)
+    @Column(length = 50, nullable = true)
     private String level;
 
     @CreatedDate
-    @Column(name = "created_date", updatable = false)
+    @Column(name = "created_date", updatable = false, nullable = true)
     private LocalDateTime createdDate;
 
     @LastModifiedDate
-    @Column(name = "updated_date")
+    @Column(name = "updated_date", nullable = true)
     private LocalDateTime updatedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)

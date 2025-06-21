@@ -56,6 +56,7 @@ export const routes = [
     },
     {
       path: "resume",
-      element: <ResumeForm />
+      element: <ResumeForm />,
+      requiredRoles: [RECRUITER_ROLE, CANDIDATE_ROLE]
     }
 ];

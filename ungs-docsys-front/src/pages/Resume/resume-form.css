@@ -111,3 +111,14 @@
     border-color: #007bff;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
+
+.delete-button-form {
+    height: 100px;
+    border-color: red;
+}
+
+.add-button-form {
+    height: 100px;
+    border-color: green;
+    background: rgb(109, 211, 109);
+}

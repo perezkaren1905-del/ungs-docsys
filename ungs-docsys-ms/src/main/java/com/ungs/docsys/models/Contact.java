@@ -21,16 +21,16 @@ public class Contact {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = true)
     private String email;
 
-    @Column(name = "phone", nullable = false)
+    @Column(name = "phone", nullable = true)
     private String phone;
 
-    @Column(name = "address")
+    @Column(name = "address", nullable = true)
     private String address;
 
-    @Column(name = "linkedin")
+    @Column(name = "linkedin", nullable = true)
     private String linkedin;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,11 +38,11 @@ public class Contact {
     private ResumeUser resumeUser;
 
     @CreatedDate
-    @Column(name = "created_date", updatable = false)
+    @Column(name = "created_date", updatable = false, nullable = true)
     private LocalDateTime createdDate;
 
     @LastModifiedDate
-    @Column(name = "updated_date")
+    @Column(name = "updated_date", nullable = true)
     private LocalDateTime updatedDate;
 
     @PrePersist

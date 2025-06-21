@@ -1,19 +1,54 @@
 import { JwtService } from "../../commons/utils/jwt.service";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, useFieldArray } from "react-hook-form";
 import Header from "../../components/UI/Header";
 import './resume-form.css';
+import { ResumesService } from "../../commons/services/resumes.service";
 
 export default function ResumeForm() {
 
     const [isEditing, setIsEditing] = useState(false);
 
-    const { register, handleSubmit, control } = useForm();
-
-    const { fields, append, remove } = useFieldArray({
-        control,
-        name: 'experience'
+    const { register, handleSubmit, control, reset, watch } = useForm({
+        contact: {},
+        educations: [],
+        experiences: [],
+        languages: [],
+        technicalSkills: [],
+        certifications: []
     });
+
+    const { fields: experienceFields, append: appendExperiences, remove: removeExperiences } = useFieldArray({
+        control,
+        name: 'experiences'
+    });
+
+    const { fields: educationFields, append: appendEducations, remove: removeEducations } = useFieldArray({
+        control,
+        name: 'educations'
+    });
+
+    const { fields: certificationFields, append: appendCertifications, remove: removeCertifications } = useFieldArray({
+        control,
+        name: 'certifications'
+    });
+
+    const { fields: technicalSkillFields, append: appendTechnicalSkills, remove: removeTechnicalSkills } = useFieldArray({
+        control,
+        name: 'technicalSkills'
+    });
+
+    const { fields: languageFields, append: appendLanguages, remove: removeLanguages } = useFieldArray({
+        control,
+        name: 'languages'
+    });
+
+    const experiencesOnlyRead = watch('experiences');
+    const educationsOnlyRead = watch('educations');
+    const certificationsOnlyRead = watch('certifications');
+    const technicalSkillsOnlyRead = watch('technicalSkills');
+    const languagesOnlyRead = watch('languages');
+    const contactOnlyRead = watch('contact');
 
     const getUserClaim = () => {
         const claims = JwtService.getClaims();
@@ -23,10 +58,26 @@ export default function ResumeForm() {
         }
     };
 
+    const fetchCurrentResumeByUser = async () => {
+        try {
+            const currentResumeList = await ResumesService.getByParams(true);
+            if (currentResumeList.length > 0) {
+                reset(currentResumeList[0]);
+            }
+            //setJobApplications(jobApplicationsResponse);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const onSubmit = (data) => {
         console.log('Datos guardados:', data);
         setIsEditing(false);
     };
+
+    useEffect(() => {
+        fetchCurrentResumeByUser();
+    }, []);
 
     return (
         <div className="home-container">
@@ -99,64 +150,110 @@ export default function ResumeForm() {
                             </div>
 
                             <h2>Experiencia Laboral</h2>
-                            {fields.map((item, index) => (
+                            {experienceFields.map((item, index) => (
                                 <div className="data-form" key={item.id}>
                                     <div className="column">
-                                        <p><strong>Nombre del puesto:</strong> <input {...register(`experience.${index}.jobTitle`)} /></p>
-                                        <p><strong>Empresa:</strong> <input {...register(`experience.${index}.companyName`)} /></p>
+                                        <p><strong>Nombre del puesto:</strong> <input {...register(`experiences.${index}.jobTitle`)} /></p>
+                                        <p><strong>Empresa:</strong> <input {...register(`experiences.${index}.companyName`)} /></p>
                                         <p><strong>Fecha de Inicio - Fin:</strong>
-                                            <input {...register(`experience.${index}.startDate`)} /> - <input {...register(`experience.${index}.endDate`)} />
+                                            <input {...register(`experiences.${index}.startDate`)} /> - <input {...register(`experiences.${index}.endDate`)} />
                                         </p>
                                         <p><strong>Descripción:</strong></p>
                                         <textarea
                                             className="large-textarea"
                                             placeholder="Escriba aquí su experiencia laboral..."
-                                            {...register(`experience.${index}.description`)}
+                                            {...register(`experiences.${index}.description`)}
                                         ></textarea>
-                                        <button type="button" className="delete-button" onClick={() => remove(index)}>Eliminar</button>
                                     </div>
+                                    <div className="">
+                                        <button type="button" className="delete-button-form" onClick={() => removeExperiences(index)}>Eliminar</button>
+                                    </div>
+
                                 </div>
                             ))}
 
-                            <button type="button" className="add-button" onClick={() => append({ jobTitle: '', companyName: '', startDate: '', endDate: '', description: '' })}>
-                                Añadir Experiencia
+                            <button type="button" className="add-button-form" onClick={() => appendExperiences({ jobTitle: '', companyName: '', startDate: '', endDate: '', description: '' })}>
+                                Añadir
                             </button>
 
                             <h2>Formación Académica</h2>
-                            <div className="data-form">
-                                <div className="column">
-                                    <p><strong>Institución:</strong> <input {...register('education.instituteName')} /></p>
-                                    <p><strong>Nivel:</strong> <input {...register('education.degreeLevel')} /></p>
-                                    <p><strong>Título:</strong> <input {...register('education.degree')} /></p>
-                                    <p><strong>Campo de estudio:</strong> <input {...register('education.fieldOfStudy')} /></p>
-                                </div>
-                            </div>
+                            {
+                                educationFields.map((item, index) => (
+
+                                    <div className="data-form" key={item.id}>
+                                        <div className="column">
+                                            <p><strong>Institución:</strong> <input {...register(`educations.${index}.instituteName`)} /></p>
+                                            <p><strong>Nivel:</strong> <input {...register(`educations.${index}.degreeLevel`)} /></p>
+                                            <p><strong>Título:</strong> <input {...register(`educations.${index}.degree`)} /></p>
+                                            <p><strong>Campo de estudio:</strong> <input {...register(`educations.${index}.fieldOfStudy`)} /></p>
+                                        </div>
+                                        <div className="">
+                                            <button type="button" className="delete-button-form" onClick={() => removeEducations(index)}>Eliminar</button>
+                                        </div>
+
+                                    </div>
+
+                                ))}
+                            <button type="button" className="add-button-form" onClick={() => appendEducations({ instituteName: '', degreeLevel: '', degree: '', fieldOfStudy: '' })}>
+                                Añadir
+                            </button>
 
                             <h2>Certificados</h2>
-                            <div className="data-form">
-                                <div className="column">
-                                    <p><strong>Nombre:</strong> <input {...register('certification.name')} /></p>
-                                    <p><strong>Fecha de emisión:</strong> <input {...register('certification.issueDate')} /></p>
-                                    <p><strong>Fecha de vencimiento:</strong> <input {...register('certification.expirationDate')} /></p>
-                                    <p><strong>Enlace:</strong> <input {...register('certification.certificationUrl')} /></p>
-                                </div>
-                            </div>
+                            {
+                                certificationFields.map((item, index) => (
+                                    <div className="data-form" key={item.id}>
+                                        <div className="column">
+                                            <p><strong>Nombre:</strong> <input {...register(`certifications.${index}.name`)} /></p>
+                                            <p><strong>Fecha de emisión:</strong> <input {...register(`certifications.${index}.issueDate`)} /></p>
+                                            <p><strong>Fecha de vencimiento:</strong> <input {...register(`certifications.${index}.expirationDate`)} /></p>
+                                            <p><strong>Enlace:</strong> <input {...register(`certifications.${index}.certificationUrl`)} /></p>
+                                        </div>
+                                        <div className="">
+                                            <button type="button" className="delete-button-form" onClick={() => removeCertifications(index)}>Eliminar</button>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                            <button type="button" className="add-button-form" onClick={() => appendCertifications({ name: '', issueDate: '', expirationDate: '', certificationUrl: '' })}>
+                                Añadir
+                            </button>
 
                             <h2>Habilidades Técnicas</h2>
-                            <div className="data-form">
-                                <div className="column">
-                                    <p><strong>Nombre:</strong> <input {...register('technicalSkill.name')} /></p>
-                                    <p><strong>Nivel:</strong> <input {...register('technicalSkill.level')} /></p>
-                                </div>
-                            </div>
+                            {
+                                technicalSkillFields.map((item, index) => (
+                                    <div className="data-form" key={item.id}>
+                                        <div className="column">
+                                            <p><strong>Nombre:</strong> <input {...register(`technicalSkills.${index}.name`)} /></p>
+                                            <p><strong>Nivel:</strong> <input {...register(`technicalSkills.${index}.level`)} /></p>
+                                        </div>
+                                        <div className="">
+                                            <button type="button" className="delete-button-form" onClick={() => removeTechnicalSkills(index)}>Eliminar</button>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                            <button type="button" className="add-button-form" onClick={() => appendTechnicalSkills({ name: '', level: '' })}>
+                                Añadir
+                            </button>
 
                             <h2>Idiomas</h2>
-                            <div className="data-form">
-                                <div className="column">
-                                    <p><strong>Nombre:</strong> <input {...register('language.language')} /></p>
-                                    <p><strong>Nivel:</strong> <input {...register('language.level')} /></p>
-                                </div>
-                            </div>
+                            {
+                                languageFields.map((item, index) => (
+                                    <div className="data-form" key={item.id}>
+                                        <div className="column">
+                                            <p><strong>Nombre:</strong> <input {...register(`languages.${index}.language`)} /></p>
+                                            <p><strong>Nivel:</strong> <input {...register(`languages.${index}.level`)} /></p>
+                                        </div>
+                                        <div className="">
+                                            <button type="button" className="delete-button-form" onClick={() => removeLanguages(index)}>Eliminar</button>
+                                        </div>
+                                    </div>
+
+                                ))
+                            }
+                            <button type="button" className="add-button-form" onClick={() => appendLanguages({ language: '', level: '' })}>
+                                Añadir
+                            </button>
                         </div>
 
                     ) : (
@@ -183,9 +280,9 @@ export default function ResumeForm() {
                             <h2>Contacto</h2>
                             <div className="data-form">
                                 <div className="column">
-                                    <p><strong>Teléfono:</strong> 11 22345678</p>
-                                    <p><strong>Email:</strong> janedoe@gmail.com</p>
-                                    <p><strong>Linkedin:</strong> linkedin.com/jane-doe</p>
+                                    <p><strong>Teléfono:</strong> {contactOnlyRead?.phone}</p>
+                                    <p><strong>Email:</strong> {contactOnlyRead?.email}</p>
+                                    <p><strong>Linkedin:</strong> {contactOnlyRead?.linkedin}</p>
                                 </div>
 
                                 <div className="column">
@@ -194,56 +291,75 @@ export default function ResumeForm() {
                             </div>
 
                             <h2>Experiencia Laboral</h2>
-                            <div className="data-form">
-                                <div className="column">
-                                    <p><strong>Nombre del puesto:</strong> Profesora de Matemática</p>
-                                    <p><strong>Empresa:</strong> Universidad Nacional de La Matanza</p>
-                                    <p><strong>Fecha de Inicio - Fin:</strong> 01/01/1998 - 01/01/2004</p>
-                                    <p><strong>Descripción:</strong> Materias dictadas: Matemática Discreta y Lógica y Teoría de Números</p>
-                                </div>
-                            </div>
+                            {
+
+                                experiencesOnlyRead?.map((item, index) => (
+                                    <div className="data-form" key={`experience-read-${index}`}>
+                                        <div className="column">
+                                            <p><strong>Nombre del puesto:</strong> {item?.jobTitle}</p>
+                                            <p><strong>Empresa:</strong> {item?.companyName}</p>
+                                            <p><strong>Fecha de Inicio - Fin:</strong> {item?.startDate} - {item?.endDate ? item?.endDate : 'Actualidad'}</p>
+                                            <p><strong>Descripción:</strong> {item?.description}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+
 
                             <h2>Formación Académica</h2>
-                            <div className="data-form">
-                                <div className="column">
-                                    <p><strong>Institución:</strong> Universidad Nacional de General Sarmiento</p>
-                                    <p><strong>Nivel:</strong> Universitario</p>
-                                    <p><strong>Título:</strong> Profesorado de Matemática</p>
-                                    <p><strong>Campo de estudio:</strong> No especifica</p>
-                                </div>
-                            </div>
+                            {
+                                educationsOnlyRead?.map((item, index) => (
+                                    <div className="data-form" key={`education-read-${index}`}>
+                                        <div className="column" >
+                                            <p><strong>Institución:</strong> {item?.instituteName}</p>
+                                            <p><strong>Nivel:</strong> {item?.degreeLevel}</p>
+                                            <p><strong>Título:</strong> {item?.degree}</p>
+                                            <p><strong>Campo de estudio:</strong> {item?.fieldOfStudy}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            }
 
                             <h2>Certificados</h2>
-                            <div className="data-form">
-                                <div className="column">
-                                    <p><strong>Nombre:</strong> Asistencia a Congreso de Matemática</p>
-                                    <p><strong>Fecha de emisión:</strong> 19/10/2023</p>
-                                    <p><strong>Fecha de vencimiento:</strong> 19/10/2024</p>
-                                    <p><strong>Enlace:</strong> congresomatematica.com</p>
-                                </div>
-                            </div>
+                            {
+                                certificationsOnlyRead?.map((item, index) => (
+                                    <div className="data-form" key={`certification-read-${index}`}>
+                                        <div className="column">
+                                            <p><strong>Nombre:</strong> {item?.name}</p>
+                                            <p><strong>Fecha de emisión:</strong> {item?.issueDate}</p>
+                                            <p><strong>Fecha de vencimiento:</strong> {item?.expirationDate}</p>
+                                            <p><strong>Enlace:</strong> {item?.certificationUrl}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            }
 
                             <h2>Habilidades Técnicas</h2>
-                            <div className="data-form">
-                                <div className="column">
-                                    <p><strong>Nombre:</strong> Java</p>
-                                    <p><strong>Nivel:</strong> Avanzado</p>
-                                </div>
-                            </div>
+                            {
+                                technicalSkillsOnlyRead?.map((item, index) => (
+                                    <div className="data-form" key={`technical-skill-read-${index}`}>
+                                        <div className="column">
+                                            <p><strong>Nombre:</strong> {item?.name}</p>
+                                            <p><strong>Nivel:</strong> {item?.level}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            }
 
                             <h2>Idiomas</h2>
-                            <div className="data-form">
-                                <div className="column">
-                                    <p><strong>Nombre:</strong> Inglés</p>
-                                    <p><strong>Nivel:</strong> C2</p>
-                                </div>
-                            </div>
+                            {
+                                languagesOnlyRead?.map((item, index) => (
+                                    <div className="data-form" key={`language-read-${index}`}>
+                                        <div className="column">
+                                            <p><strong>Nombre:</strong> {item?.language}</p>
+                                            <p><strong>Nivel:</strong> {item?.level}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            }
                         </div>
                     )}
-
-
                 </form>
-
             </div>
         </div>
     );

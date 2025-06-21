@@ -22,24 +22,24 @@ public class Certification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 150)
+    @Column(nullable = true, length = 150)
     private String name;
 
-    @Column(name = "issue_date", nullable = false)
+    @Column(name = "issue_date", nullable = true)
     private LocalDate issueDate;
 
-    @Column(name = "expiration_date", nullable = false)
+    @Column(name = "expiration_date", nullable = true)
     private LocalDate expirationDate;
 
-    @Column(name = "certification_url", nullable = false, length = 250)
+    @Column(name = "certification_url", nullable = true, length = 250)
     private String certificationUrl;
 
     @CreatedDate
-    @Column(name = "created_date", updatable = false)
+    @Column(name = "created_date", updatable = false, nullable = true)
     private LocalDateTime createdDate;
 
     @LastModifiedDate
-    @Column(name = "updated_date")
+    @Column(name = "updated_date", nullable = true)
     private LocalDateTime updatedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
