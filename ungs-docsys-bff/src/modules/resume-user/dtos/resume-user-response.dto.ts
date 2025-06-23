@@ -14,5 +14,5 @@ export class ResumeUserResponseDto {
   languages: LanguageResponseDto[];
   technicalSkills: TechnicalSkillResponseDto[];
   certifications: CertificationResponseDto[];
-  files: ResumeFileResponseDto[];
+  resumeFiles: ResumeFileResponseDto[];
 }

@@ -68,7 +68,7 @@ public abstract class ResumeUserMapper {
     @Mapping(target = "languages", expression = "java(toLanguageResponseList(resumeUser.getLanguages()))")
     @Mapping(target = "technicalSkills", expression = "java(toTechnicalSkillResponseList(resumeUser.getTechnicalSkills()))")
     @Mapping(target = "certifications", expression = "java(toCertificationResponseList(resumeUser.getCertifications()))")
-    @Mapping(target = "files", expression = "java(toResumeFileResponseList(resumeUser.getResumeFiles()))")
+    @Mapping(target = "resumeFiles", expression = "java(toResumeFileResponseList(resumeUser.getResumeFiles()))")
     public abstract ResumeUserResponseDto toResponse(ResumeUser resumeUser);
 
     public ContactResponseDto toContactResponse(List<Contact> contacts) {

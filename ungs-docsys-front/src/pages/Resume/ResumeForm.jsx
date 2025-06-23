@@ -4,10 +4,16 @@ import { useForm, useFieldArray } from "react-hook-form";
 import Header from "../../components/UI/Header";
 import './resume-form.css';
 import { ResumesService } from "../../commons/services/resumes.service";
+import NavBar from "../../components/UI/Navbar";
+import SaveIcon from '@mui/icons-material/Save';
+import EditDocumentIcon from '@mui/icons-material/EditDocument';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 
 export default function ResumeForm() {
 
     const [isEditing, setIsEditing] = useState(false);
+    const [userClaim, setUserClaim] = useState({});
 
     const { register, handleSubmit, control, reset, watch } = useForm({
         contact: {},
@@ -15,7 +21,8 @@ export default function ResumeForm() {
         experiences: [],
         languages: [],
         technicalSkills: [],
-        certifications: []
+        certifications: [],
+        resumeFiles: []
     });
 
     const { fields: experienceFields, append: appendExperiences, remove: removeExperiences } = useFieldArray({
@@ -43,6 +50,11 @@ export default function ResumeForm() {
         name: 'languages'
     });
 
+    const { fields: resumeFilesFields, append: appendResumeFiles, remove: removeResumeFiles } = useFieldArray({
+        control,
+        name: 'resumeFiles'
+    });
+
     const experiencesOnlyRead = watch('experiences');
     const educationsOnlyRead = watch('educations');
     const certificationsOnlyRead = watch('certifications');
@@ -64,19 +76,25 @@ export default function ResumeForm() {
             if (currentResumeList.length > 0) {
                 reset(currentResumeList[0]);
             }
-            //setJobApplications(jobApplicationsResponse);
         } catch (error) {
             console.error(error);
         }
     };
 
-    const onSubmit = (data) => {
-        console.log('Datos guardados:', data);
+    const onSubmit = async (data) => {
+        const resumeSaved = await ResumesService.create(data);
+        reset(resumeSaved);
+        setIsEditing(false);
+    };
+
+    const handleCancel = async () => {
+        fetchCurrentResumeByUser();
         setIsEditing(false);
     };
 
     useEffect(() => {
         fetchCurrentResumeByUser();
+        setUserClaim(JwtService.getClaims());
     }, []);
 
     return (
@@ -85,32 +103,41 @@ export default function ResumeForm() {
                 user={getUserClaim()}
             />
 
+            <NavBar />
+
             <div className="app-container">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="resume-container">
-
                         <div className="resume-header">
                             <h2>Gestión de Curriculum</h2>
                             <p>Agregue información a su curriculum manualmente, o bien cargando su CV en formato .PDF</p>
                         </div>
 
-                        {isEditing ? (<div className="resume-buttons">
-                            <button type="button" className="resume-button" onClick={() => setIsEditing(false)}>
-                                Cancelar
-                            </button>
-                            <button className="resume-button" type="submit">
-                                Guardar
-                            </button>
-
-                        </div>) : (<div className="resume-buttons">
-                            <div className="resume-button" onClick={() => setIsEditing(true)}>
-                                <span>Editar datos</span>
-                            </div>
-                            <div className="resume-button">
-                                <span>Cargar CV</span>
-                            </div>
-                        </div>)}
-
+                        {userClaim?.roles?.includes('CANDIDATE') && (
+                            isEditing ? (
+                                <div className="resume-buttons">
+                                    <button type="button" className="resume-button" onClick={() => handleCancel()}>
+                                        <ArrowBackIcon fontSize="large" />
+                                        Cancelar
+                                    </button>
+                                    <button className="resume-button" type="submit">
+                                        <SaveIcon fontSize="large" />
+                                        Guardar
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="resume-buttons">
+                                    <button type="button" className="resume-button" onClick={() => setIsEditing(true)}>
+                                        <EditDocumentIcon fontSize="large" />
+                                        Editar
+                                    </button>
+                                    <button className="resume-button" type="submit">
+                                        <UploadFileIcon fontSize="large" />
+                                        Cargar CV
+                                    </button>
+                                </div>
+                            )
+                        )}
                     </div>
 
 
@@ -119,16 +146,16 @@ export default function ResumeForm() {
                             <h2>Datos personales</h2>
                             <div className="data-form">
                                 <div className="column">
-                                    <p><strong>Nombre:</strong> Jane</p>
-                                    <p><strong>Apellido:</strong> Doe</p>
-                                    <p><strong>Tipo de identificación:</strong> DNI</p>
-                                    <p><strong>Número de identificación:</strong> 123456789</p>
+                                    <p><strong>Nombre:</strong> {userClaim?.firstName}</p>
+                                    <p><strong>Apellido:</strong> {userClaim?.lastName}</p>
+                                    <p><strong>Tipo de identificación:</strong> {userClaim?.identificationType?.code}</p>
+                                    <p><strong>Número de identificación:</strong> {userClaim?.identificationNumber}</p>
                                 </div>
 
                                 <div className="column">
-                                    <p><strong>CUIT Nº:</strong> 20-123456789-0</p>
-                                    <p><strong>Fecha de nacimiento:</strong> 1/2/1998</p>
-                                    <p><strong>Nacionalidad:</strong> Argentina</p>
+                                    <p><strong>CUIT Nº:</strong> {userClaim?.cuilCuit}</p>
+                                    <p><strong>Fecha de nacimiento:</strong> {userClaim?.birthDate}</p>
+                                    <p><strong>Nacionalidad:</strong> {userClaim?.nationality?.description}</p>
                                 </div>
 
                                 <div className="column picture-container">
@@ -157,6 +184,14 @@ export default function ResumeForm() {
                                         <p><strong>Empresa:</strong> <input {...register(`experiences.${index}.companyName`)} /></p>
                                         <p><strong>Fecha de Inicio - Fin:</strong>
                                             <input {...register(`experiences.${index}.startDate`)} /> - <input {...register(`experiences.${index}.endDate`)} />
+                                        </p>
+                                        <p>
+                                            <strong>Actualmente trabajando: </strong>
+                                            <input
+                                                type="checkbox"
+                                                {...register(`experiences.${index}.isCurrentJob`)}
+                                            />
+                                            
                                         </p>
                                         <p><strong>Descripción:</strong></p>
                                         <textarea
@@ -261,16 +296,16 @@ export default function ResumeForm() {
                             <h2>Datos personales</h2>
                             <div className="data-form">
                                 <div className="column">
-                                    <p><strong>Nombre:</strong> Jane</p>
-                                    <p><strong>Apellido:</strong> Doe</p>
-                                    <p><strong>Tipo de identificación:</strong> DNI</p>
-                                    <p><strong>Número de identificación:</strong> 123456789</p>
+                                    <p><strong>Nombre:</strong> {userClaim?.firstName}</p>
+                                    <p><strong>Apellido:</strong> {userClaim?.lastName}</p>
+                                    <p><strong>Tipo de identificación:</strong> {userClaim?.identificationType?.code}</p>
+                                    <p><strong>Número de identificación:</strong> {userClaim?.identificationNumber}</p>
                                 </div>
 
                                 <div className="column">
-                                    <p><strong>CUIT Nº:</strong> 20-123456789-0</p>
-                                    <p><strong>Fecha de nacimiento:</strong> 1/2/1998</p>
-                                    <p><strong>Nacionalidad:</strong> Argentina</p>
+                                    <p><strong>CUIT Nº:</strong> {userClaim?.cuilCuit}</p>
+                                    <p><strong>Fecha de nacimiento:</strong> {userClaim?.birthDate}</p>
+                                    <p><strong>Nacionalidad:</strong> {userClaim?.nationality?.description}</p>
                                 </div>
 
                                 <div className="column picture-container">

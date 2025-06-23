@@ -4,6 +4,7 @@ import Header from "../../../components/UI/Header";
 import "../../../assets/styles/Home.css";
 import { JwtService } from "../../../commons/utils/jwt.service";
 import { JobApplicationsService } from '../../../commons/services/job-applications.service';
+import NavBar from '../../../components/UI/Navbar';
 
 export default function JobAppList() {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export default function JobAppList() {
     status: ""
   });
   const [jobApplications, setJobApplications] = useState([]);
+  const [userClaim, setUserClaim] = useState({});
 
   const getUserClaim = () => {
     const claims = JwtService.getClaims();
@@ -27,7 +29,7 @@ export default function JobAppList() {
     try {
       const jobApplicationsResponse = await JobApplicationsService.getAll();
       setJobApplications(jobApplicationsResponse);
-    } catch(error) {
+    } catch (error) {
       console.error(error);
       setJobApplications([]);
     }
@@ -82,8 +84,60 @@ export default function JobAppList() {
     );
   });
 
+  const renderApplicationJobs = () => {
+    if (userClaim?.roles?.includes('CANDIDATE')) {
+      return (
+        <>
+          <div className="applications-list">
+            {jobApplications.map(jobApplication => (
+              <div key={jobApplication.id} className="application-card" onClick={() => navigate(`/viewJobApp/${jobApplication.id}`)}>
+                <h3>{`Cargo: ${jobApplication.jobProfileLevel?.description}`}</h3>
+                <h2>{jobApplication.title}</h2>
+                <p>{`Periodo: ${jobApplication.jobApplicationPeriod?.description} ${jobApplication.yearPeriod}`}</p>
+              </div>
+            ))}
+          </div>
+        </>
+      );
+    }
+    if (userClaim?.roles?.includes('RECRUITER')) {
+      return (
+        <>
+          <div className="applications-list">
+            {jobApplications.map(jobApplication => (
+              <div key={jobApplication.id} className="application-card" onClick={() => navigate(`/viewJobApp/${jobApplication.id}`)}>
+                <h3>{`Cargo: ${jobApplication.jobProfileLevel?.description}`}</h3>
+                <h2>{jobApplication.title}</h2>
+                <p>{`Periodo: ${jobApplication.jobApplicationPeriod?.description} ${jobApplication.yearPeriod}`}</p>
+                <div className={`status-badge ${jobApplication.jobApplicationStatus?.name.toLowerCase().replace(/\s/g, '-')}`}>
+                  {jobApplication.jobApplicationStatus?.description}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      );
+    }
+  };
+
+  const renderNewApplicationJobButton = () => {
+    if (userClaim?.roles?.includes('RECRUITER')) {
+      return (
+        <div className="new-application-button">
+            <button
+              className="create-button"
+              onClick={() => navigate("/app-job-detail")}
+            >
+              Crear nueva postulación
+            </button>
+          </div>
+      );
+    }
+  }
+
   useEffect(() => {
     fetchJobApplications();
+    setUserClaim(JwtService.getClaims());
   }, []);
 
   return (
@@ -91,12 +145,11 @@ export default function JobAppList() {
       <Header
         user={getUserClaim()}
       />
+      <NavBar />
 
       <div className="app-container">
-        <h1>Lista de Postulaciones</h1>
-        <p>Seleccione una postulación de la lista para visualizarla</p>
 
-        {/* Filters Section */}
+        {/* 
         <div className="filters-section">
           <div className="filter-group">
             <label>Palabras clave:</label>
@@ -146,28 +199,18 @@ export default function JobAppList() {
             </select>
           </div>
         </div>
+        */}
+
 
         {/* Applications List */}
-        <div className="applications-list">
-          {jobApplications.map(jobApplication => (
-            <div key={jobApplication.id} className="application-card" onClick={() => navigate(`/viewJobApp/${jobApplication.id}`)}>
-              <h3>{`Cargo: ${jobApplication.jobProfileLevel?.description}`}</h3>
-              <h2>{jobApplication.title}</h2>
-              <p>{`Periodo: ${jobApplication.jobApplicationPeriod?.description} ${jobApplication.yearPeriod}`}</p>
-              <div className={`status-badge ${jobApplication.jobApplicationStatus?.name.toLowerCase().replace(/\s/g, '-')}`}>
-                {jobApplication.jobApplicationStatus?.description}
-              </div>
-            </div>
-          ))}
+        <div className="application-job-header">
+          <h1>Lista de Postulaciones</h1>
+          <p>Seleccione una postulación de la lista para visualizarla</p>
+          {renderNewApplicationJobButton()}
+
         </div>
 
-        {/* Create New Application Button */}
-        <button
-          className="create-button"
-          onClick={() => navigate("/createJobApp")}
-        >
-          Crear nueva postulación
-        </button>
+        {renderApplicationJobs()}
       </div>
     </div>
   );

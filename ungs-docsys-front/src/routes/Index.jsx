@@ -1,6 +1,4 @@
 import Login from '../pages/Auth/login/login';
-import Main from '../pages/Main/Main';
-import Home from '../pages/Home/Home';
 import SignUp from '../pages/Auth/signup/SignUp';
 import ForgotPassword from '../pages/Auth/forgotPass/forgotPass';
 import SetNewPass from '../pages/Auth/setNewPass/setNewPass';
@@ -37,7 +35,7 @@ export const routes = [
       requiredRoles: [RECRUITER_ROLE, CANDIDATE_ROLE]
     },
     {
-      path: "createJobApp",
+      path: "app-job-detail",
       element: <CreateJobApp />,
       requiredRoles: [RECRUITER_ROLE]
     },
