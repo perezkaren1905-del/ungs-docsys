@@ -1,4 +1,3 @@
-import { ApiProperty } from "@nestjs/swagger";
 import { ContactResponseDto } from './contact-response.dto';
 import { EducationResponseDto } from './education-response.dto';
 import { ExperienceResponseDto } from './experience-response.dto';

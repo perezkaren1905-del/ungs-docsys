@@ -36,4 +36,8 @@ export class JobApplicationUpdateRequestDto {
   @IsOptional()
   @IsNumber()
   yearPeriod?: number;
+
+  @IsOptional()
+  @IsNumber()
+  jobApplicationStatusId?: number;
 }

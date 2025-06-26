@@ -157,10 +157,6 @@ export default function ResumeForm() {
                                     <p><strong>Fecha de nacimiento:</strong> {userClaim?.birthDate}</p>
                                     <p><strong>Nacionalidad:</strong> {userClaim?.nationality?.description}</p>
                                 </div>
-
-                                <div className="column picture-container">
-                                    <div className="picture">Foto</div>
-                                </div>
                             </div>
 
                             <h2>Contacto</h2>
@@ -191,7 +187,7 @@ export default function ResumeForm() {
                                                 type="checkbox"
                                                 {...register(`experiences.${index}.isCurrentJob`)}
                                             />
-                                            
+
                                         </p>
                                         <p><strong>Descripción:</strong></p>
                                         <textarea
@@ -307,10 +303,6 @@ export default function ResumeForm() {
                                     <p><strong>Fecha de nacimiento:</strong> {userClaim?.birthDate}</p>
                                     <p><strong>Nacionalidad:</strong> {userClaim?.nationality?.description}</p>
                                 </div>
-
-                                <div className="column picture-container">
-                                    <div className="picture">Foto</div>
-                                </div>
                             </div>
                             <h2>Contacto</h2>
                             <div className="data-form">
@@ -326,9 +318,8 @@ export default function ResumeForm() {
                             </div>
 
                             <h2>Experiencia Laboral</h2>
-                            {
-
-                                experiencesOnlyRead?.map((item, index) => (
+                            {experiencesOnlyRead && experiencesOnlyRead.length > 0 ? (
+                                experiencesOnlyRead.map((item, index) => (
                                     <div className="data-form" key={`experience-read-${index}`}>
                                         <div className="column">
                                             <p><strong>Nombre del puesto:</strong> {item?.jobTitle}</p>
@@ -338,25 +329,36 @@ export default function ResumeForm() {
                                         </div>
                                     </div>
                                 ))
-                            }
+                            ) : (
+                                <div className="data-form">
+                                    <div className="column">
+                                        <h3>[Sin contenido]</h3>
+                                    </div>
+                                </div>
+
+                            )}
 
 
                             <h2>Formación Académica</h2>
-                            {
-                                educationsOnlyRead?.map((item, index) => (
-                                    <div className="data-form" key={`education-read-${index}`}>
-                                        <div className="column" >
-                                            <p><strong>Institución:</strong> {item?.instituteName}</p>
-                                            <p><strong>Nivel:</strong> {item?.degreeLevel}</p>
-                                            <p><strong>Título:</strong> {item?.degree}</p>
-                                            <p><strong>Campo de estudio:</strong> {item?.fieldOfStudy}</p>
-                                        </div>
+                            {educationsOnlyRead && educationsOnlyRead.length > 0 ? (educationsOnlyRead?.map((item, index) => (
+                                <div className="data-form" key={`education-read-${index}`}>
+                                    <div className="column" >
+                                        <p><strong>Institución:</strong> {item?.instituteName}</p>
+                                        <p><strong>Nivel:</strong> {item?.degreeLevel}</p>
+                                        <p><strong>Título:</strong> {item?.degree}</p>
+                                        <p><strong>Campo de estudio:</strong> {item?.fieldOfStudy}</p>
                                     </div>
-                                ))
+                                </div>
+                            ))) : (
+                            <div className="data-form">
+                                <div className="column">
+                                    <h3>[Sin contenido]</h3>
+                                </div>
+                            </div>)
                             }
 
                             <h2>Certificados</h2>
-                            {
+                            {certificationsOnlyRead && certificationsOnlyRead.length > 0 ? (
                                 certificationsOnlyRead?.map((item, index) => (
                                     <div className="data-form" key={`certification-read-${index}`}>
                                         <div className="column">
@@ -367,10 +369,16 @@ export default function ResumeForm() {
                                         </div>
                                     </div>
                                 ))
-                            }
+                            ) : (
+                            <div className="data-form">
+                                <div className="column">
+                                    <h3>[Sin contenido]</h3>
+                                </div>
+                            </div>)}
+
 
                             <h2>Habilidades Técnicas</h2>
-                            {
+                            {technicalSkillsOnlyRead && technicalSkillsOnlyRead.length > 0 ? (
                                 technicalSkillsOnlyRead?.map((item, index) => (
                                     <div className="data-form" key={`technical-skill-read-${index}`}>
                                         <div className="column">
@@ -379,10 +387,15 @@ export default function ResumeForm() {
                                         </div>
                                     </div>
                                 ))
-                            }
+                            ) : (
+                            <div className="data-form">
+                                <div className="column">
+                                    <h3>[Sin contenido]</h3>
+                                </div>
+                            </div>)}
 
                             <h2>Idiomas</h2>
-                            {
+                            {languagesOnlyRead && languagesOnlyRead.length > 0 ? (
                                 languagesOnlyRead?.map((item, index) => (
                                     <div className="data-form" key={`language-read-${index}`}>
                                         <div className="column">
@@ -391,7 +404,12 @@ export default function ResumeForm() {
                                         </div>
                                     </div>
                                 ))
-                            }
+                            ) : (
+                            <div className="data-form">
+                                <div className="column">
+                                    <h3>[Sin contenido]</h3>
+                                </div>
+                            </div>)}
                         </div>
                     )}
                 </form>

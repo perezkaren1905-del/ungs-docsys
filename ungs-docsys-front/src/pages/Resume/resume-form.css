@@ -82,6 +82,11 @@
     flex: 1;
 }
 
+.column h3 {
+    color: black;
+    text-align: center;
+}
+
 .picture {
     height: 100px;
     width: 100px;

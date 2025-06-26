@@ -54,6 +54,8 @@ public class JobApplication {
     private LocalDateTime updatedDate;
     @OneToMany(mappedBy = "jobApplication", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RequirementJobApplication> requirementJobApplications;
+    @OneToMany(mappedBy = "jobApplication", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<JobApplicationApproval> jobApplicationApprovals;
     @ManyToOne
     @JoinColumn(name = "job_profile_level_id", nullable = true)
     private JobProfileLevel jobProfileLevel;

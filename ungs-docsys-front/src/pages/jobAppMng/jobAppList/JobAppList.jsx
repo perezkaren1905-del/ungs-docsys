@@ -138,6 +138,7 @@ export default function JobAppList() {
   useEffect(() => {
     fetchJobApplications();
     setUserClaim(JwtService.getClaims());
+    window.scrollTo(0, 0);
   }, []);
 
   return (
