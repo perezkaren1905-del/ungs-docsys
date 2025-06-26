@@ -1,6 +1,5 @@
 package com.ungs.docsys.controllers;
 
-import com.ungs.docsys.dtos.AppUserClaimDto;
 import com.ungs.docsys.dtos.ResumeUserRequestDto;
 import com.ungs.docsys.dtos.ResumeUserResponseDto;
 import com.ungs.docsys.security.JwtUtil;
@@ -12,6 +11,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/resume-user")
@@ -37,5 +38,14 @@ public class ResumeUserController {
     public ResponseEntity<ResumeUserResponseDto> getResumeByUserId(
             @PathVariable Long id) {
         return ResponseEntity.ok(resumeUserService.getById(id));
+    }
+
+    @Operation(summary = "Get resume by params")
+    @ApiResponse(responseCode = "200", description = "Resume retrieved successfully")
+    @GetMapping()
+    public ResponseEntity<List<ResumeUserResponseDto>> getByParams(
+            @RequestHeader("Authorization") String authorization,
+            @RequestParam Boolean isCurrent) {
+        return ResponseEntity.ok(resumeUserService.getByParams(isCurrent, jwtUtil.extractUserClaim(authorization)));
     }
 }

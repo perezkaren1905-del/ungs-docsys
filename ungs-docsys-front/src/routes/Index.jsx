@@ -1,6 +1,4 @@
 import Login from '../pages/Auth/login/login';
-import Main from '../pages/Main/Main';
-import Home from '../pages/Home/Home';
 import SignUp from '../pages/Auth/signup/SignUp';
 import ForgotPassword from '../pages/Auth/forgotPass/forgotPass';
 import SetNewPass from '../pages/Auth/setNewPass/setNewPass';
@@ -9,6 +7,7 @@ import CreateJobApp from '../pages/jobAppMng/createJobApp/CreateJobApp';
 import ViewJobApp from '../pages/jobAppMng/viewJobApp/ViewJobApp';
 import ViewResume from '../pages/resumeMng/viewResume/ViewResume';
 import LoadResume from '../pages/resumeMng/loadResume/LoadResume';
+import ResumeForm from '../pages/Resume/ResumeForm';
 
 const RECRUITER_ROLE = "RECRUITER";
 const CANDIDATE_ROLE = "CANDIDATE";
@@ -36,14 +35,14 @@ export const routes = [
       requiredRoles: [RECRUITER_ROLE, CANDIDATE_ROLE]
     },
     {
-      path: "createJobApp",
+      path: "app-job-detail",
       element: <CreateJobApp />,
       requiredRoles: [RECRUITER_ROLE]
     },
     {
       path: "viewJobApp/:id",
       element: <ViewJobApp />,
-      requiredRoles: [RECRUITER_ROLE]
+      requiredRoles: [RECRUITER_ROLE, CANDIDATE_ROLE]
     },
     {
       path: "viewResume",
@@ -52,5 +51,10 @@ export const routes = [
     {
       path: "loadResume",
       element: <LoadResume />
+    },
+    {
+      path: "resume",
+      element: <ResumeForm />,
+      requiredRoles: [RECRUITER_ROLE, CANDIDATE_ROLE]
     }
 ];

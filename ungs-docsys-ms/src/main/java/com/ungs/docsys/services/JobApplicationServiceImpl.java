@@ -68,9 +68,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     @Override
     public JobApplicationResponseDto partiallyUpdate(Long id, JobApplicationRequestDto request) {
         final JobApplication jobApplication = getJobApplicationById(id);
-        if(request.getRequirements() != null) {
-
-        }
         jobApplicationMapper.updateModelFromDto(request, jobApplication);
         return jobApplicationMapper.toResponse(jobApplicationRepository.save(jobApplication));
     }

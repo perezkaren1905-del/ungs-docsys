@@ -1,7 +1,6 @@
 package com.ungs.docsys.dtos;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResumeUserRequestDto {
-    @NotNull(message = "Contact must not be null")
     @Valid
     private ContactRequestDto contact;
     @Valid
@@ -32,6 +30,4 @@ public class ResumeUserRequestDto {
     private List<ContactRequestDto> references = new ArrayList<>();
     @Valid
     private List<ResumeFileRequestDto> resumeFiles = new ArrayList<>();
-    @NotNull(message = "Is current must not be null")
-    private Boolean isCurrent;
 }

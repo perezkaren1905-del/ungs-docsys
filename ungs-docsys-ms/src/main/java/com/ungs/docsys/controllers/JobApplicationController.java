@@ -54,7 +54,7 @@ public class JobApplicationController {
     @PatchMapping("/{id}")
     public ResponseEntity<JobApplicationResponseDto> update(
             @PathVariable Long id,
-            @Valid @RequestBody JobApplicationRequestDto request) {
+            @RequestBody JobApplicationRequestDto request) {
         JobApplicationResponseDto updated = jobApplicationService.partiallyUpdate(id, request);
         return ResponseEntity.ok(updated);
     }

@@ -35,4 +35,14 @@ export class JobApplicationsService {
             throw error;
         }
     }
+
+    public static async partiallyUpdate(jobApplicationRequestDto: JobApplicationRequestDto, id: number): Promise<JobApplicationResponseDto> {
+        try {
+            const response = await axios.patch<JobApplicationResponseDto>(`${this.apiUrl}/v1/job-applications/${id}`, jobApplicationRequestDto, HttpUtilsService.getAuthHeaders());
+            return response.data;
+        } catch (error) {
+            console.error("Error al actualizar postulacion:", error);
+            throw error;
+        }
+    }
 }

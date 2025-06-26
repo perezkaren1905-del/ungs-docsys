@@ -14,11 +14,13 @@ import { JobApplicationService } from "./services/job-application.service";
 import { JobApplicationController } from "./controllers/job-application.controller";
 import { JobProfileLevelsService } from './job-profile-levels/services/job-profile-levels.service';
 import { JobProfileLevelController } from './job-profile-levels/controllers/job-profile-level.controllers';
+import { JobApplicationApprovalsController } from './job-application-approvals/controllers/job-application-approvals.controller';
+import { JobApplicationApprovalsService } from './job-application-approvals/services/job-application-approvals.service';
 
 @Module({
-    controllers: [JobApplicationPeriodsController, JobApplicationStatusesController, RequirementTargetComparatorsController, RequirementTypesController, RequirementsController, JobApplicationController, JobProfileLevelController],
+    controllers: [JobApplicationPeriodsController, JobApplicationStatusesController, RequirementTargetComparatorsController, RequirementTypesController, RequirementsController, JobApplicationController, JobProfileLevelController, JobApplicationApprovalsController],
     imports: [HttpModule],
-    providers: [JobApplicationPeriodsService, JobApplicationStatusesService, RequirementTargetComparatorsService, RequirementTypesService, RequirementsService, JobApplicationService, JobProfileLevelsService],
-    exports: [JobApplicationPeriodsService, JobApplicationStatusesService, RequirementTargetComparatorsService, RequirementTypesService, RequirementsService, JobApplicationService, JobProfileLevelsService]
+    providers: [JobApplicationPeriodsService, JobApplicationStatusesService, RequirementTargetComparatorsService, RequirementTypesService, RequirementsService, JobApplicationService, JobProfileLevelsService, JobApplicationApprovalsService],
+    exports: [JobApplicationPeriodsService, JobApplicationStatusesService, RequirementTargetComparatorsService, RequirementTypesService, RequirementsService, JobApplicationService, JobProfileLevelsService, JobApplicationApprovalsService]
 })
 export class JobApplicationsModule { }
