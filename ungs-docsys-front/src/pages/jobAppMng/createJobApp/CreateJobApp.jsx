@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import Header from "../../../components/UI/Header";
 import './create-job-app.css';
 import "../../../assets/styles/Home.css";
@@ -10,35 +10,39 @@ import { JobApplicationPeriodsService } from "../../../commons/services/job-appl
 import { RequirementTargetComparatorsService } from "../../../commons/services/requirement-target-comparators.service";
 import { RequirementTypesService } from "../../../commons/services/requirement-types.service";
 import { JobApplicationsService } from "../../../commons/services/job-applications.service";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 export default function CreateJobApp() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    control,
   } = useForm();
   const navigate = useNavigate();
   const [jobProfileLevels, setJobProfileLevels] = useState([]);
   const [jobApplicationPeriods, setJobApplicationPeriods] = useState([]);
-  const [requirements, setRequirements] = useState([]);
   const [requirementTypes, setRequirementTypes] = useState([]);
   const [requirementTargetComparators, setRequirementTargetComparators] = useState([]);
 
-  const handleAddRequirement = () => {
-    setRequirements(prev => [
-      ...prev,
-      {
-        description: "",
-        expectedValue: "",
-        requirementTypeId: "",
-        requirementTargetComparatorId: "",
-        operator: ""
-      }
-    ]);
-  };
+
+  const operators = [
+    { code: 'EQUALS', description: 'Igual a' },
+    { code: 'NOT_EQUALS', description: 'No igual a' },
+    { code: 'GREATER_THAN', description: 'Mayor que' },
+    { code: 'GREATER_THAN_OR_EQUAL', description: 'Mayor o igual que' },
+    { code: 'LESS_THAN', description: 'Menor que' },
+    { code: 'LESS_THAN_OR_EQUAL', description: 'Menor o igual que' },
+    { code: 'INCLUDES', description: 'Incluye' },
+    { code: 'NOT_INCLUDES', description: 'No incluye' }
+  ]
+
+  const { fields: requirementsFields, append: appendRequirements, remove: removeRequirements } = useFieldArray({
+    control,
+    name: 'requirements'
+  });
 
   const handleSaveJobApplication = async (data) => {
-    const requirementsRequest = requirements.map(requirement => {
+    const requirementsRequest = data.requirements.map(requirement => {
       return {
         description: requirement.description,
         expectedValue: requirement.expectedValue,
@@ -51,7 +55,7 @@ export default function CreateJobApp() {
       title: data.title,
       description: data.description,
       jobApplicationPeriodId: Number(data.jobApplicationPeriodId),
-      minApprovers: 1,
+      minApprovers: 2,
       reason: data.reason,
       yearPeriod: data.yearPeriod,
       jobProfileLevelId: Number(data.jobProfileLevelId),
@@ -64,19 +68,6 @@ export default function CreateJobApp() {
       console.log(error);
     }
     console.log(JSON.stringify(request));
-  };
-
-  const handleRequirementChange = (index, field, value) => {
-    setRequirements(prev => {
-      const updated = [...prev];
-      updated[index][field] = value;
-      return updated;
-    });
-  };
-
-  const handleRemoveRequirement = (indexToRemove) => {
-    const updatedRequirements = requirements.filter((_, index) => index !== indexToRemove);
-    setRequirements(updatedRequirements);
   };
 
   const getUserClaim = () => {
@@ -100,7 +91,7 @@ export default function CreateJobApp() {
   const fetchRequirementTypes = async () => {
     try {
       const requirementTypesResponse = await RequirementTypesService.getAll();
-      setRequirementTypes(requirementTypesResponse);
+      setRequirementTypes(requirementTypesResponse.filter(requirementType => requirementType.name !== "GLOBAL"));
     } catch (error) {
       console.error(error);
       setRequirementTypes([]);
@@ -127,8 +118,8 @@ export default function CreateJobApp() {
     }
   };
 
-  // Check form validity whenever formData changes
   useEffect(() => {
+    window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
@@ -142,148 +133,151 @@ export default function CreateJobApp() {
     <div className="home-container">
       <Header
         user={getUserClaim()}
-        navItems={["Gestión de Postulaciones", "Otras opciones", "Opción 2", "Opción 3"]}
       />
 
       <div className="app-container">
-        <h1>Nueva postulación</h1>
-        <p>Agregue los datos generales de su postulación</p>
+        <button
+          className="go-back-button"
+          onClick={() => navigate(-1)}
+        >
+          <ArrowBackIcon fontSize="large" />
+          Volver
+        </button>
 
-        <form onSubmit={handleSubmit(handleSaveJobApplication)} className="create-form">
-          <div className="form-group">
-            <label>Tipo de docente:</label>
-            <select
-              name="position"
-              className="form-input"
-              {...register("jobProfileLevelId", { required: "Campo obligatorio" })}
-            >
-              <option value="" disabled hidden>Seleccione una opción</option>
-              {jobProfileLevels.map(jobProfileLevel => (
-                <option key={jobProfileLevel.id} value={jobProfileLevel.id}>{`${jobProfileLevel.level}, ${jobProfileLevel.description}`}</option>
+        <form onSubmit={handleSubmit(handleSaveJobApplication)}>
+          <div className="jobapp-info">
+            <div className="info-row job-form-row">
+              <span className="label">Materia:</span>
+              <input
+                type="text"
+                name="course"
+                className="form-input"
+                placeholder="Nombre la materia"
+                {...register("title", { required: "Campo obligatorio" })}
+              />
+            </div>
+            <div className="info-row job-form-row">
+              <span className="label">Tipo de docente:</span>
+              <select
+                name="position"
+                className="form-input"
+                {...register("jobProfileLevelId", { required: "Campo obligatorio" })}
+              >
+                <option value="">Seleccione</option>
+                {jobProfileLevels.map(jobProfileLevel => (
+                  <option key={jobProfileLevel.id} value={jobProfileLevel.id}>{`${jobProfileLevel.level}, ${jobProfileLevel.description}`}</option>
+                ))}
+              </select>
+            </div>
+            <div className="info-row job-form-row">
+              <span className="label">Período de búsqueda:</span>
+              <input
+                type="number"
+                name="yearPeriod"
+                className="form-input year-period"
+                placeholder="Escriba el año"
+                {...register("yearPeriod", {
+                  required: "Campo obligatorio",
+                  valueAsNumber: true,
+                  min: { value: 0, message: "No puede ser negativo" },
+                })}
+              />
+              <select
+                name="period"
+                className="form-input"
+                {...register("jobApplicationPeriodId", { required: "Campo obligatorio" })}
+              >
+                <option value="">Seleccione</option>
+                {jobApplicationPeriods.map(jobApplicationPeriod => (
+                  <option key={jobApplicationPeriod.id} value={jobApplicationPeriod.id}>{jobApplicationPeriod.description}</option>
+                ))}
+              </select>
+            </div>
+
+          </div>
+
+          <h2 style={{ textAlign: 'center', color: 'black' }}>Descripción</h2>
+          <div className="jobapp-info">
+            <div className="info-row">
+              <textarea
+                name="description"
+                className="form-textarea"
+                rows={4}
+                placeholder="Describa los detalles de la postulación..."
+                {...register("description", { required: "Campo obligatorio" })}
+              />
+            </div>
+          </div>
+
+          <h2 style={{ textAlign: 'center', color: 'black' }}>¿Por qué desea abrir esta postulación?</h2>
+          <div className="jobapp-info">
+            <div className="info-row">
+              <textarea
+                name="motivation"
+                className="form-textarea"
+                rows={4}
+                placeholder="Escriba su razón aquí"
+                {...register("reason", { required: "Campo obligatorio" })}
+              />
+            </div>
+          </div>
+
+          <h2 style={{ textAlign: 'center', color: 'black' }}>Requerimientos</h2>
+          <div className="jobapp-info">
+            {
+              requirementsFields.map((item, index) => (
+                <div className="data-form" key={item.id}>
+                  <div className="column">
+                    <div className="info-row job-form-row">
+                      <span className="label">Descripción:</span>
+                      <input {...register(`requirements.${index}.description`)} />
+                    </div>
+
+                    <div className="info-row job-form-row">
+                      <span className="label">Tipo de requerimiento:</span>
+                      <select className="form-input" {...register(`requirements.${index}.requirementTypeId`)}>
+                        <option value="">Seleccione</option>
+                        {requirementTypes.map(requerimentType => (
+                          <option key={requerimentType.name} value={requerimentType.id}>{requerimentType.description}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="info-row job-form-row">
+                      <span className="label">Sección del CV a comparar:</span>
+                      <select className="form-input" {...register(`requirements.${index}.requirementTargetComparatorId`)}>
+                        <option value="">Seleccione</option>
+                        {requirementTargetComparators.map(requirementTargetComparator => (
+                          <option key={requirementTargetComparator.name} value={requirementTargetComparator.id}>{requirementTargetComparator.description}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="info-row job-form-row">
+                      <span className="label">Operatoria:</span>
+                      <select className="form-input" {...register(`requirements.${index}.operator`)}>
+                        <option value="">Seleccione</option>
+                        {operators.map(ope => (
+                          <option key={ope.code} value={ope.code}>{ope.description}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="info-row job-form-row">
+                      <span className="label">Valores a comparar:</span>
+                      <input {...register(`requirements.${index}.expectedValue`)} />
+                    </div>
+
+                  </div>
+                  <div className="column column-justify">
+                    <div className="">
+                      <button type="button" className="go-back-button delete-requirement-button" onClick={() => removeRequirements(index)}>Eliminar</button>
+                    </div>
+                  </div>
+                </div>
               ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label>Materia</label>
-            <input
-              type="text"
-              name="course"
-              className="form-input"
-              placeholder="Escriba la materia"
-              {...register("title", { required: "Campo obligatorio" })}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Período de búsqueda</label>
-            <input
-              type="number"
-              name="yearPeriod"
-              className="form-input"
-              placeholder="Escriba el año"
-              {...register("yearPeriod", {
-                required: "Campo obligatorio",
-                valueAsNumber: true,
-                min: { value: 0, message: "No puede ser negativo" },
-              })}
-            />
-            <select
-              name="period"
-              className="form-input"
-              {...register("jobApplicationPeriodId", { required: "Campo obligatorio" })}
-            >
-              <option value="" disabled hidden>Seleccione una opción</option>
-              {jobApplicationPeriods.map(jobApplicationPeriod => (
-                <option key={jobApplicationPeriod.id} value={jobApplicationPeriod.id}>{jobApplicationPeriod.description}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label>Descripción</label>
-            <textarea
-              name="description"
-              className="form-textarea"
-              rows={4}
-              placeholder="Describa los detalles de la postulación..."
-              {...register("description", { required: "Campo obligatorio" })}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>¿Por qué desea abrir esta postulación?</label>
-            <textarea
-              name="motivation"
-              className="form-textarea"
-              rows={4}
-              placeholder="Escriba su razón aquí"
-              {...register("reason", { required: "Campo obligatorio" })}
-            />
-          </div>
-
-          <div className="form-group">
-            <h3>Requerimientos</h3>
-
-            {requirements.map((req, index) => (
-              <div key={index} className="requirement-row">
-                <input
-                  type="text"
-                  placeholder="Descripción"
-                  value={req.description}
-                  onChange={(e) => handleRequirementChange(index, "description", e.target.value)}
-                  className="form-input"
-                />
-
-                <input
-                  type="text"
-                  placeholder="Valores comparativos"
-                  value={req.expectedValue}
-                  onChange={(e) => handleRequirementChange(index, "expectedValue", e.target.value)}
-                  className="form-input"
-                />
-
-                <select
-                  value={req.operator}
-                  onChange={(e) => handleRequirementChange(index, "operator", e.target.value)}
-                  className="form-input"
-                >
-                  <option value="" disabled>Operador</option>
-                  <option value="INCLUDES">Incluye</option>
-                  <option value="NOT_INCLUDES">No incluye</option>
-                </select>
-
-                <select
-                  value={req.requirementTargetComparatorId}
-                  onChange={(e) => handleRequirementChange(index, "requirementTargetComparatorId", e.target.value)}
-                  className="form-input"
-                >
-                  <option value="" disabled>Tipo de comparación</option>
-                  {requirementTargetComparators.map(requirementTargetComparator => (
-                    <option key={requirementTargetComparator.id} value={requirementTargetComparator.id}>{requirementTargetComparator.description}</option>
-                  ))}
-                </select>
-
-                <select
-                  value={req.requirementTypeId}
-                  onChange={(e) => handleRequirementChange(index, "requirementTypeId", e.target.value)}
-                  className="form-input"
-                >
-                  <option value="" disabled>Tipo de requisito</option>
-                  {requirementTypes.map(requirementType => (
-                    <option key={requirementType.id} value={requirementType.id}>{requirementType.description}</option>
-                  ))}
-                </select>
-
-                <button type="button" onClick={() => handleRemoveRequirement(index)} className="remove-button">
-                  Quitar
-                </button>
-              </div>
-
-            ))}
-
-            <button type="button" onClick={handleAddRequirement} className="create-button">
-              + Agregar nuevo requerimiento
+            <button type="button" className="go-back-button add-requirement-button" onClick={() => appendRequirements({ description: '', requirementTypeId: '', operator: '', expectedValue: '', requirementTargetComparatorId: '' })}>
+              + Añadir
             </button>
           </div>
 
@@ -304,7 +298,9 @@ export default function CreateJobApp() {
           </div>
 
         </form>
+
       </div>
     </div>
+
   );
 }

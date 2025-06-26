@@ -7,13 +7,6 @@ import { JwtService } from "../../commons/utils/jwt.service";
 export default function Home() {
   const { showToast } = useContext(ToastContext);
 
-  // Example user data - you can fetch this from your auth context or API
-  const currentUser = {
-
-    name: "Doe, John",
-    role: "Reclutador",
-  };
-
   const getUserClaim = () => {
     const claims = JwtService.getClaims();
     return {

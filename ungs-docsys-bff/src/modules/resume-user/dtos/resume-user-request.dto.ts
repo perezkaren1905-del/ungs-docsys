@@ -1,6 +1,4 @@
 import {
-  IsNotEmpty,
-  IsBoolean,
   ValidateNested,
   IsArray,
   IsOptional
@@ -15,54 +13,50 @@ import { ResumeFileRequestDto } from './resume-file-request.dto';
 import { TechnicalSkillRequestDto } from './technical-skill-request.dto';
 
 export class ResumeUserRequestDto {
-  @IsNotEmpty({ message: 'Contact must not be null' })
+  @IsOptional()
   @ValidateNested()
   @Type(() => ContactRequestDto)
-  contact: ContactRequestDto;
+  contact?: ContactRequestDto;
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => EducationRequestDto)
   @IsOptional()
-  educations: EducationRequestDto[] = [];
+  educations?: EducationRequestDto[] = [];
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ExperienceRequestDto)
   @IsOptional()
-  experiences: ExperienceRequestDto[] = [];
+  experiences?: ExperienceRequestDto[] = [];
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => LanguageRequestDto)
   @IsOptional()
-  languages: LanguageRequestDto[] = [];
+  languages?: LanguageRequestDto[] = [];
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => TechnicalSkillRequestDto)
   @IsOptional()
-  technicalSkills: TechnicalSkillRequestDto[] = [];
+  technicalSkills?: TechnicalSkillRequestDto[] = [];
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CertificationRequestDto)
   @IsOptional()
-  certifications: CertificationRequestDto[] = [];
+  certifications?: CertificationRequestDto[] = [];
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ContactRequestDto)
   @IsOptional()
-  references: ContactRequestDto[] = [];
+  references?: ContactRequestDto[] = [];
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ResumeFileRequestDto)
   @IsOptional()
-  resumeFiles: ResumeFileRequestDto[] = [];
-
-  @IsNotEmpty({ message: 'Is current must not be null' })
-  @IsBoolean()
-  isCurrent: boolean;
+  resumeFiles?: ResumeFileRequestDto[] = [];
 }

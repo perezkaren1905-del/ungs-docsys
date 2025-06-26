@@ -9,15 +9,15 @@ import com.ungs.docsys.models.*;
 import com.ungs.docsys.repositories.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -30,15 +30,12 @@ public class ResumeUserServiceImpl implements ResumeUserService {
     private final ResumeUserRepository resumeUserRepository;
 
     @Override
+    @Transactional
     public ResumeUserResponseDto save(ResumeUserRequestDto request, AppUserClaimDto appUserClaimDto) {
         AppUser appUser = appUserMapper.toModel(appUserService.getByUsername(appUserClaimDto.getEmail()));
 
         if (appUser == null) {
             throw new IllegalArgumentException("User not found for email: " + appUserClaimDto.getEmail());
-        }
-
-        if (resumeUserRepository.findByAppUserId(appUser.getId()).isPresent()) {
-            throw new IllegalStateException("Resume already exists for user ID: " + appUserClaimDto.getId());
         }
 
         ResumeUser resumeUser = resumeUserMapper.toResumeUser(request);
@@ -50,15 +47,22 @@ public class ResumeUserServiceImpl implements ResumeUserService {
                         .orElseGet(ArrayList::new)
         );
 
+        final Optional<ResumeUser> currentResumeUserOpt = resumeUserRepository.findAllByAppUserIdAndIsCurrent(appUser.getId(), Boolean.TRUE)
+                        .stream().findFirst();
+        if(currentResumeUserOpt.isPresent()) {
+            final ResumeUser currentResumeUser = currentResumeUserOpt.get();
+            currentResumeUser.setIsCurrent(Boolean.FALSE);
+            resumeUserRepository.save(currentResumeUser);
+        }
+
         mapAndSetList(request.getEducations(), dto -> resumeUserMapper.toEducation(dto, resumeUser), resumeUser::setEducations);
         mapAndSetList(request.getExperiences(), dto -> resumeUserMapper.toExperience(dto, resumeUser), resumeUser::setExperiences);
         mapAndSetList(request.getLanguages(), dto -> resumeUserMapper.toLanguage(dto, resumeUser), resumeUser::setLanguages);
         mapAndSetList(request.getTechnicalSkills(), dto -> resumeUserMapper.toTechnicalSkill(dto, resumeUser), resumeUser::setTechnicalSkills);
         mapAndSetList(request.getCertifications(), dto -> resumeUserMapper.toCertification(dto, resumeUser), resumeUser::setCertifications);
         mapAndSetList(request.getResumeFiles(), dto -> resumeUserMapper.toResumeFile(dto, resumeUser), resumeUser::setResumeFiles);
-
-        ResumeUser savedResumeUser = resumeUserRepository.save(resumeUser);
-        return resumeUserMapper.toResponse(savedResumeUser);
+        resumeUser.setIsCurrent(Boolean.TRUE);
+        return resumeUserMapper.toResponse(resumeUserRepository.save(resumeUser));
     }
 
     private <D, E> void mapAndSetList(List<D> dtos, Function<D, E> mapper, Consumer<List<E>> setter) {
@@ -66,15 +70,18 @@ public class ResumeUserServiceImpl implements ResumeUserService {
     }
 
     @Override
-    public ResumeUserResponseDto getById(Long resumeUserId) {
-        ResumeUser resumeUser = resumeUserRepository.findByAppUserId(resumeUserId)
-                .orElseThrow(() -> new EntityNotFoundException("Resume not found for user ID: " + resumeUserId));
+    public ResumeUserResponseDto getById(Long id) {
+        ResumeUser resumeUser = resumeUserRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Resume not found"));
         return resumeUserMapper.toResponse(resumeUser);
     }
 
     @Override
-    public Page<ResumeUserRequestDto> getByParams(Pageable pageable) {
-        return null;
+    public List<ResumeUserResponseDto> getByParams(Boolean isCurrent, AppUserClaimDto appUserClaimDto) {
+        return resumeUserRepository.findAllByAppUserIdAndIsCurrent(appUserClaimDto.getId(), isCurrent)
+                .stream()
+                .map(resumeUserMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     @Override

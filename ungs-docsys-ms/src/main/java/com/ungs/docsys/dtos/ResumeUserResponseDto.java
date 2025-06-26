@@ -18,6 +18,6 @@ public class ResumeUserResponseDto {
     private List<LanguageResponseDto> languages;
     private List<TechnicalSkillResponseDto> technicalSkills;
     private List<CertificationResponseDto> certifications;
-    private List<ResumeFileResponseDto> files;
+    private List<ResumeFileResponseDto> resumeFiles;
 }
 
