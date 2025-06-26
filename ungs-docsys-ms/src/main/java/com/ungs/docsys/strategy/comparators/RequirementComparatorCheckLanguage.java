@@ -6,14 +6,16 @@ import com.ungs.docsys.strategy.RequirementComparatorCheckStrategy;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RequirementComparatorCheckCertification implements RequirementComparatorCheckStrategy {
+public class RequirementComparatorCheckLanguage implements RequirementComparatorCheckStrategy {
 
     public RequirementTargetComparator getType() {
-        return null;
+        return RequirementTargetComparator.LANGUAGE_DATA;
     }
 
     @Override
     public boolean isApplied(Requirement requirement, Long resumeUserId) {
+        // Implement the logic to check if the requirement is applied for the given resume user ID
+        // This is a placeholder implementation and should be replaced with actual logic
         return true;
     }
 }

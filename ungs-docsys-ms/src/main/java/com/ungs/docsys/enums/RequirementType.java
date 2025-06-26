@@ -1,17 +1,19 @@
 package com.ungs.docsys.enums;
 
-public enum RequirementType {
-    EXPERIENCE_DATA,
-    EDUCATION_DATA,
-    TECHNICAL_SKILL_DATA,
-    CERTIFICATION_DATA,
-    LANGUAGE_DATA;
 
-    public static RequirementType fromString(String name) {
+public enum RequirementType {
+    GLOBAL,
+    MANDATORY,
+    PREFERRED;
+
+    public static RequirementType fromString(String value) {
+        if (value == null)
+            throw new IllegalArgumentException("RequirementType cannot be null");
+
         try {
-            return RequirementType.valueOf(name);
-        } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException("Requirement type not supported: " + name);
+            return RequirementType.valueOf(value.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid RequirementType: " + value);
         }
     }
 }

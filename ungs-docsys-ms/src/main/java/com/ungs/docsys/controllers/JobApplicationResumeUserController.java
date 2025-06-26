@@ -1,7 +1,10 @@
 package com.ungs.docsys.controllers;
 
 import com.ungs.docsys.dtos.JobApplicationResumeUserResponseDto;
+import com.ungs.docsys.dtos.RequirementResponseDto;
 import com.ungs.docsys.services.JobApplicationResumeUserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,14 @@ public class JobApplicationResumeUserController {
 
     @Autowired
     private JobApplicationResumeUserService jobApplicationResumeUserService;
+
+    @Operation(summary = "Get Job Application Resume User by ID")
+    @ApiResponse(responseCode = "200", description = "Success")
+    @GetMapping("/{id}")
+    public ResponseEntity<JobApplicationResumeUserResponseDto> getByParams(
+            @PathVariable Long id) {
+        return ResponseEntity.ok(jobApplicationResumeUserService.getById(id));
+    }
 
     @GetMapping("/{jobApplicationId}/apply/{resumeUserId}")
     public ResponseEntity<JobApplicationResumeUserResponseDto> apply(
