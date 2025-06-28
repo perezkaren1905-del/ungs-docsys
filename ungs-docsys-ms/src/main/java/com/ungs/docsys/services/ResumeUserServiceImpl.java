@@ -3,12 +3,13 @@ package com.ungs.docsys.services;
 import com.ungs.docsys.dtos.AppUserClaimDto;
 import com.ungs.docsys.dtos.ResumeUserRequestDto;
 import com.ungs.docsys.dtos.ResumeUserResponseDto;
+import com.ungs.docsys.exception.BusinessException;
 import com.ungs.docsys.mappers.AppUserMapper;
 import com.ungs.docsys.mappers.ResumeUserMapper;
 import com.ungs.docsys.models.*;
 import com.ungs.docsys.repositories.*;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class ResumeUserServiceImpl implements ResumeUserService {
         AppUser appUser = appUserMapper.toModel(appUserService.getByUsername(appUserClaimDto.getEmail()));
 
         if (appUser == null) {
-            throw new IllegalArgumentException("User not found for email: " + appUserClaimDto.getEmail());
+            throw new BusinessException(HttpStatus.NOT_FOUND, "User not found for email: " + appUserClaimDto.getEmail());
         }
 
         ResumeUser resumeUser = resumeUserMapper.toResumeUser(request);
@@ -72,7 +73,7 @@ public class ResumeUserServiceImpl implements ResumeUserService {
     @Override
     public ResumeUserResponseDto getById(Long id) {
         ResumeUser resumeUser = resumeUserRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Resume not found"));
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Resume not found"));
         return resumeUserMapper.toResponse(resumeUser);
     }
 

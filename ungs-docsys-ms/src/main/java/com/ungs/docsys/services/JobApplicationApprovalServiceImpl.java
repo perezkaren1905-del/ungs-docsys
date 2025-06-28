@@ -3,6 +3,7 @@ package com.ungs.docsys.services;
 import com.ungs.docsys.dtos.AppUserClaimDto;
 import com.ungs.docsys.dtos.JobApplicationApprovalRequestDto;
 import com.ungs.docsys.dtos.JobApplicationApprovalResponseDto;
+import com.ungs.docsys.exception.BusinessException;
 import com.ungs.docsys.mappers.JobApplicationApprovalMapper;
 import com.ungs.docsys.models.AppUser;
 import com.ungs.docsys.models.JobApplicationApproval;
@@ -11,7 +12,6 @@ import com.ungs.docsys.repositories.JobApplicationApprovalRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +28,7 @@ public class JobApplicationApprovalServiceImpl implements JobApplicationApproval
     public JobApplicationApprovalResponseDto getById(Long id) {
         return jobApplicationApprovalRepository.findById(id)
                 .map(jobApplicationApprovalMapper::toResponse)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job Application Approval not found"));
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Job Application Approval not found"));
     }
 
     @Override
@@ -39,7 +39,7 @@ public class JobApplicationApprovalServiceImpl implements JobApplicationApproval
     @Override
     public JobApplicationApprovalResponseDto create(JobApplicationApprovalRequestDto jobApplicationApprovalRequestDto, AppUserClaimDto appUserClaimDto) {
         final AppUser appUser = appUserRepository
-                .findById(appUserClaimDto.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job Application Approval not found"));
+                .findById(appUserClaimDto.getId()).orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Job Application Approval not found"));
 
         final JobApplicationApproval jobApplicationApproval = jobApplicationApprovalMapper.toModel(jobApplicationApprovalRequestDto);
         jobApplicationApproval.setAppUser(appUser);

@@ -41,11 +41,19 @@ export default function CreateJobApp() {
     name: 'requirements'
   });
 
+  const mapExpectedValueToJsonStringfy = (expectedValueString) => {
+    const expectedValueJson = {
+      numericValue: 0,
+      stringValues: expectedValueString.split('|').map(val => val.trim()).filter(val => val !== '')
+    }
+    return JSON.stringify(expectedValueJson);
+  };
+
   const handleSaveJobApplication = async (data) => {
     const requirementsRequest = data.requirements.map(requirement => {
       return {
         description: requirement.description,
-        expectedValue: requirement.expectedValue,
+        expectedValue: mapExpectedValueToJsonStringfy(requirement.expectedValue),
         requirementTypeId: Number(requirement.requirementTypeId),
         requirementTargetComparatorId: Number(requirement.requirementTargetComparatorId),
         operator: requirement.operator
@@ -265,7 +273,7 @@ export default function CreateJobApp() {
 
                     <div className="info-row job-form-row">
                       <span className="label">Valores a comparar:</span>
-                      <input {...register(`requirements.${index}.expectedValue`)} />
+                      <input {...register(`requirements.${index}.expectedValue`)} placeholder="Separe los valores por |. Ej: Sistemas|Computacion|Electronica..."/>
                     </div>
 
                   </div>
