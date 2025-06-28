@@ -39,7 +39,9 @@ public class SecurityConfig {
             "/v1/nationalities",
             "/v1/nationalities/**",
             "/v1/identification-types",
-            "/v1/identification-types/**"
+            "/v1/identification-types/**",
+            "/v1/job-applications-resume-user",
+            "/v1/job-applications-resume-user/**",
     };
 
     private static final String[] ROLE_RECRUITER_POST_ACCESS = {

@@ -58,6 +58,9 @@ public class ResumeUser {
     @OneToMany(mappedBy = "resumeUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TechnicalSkill> technicalSkills;
 
+    @OneToMany(mappedBy = "resumeUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<JobApplicationResumeUser> jobApplicationResumeUsers;
+
     @PrePersist
     private void onCreate() {
         this.createdDate = LocalDateTime.now();

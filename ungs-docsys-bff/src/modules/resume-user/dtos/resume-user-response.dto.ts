@@ -7,6 +7,7 @@ import { CertificationResponseDto } from './certification-response.dto';
 import { ResumeFileResponseDto } from './resume-file-response.dto';
 
 export class ResumeUserResponseDto {
+  id: number;
   contact: ContactResponseDto;
   educations: EducationResponseDto[];
   experiences: ExperienceResponseDto[];

@@ -59,6 +59,8 @@ public class JobApplication {
     @ManyToOne
     @JoinColumn(name = "job_profile_level_id", nullable = true)
     private JobProfileLevel jobProfileLevel;
+    @OneToMany(mappedBy = "jobApplication", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<JobApplicationResumeUser> jobApplicationResumeUsers;
 
     @PrePersist
     private void onCreate() {

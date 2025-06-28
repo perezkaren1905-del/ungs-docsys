@@ -55,6 +55,15 @@ public class JobApplicationResumeUser {
     protected void onCreate() {
         this.createdDate = LocalDateTime.now();
         this.updatedDate = LocalDateTime.now();
+        if(requirementGlobalCount == null) {
+            this.requirementGlobalCount = 0L;
+        }
+        if(requirementMandatoryCount == null) {
+            this.requirementMandatoryCount = 0L;
+        }
+        if(requirementPreferredCount == null) {
+            this.requirementPreferredCount = 0L;
+        }
     }
 
     @PreUpdate

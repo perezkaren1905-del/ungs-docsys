@@ -1,12 +1,12 @@
 package com.ungs.docsys.services;
 
 import com.ungs.docsys.dtos.JobApplicationPeriodResponseDto;
+import com.ungs.docsys.exception.BusinessException;
 import com.ungs.docsys.mappers.JobApplicationPeriodMapper;
 import com.ungs.docsys.repositories.JobApplicationPeriodRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class JobApplicationPeriodServiceImpl implements  JobApplicationPeriodSer
     public JobApplicationPeriodResponseDto getById(Long id) {
         return jobApplicationPeriodRepository.findById(id)
                 .map(jobApplicationPeriodMapper::toResponse)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job Application Period not found"));
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Job Application Period not found"));
     }
 
     @Override

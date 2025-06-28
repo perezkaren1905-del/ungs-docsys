@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JobApplicationResumeUserResponseDto {
-    private Long jobApplicationId;
-    private Long resumeUserId;
+
+    private JobApplicationResponseDto jobApplication;
+    private ResumeUserResponseDto resumeUser;
     private Long requirementGlobalCount;
     private Long requirementMandatoryCount;
     private Long requirementPreferredCount;
     private Long requirementGlobalApplied;
     private Long requirementMandatoryApplied;
     private Long requirementPreferredApplied;
-
 }

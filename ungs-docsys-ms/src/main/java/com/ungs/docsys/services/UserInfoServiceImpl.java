@@ -2,7 +2,7 @@ package com.ungs.docsys.services;
 
 import com.ungs.docsys.dtos.UserInfoRequestDto;
 import com.ungs.docsys.dtos.UserInfoResponseDto;
-import com.ungs.docsys.exception.ConflictException;
+import com.ungs.docsys.exception.BusinessException;
 import com.ungs.docsys.mappers.IdentificationTypeMapper;
 import com.ungs.docsys.mappers.NationalityMapper;
 import com.ungs.docsys.mappers.RoleMapper;
@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,7 @@ public class UserInfoServiceImpl implements UserInfoService {
         logger.info("Signing up user with email: {}", request.getEmail());
 
         if (appUserRepository.existsByEmail(request.getEmail())) {
-            throw new ConflictException("Email already registered");
+            throw new BusinessException(HttpStatus.CONFLICT, "Email already registered");
         }
 
         IdentificationType identificationType = identificationTypeMapper.toModel(

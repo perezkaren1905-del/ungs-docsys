@@ -10,6 +10,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { JobApplicationApprovalService } from "../../../commons/services/job-application-approval.service";
 import { ResumesService } from "../../../commons/services/resumes.service";
 import { ToastContext } from "../../../context/ToastContext";
+import { JobApplicationResumeUsersService } from "../../../commons/services/job-application-resume-users.service";
 
 export default function ViewJobApp() {
   const navigate = useNavigate();
@@ -111,8 +112,8 @@ export default function ViewJobApp() {
     try {
       const currentResumeOfUser = await ResumesService.getByParams(true);
       if(currentResumeOfUser.length > 0) {
-        console.log(JSON.stringify(currentResumeOfUser))
-        showToast("Has aplicado para la propuesta", "success");
+        console.log(JSON.stringify(currentResumeOfUser));
+        await applyRequest(jobApplication.id, currentResumeOfUser[0].id)
       } else {
         console.error('No tienes un CV Cargado');
         showToast("Aún no has configurado tu curriculum", "warning");
@@ -120,6 +121,17 @@ export default function ViewJobApp() {
     } catch (error) {
       console.error(error);
       showToast("Hubo un problema al aplicar", "error");
+    }
+  };
+  const applyRequest = async (jobApplicationId, resumeUserId) => {
+    try {
+      const request = {
+        jobApplicationId: jobApplicationId, resumeUserId: resumeUserId
+      }
+      await JobApplicationResumeUsersService.create(request);
+      showToast("Has aplicado para la propuesta", "success");
+    } catch (error) {
+      showToast(error.message, "error");
     }
   };
 

@@ -3,43 +3,51 @@ import {
     NestInterceptor,
     ExecutionContext,
     CallHandler,
-    UnauthorizedException,
-    ForbiddenException,
     InternalServerErrorException,
+    HttpException,
 } from '@nestjs/common';
 import { Observable, catchError, throwError } from 'rxjs';
-import { NotModifiedException } from '../exceptions/not-modified.exception';
   
 interface AxiosError extends Error {
-    isAxiosError?: boolean;
-    response?: {
-      status?: number;
-      data?: any;
-    };
+  isAxiosError?: boolean;
+  response?: {
+    status?: number;
+    data?: RecruitmentExceptionResponse;
+  };
+}
+
+interface RecruitmentExceptionResponse {
+  httpStatusDescription: string;
+  httpStatusCode: number;
+  message: string;
+  timestamp: string;
 }
 
 @Injectable()
 export class HttpExceptionInterceptor implements NestInterceptor {
-    intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-        return next.handle().pipe(
-            catchError((error: AxiosError) => {
-                if (error.isAxiosError) {
-                    const status = error.response?.status;
-        
-                    switch (status) {
-                        case 401:
-                            return throwError(() => new UnauthorizedException('Invalid or expired token!'));
-                        case 403:
-                            return throwError(() => new ForbiddenException('You do not have permission for this action!'));
-                        case 304:
-                            return throwError(() => new NotModifiedException());
-                        default:
-                            return throwError(() => new InternalServerErrorException(`External HTTP Error (${status ?? 'unknown'})!`));
-                    }
-                }
-                return throwError(() => new InternalServerErrorException('Unexpected error!'));
-            }),
-      );
-    }
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    return next.handle().pipe(
+      catchError((error: AxiosError) => {
+        if (error.isAxiosError && error.response?.data) {
+          const recruitmenException = error.response.data;
+
+          return throwError(() =>
+            new HttpException(
+              {
+                statusCode: recruitmenException.httpStatusCode,
+                error: recruitmenException.httpStatusDescription,
+                message: recruitmenException.message,
+                timestamp: recruitmenException.timestamp,
+              },
+              recruitmenException.httpStatusCode
+            )
+          );
+        }
+
+        return throwError(() =>
+          new InternalServerErrorException('Error inesperado del sistema')
+        );
+      })
+    );
+  }
 }
-  

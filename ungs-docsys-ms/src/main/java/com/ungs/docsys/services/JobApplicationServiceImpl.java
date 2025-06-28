@@ -1,17 +1,15 @@
 package com.ungs.docsys.services;
 
 import com.ungs.docsys.dtos.*;
+import com.ungs.docsys.exception.BusinessException;
 import com.ungs.docsys.mappers.JobApplicationMapper;
 import com.ungs.docsys.mappers.RequirementMapper;
-import com.ungs.docsys.models.AppUser;
 import com.ungs.docsys.models.JobApplication;
 import com.ungs.docsys.models.RequirementJobApplication;
-import com.ungs.docsys.models.UserInfo;
 import com.ungs.docsys.repositories.AppUserRepository;
 import com.ungs.docsys.repositories.JobApplicationRepository;
 import com.ungs.docsys.repositories.RequirementJobApplicationRepository;
 import com.ungs.docsys.utils.ExcelExportUtils;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -19,7 +17,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -51,7 +48,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 .toList();
         final JobApplication jobApplication = jobApplicationMapper.toModel(request);
         jobApplication.setAppUser(appUserRepository
-                .findById(appUserClaimDto.getId()).orElseThrow(() -> new EntityNotFoundException("User not found")));
+                .findById(appUserClaimDto.getId()).orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "User not found")));
         final JobApplication jobApplicationSaved = jobApplicationRepository.save(jobApplication);
         requirementResponseDtos.forEach(requirementResponseDto -> {
             requirementJobApplicationRepository.save(RequirementJobApplication.builder()
@@ -91,7 +88,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     @Override
     public JobApplicationResponseDto getById(Long id) {
         final JobApplication jobApplication = jobApplicationRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job Application not found"));
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Job Application not found"));
         final JobApplicationResponseDto jobApplicationResponseDto = jobApplicationMapper.toResponse(jobApplication);
         jobApplicationResponseDto.setRequirements(getRequirementResponseDtos(jobApplication));
         return jobApplicationResponseDto;
@@ -99,7 +96,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
     @Override
     public byte[] exportToExcel(Long jobApplicationId, AppUserClaimDto appUserClaimDto) {
-        List<JobApplicationResumeUserResponseDto> jobApplicationResumeUserList = jobApplicationResumeUserService.getByParams(jobApplicationId);
+        List<JobApplicationResumeUserResponseDto> jobApplicationResumeUserList = jobApplicationResumeUserService.getByParams(jobApplicationId, null);
 
         try (Workbook workbook = ExcelExportUtils.createWorkbookFromTemplate("templates/candidatos.xlsx")) {
             Sheet sheet = workbook.getSheetAt(0);
@@ -139,6 +136,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
     private JobApplication getJobApplicationById(Long id) {
         return jobApplicationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Job application not found"));
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Job application not found"));
     }
 }
