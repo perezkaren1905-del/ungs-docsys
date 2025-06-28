@@ -4,15 +4,16 @@ import com.ungs.docsys.dtos.JobApplicationRequestDto;
 import com.ungs.docsys.dtos.JobApplicationResponseDto;
 import com.ungs.docsys.security.JwtUtil;
 import com.ungs.docsys.services.JobApplicationService;
+import com.ungs.docsys.utils.ExcelExportUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -74,5 +75,22 @@ public class JobApplicationController {
     @GetMapping("/{id}")
     public ResponseEntity<JobApplicationResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(jobApplicationService.getById(id));
+    }
+
+    @Operation(summary = "Export a job application")
+    @ApiResponse(responseCode = "200", description = "Job application exported successfully")
+    @ApiResponse(responseCode = "404", description = "Job application not found")
+    @GetMapping("/{id}/export")
+    public ResponseEntity<byte[]> export(
+            @RequestHeader("Authorization") String authorization,
+            @PathVariable Long id) throws IOException {
+        JobApplicationResponseDto jobApplicationResponseDto = jobApplicationService.getById(id);
+        byte[] data = jobApplicationService.exportToExcel(id, jwtUtil.extractUserClaim(authorization));
+        String fileName = ExcelExportUtils.generateExportFileName(jobApplicationResponseDto.getTitle());
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        ContentDisposition.attachment().filename(fileName).build().toString())
+                .body(data);
     }
 }

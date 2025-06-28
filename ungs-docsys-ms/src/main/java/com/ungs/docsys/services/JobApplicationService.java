@@ -1,10 +1,8 @@
 package com.ungs.docsys.services;
 
-import com.ungs.docsys.dtos.AppUserClaimDto;
-import com.ungs.docsys.dtos.JobApplicationRequestDto;
-import com.ungs.docsys.dtos.JobApplicationResponseDto;
-import com.ungs.docsys.dtos.JobApplicationUpdateRequestDto;
+import com.ungs.docsys.dtos.*;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface JobApplicationService {
@@ -13,4 +11,5 @@ public interface JobApplicationService {
     JobApplicationResponseDto partiallyUpdate(Long id, JobApplicationRequestDto request);
     List<JobApplicationResponseDto> getAll();
     JobApplicationResponseDto getById(Long id);
+    byte[] exportToExcel(Long id, AppUserClaimDto appUserClaimDto) throws IOException;
 }
