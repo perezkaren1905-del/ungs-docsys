@@ -19,11 +19,11 @@ public class JobApplicationResumeUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "job_application_id", nullable = false)
     private JobApplication jobApplication;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "resume_user_id", nullable = false)
     private ResumeUser resumeUser;
 
@@ -55,6 +55,16 @@ public class JobApplicationResumeUser {
     protected void onCreate() {
         this.createdDate = LocalDateTime.now();
         this.updatedDate = LocalDateTime.now();
+
+        if(requirementGlobalCount == null) {
+            this.requirementGlobalCount = 0L;
+        }
+        if(requirementMandatoryCount == null) {
+            this.requirementMandatoryCount = 0L;
+        }
+        if(requirementPreferredCount == null) {
+            this.requirementPreferredCount = 0L;
+        }
     }
 
     @PreUpdate

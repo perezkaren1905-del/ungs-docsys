@@ -1,12 +1,12 @@
 package com.ungs.docsys.services;
 
 import com.ungs.docsys.dtos.RequirementTypeResponseDto;
+import com.ungs.docsys.exception.BusinessException;
 import com.ungs.docsys.mappers.RequirementTypeMapper;
 import com.ungs.docsys.repositories.RequirementTypeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class RequirementTypeServiceImpl implements RequirementTypeService {
     public RequirementTypeResponseDto getById(Long id) {
         return requirementTypeRepository.findById(id)
                 .map(requirementTypeMapper::toResponse)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Requirement type not found"));
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Requirement type not found"));
     }
 
     @Override

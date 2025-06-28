@@ -4,6 +4,7 @@ import com.ungs.docsys.dtos.AppUserClaimDto;
 import com.ungs.docsys.dtos.AppUserRequestDto;
 import com.ungs.docsys.dtos.AppUserResponseDto;
 import com.ungs.docsys.dtos.AppUserSignInResponseDto;
+import com.ungs.docsys.exception.BusinessException;
 import com.ungs.docsys.mappers.AppUserMapper;
 import com.ungs.docsys.repositories.AppUserRepository;
 import com.ungs.docsys.security.AppUserDetails;
@@ -15,7 +16,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @AllArgsConstructor
@@ -41,6 +41,6 @@ public class AppUserServiceImpl implements AppUserService {
     public AppUserResponseDto getByUsername(String username) {
         return appUserRepository.findAppUserByEmailAndActiveIsTrue(username)
                 .map(appUserMapper::toResponse)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "User not found"));
     }
 }

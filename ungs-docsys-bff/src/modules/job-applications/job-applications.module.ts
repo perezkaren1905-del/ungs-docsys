@@ -16,11 +16,16 @@ import { JobProfileLevelsService } from './job-profile-levels/services/job-profi
 import { JobProfileLevelController } from './job-profile-levels/controllers/job-profile-level.controllers';
 import { JobApplicationApprovalsController } from './job-application-approvals/controllers/job-application-approvals.controller';
 import { JobApplicationApprovalsService } from './job-application-approvals/services/job-application-approvals.service';
+import { JobApplicationResumeUsersController } from './job-application-resume-users/controllers/job-application-resume-users.controller';
+import { JobApplicationResumeUsersService } from './job-application-resume-users/services/job-application-resume-users.service';
 
 @Module({
-    controllers: [JobApplicationPeriodsController, JobApplicationStatusesController, RequirementTargetComparatorsController, RequirementTypesController, RequirementsController, JobApplicationController, JobProfileLevelController, JobApplicationApprovalsController],
+    controllers: [JobApplicationPeriodsController, JobApplicationStatusesController, RequirementTargetComparatorsController, RequirementTypesController, RequirementsController, JobApplicationController
+        , JobProfileLevelController, JobApplicationApprovalsController, JobApplicationResumeUsersController],
     imports: [HttpModule],
-    providers: [JobApplicationPeriodsService, JobApplicationStatusesService, RequirementTargetComparatorsService, RequirementTypesService, RequirementsService, JobApplicationService, JobProfileLevelsService, JobApplicationApprovalsService],
-    exports: [JobApplicationPeriodsService, JobApplicationStatusesService, RequirementTargetComparatorsService, RequirementTypesService, RequirementsService, JobApplicationService, JobProfileLevelsService, JobApplicationApprovalsService]
+    providers: [JobApplicationPeriodsService, JobApplicationStatusesService, RequirementTargetComparatorsService, RequirementTypesService, RequirementsService, JobApplicationService,
+         JobProfileLevelsService, JobApplicationApprovalsService, JobApplicationResumeUsersService],
+    exports: [JobApplicationPeriodsService, JobApplicationStatusesService, RequirementTargetComparatorsService, RequirementTypesService, RequirementsService, JobApplicationService,
+         JobProfileLevelsService, JobApplicationApprovalsService, JobApplicationResumeUsersService]
 })
 export class JobApplicationsModule { }

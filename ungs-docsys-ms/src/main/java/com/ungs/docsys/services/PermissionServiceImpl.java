@@ -1,12 +1,12 @@
 package com.ungs.docsys.services;
 
 import com.ungs.docsys.dtos.PermissionResponseDto;
+import com.ungs.docsys.exception.BusinessException;
 import com.ungs.docsys.mappers.PermissionMapper;
 import com.ungs.docsys.repositories.PermissionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class PermissionServiceImpl implements  PermissionService {
     public PermissionResponseDto getById(Long id) {
         return permissionRepository.findById(id)
                 .map(permissionMapper::toResponse)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Permission not found"));
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Permission not found"));
     }
 
     @Override

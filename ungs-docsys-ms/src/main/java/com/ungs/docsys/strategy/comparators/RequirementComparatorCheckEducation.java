@@ -1,34 +1,26 @@
 package com.ungs.docsys.strategy.comparators;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ungs.docsys.enums.RequirementTargetComparator;
+import com.ungs.docsys.components.ExpectedValueComparatorParserComponent;
+import com.ungs.docsys.dtos.ExpectedValueComparatorDto;
 import com.ungs.docsys.models.Requirement;
+import com.ungs.docsys.repositories.EducationRepository;
 import com.ungs.docsys.strategy.RequirementComparatorCheckStrategy;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class RequirementComparatorCheckEducation implements RequirementComparatorCheckStrategy {
 
-    public RequirementTargetComparator getType() {
-        return RequirementTargetComparator.EDUCATION_DATA;
-    }
+    private final EducationRepository educationRepository;
+    private final ExpectedValueComparatorParserComponent expectedValueComparatorParserComponent;
 
     @Override
     public boolean isApplied(Requirement requirement, Long resumeUserId) {
-        String expectedValue = requirement.getExpectedValue();
-
-        if (expectedValue == null || expectedValue.isEmpty())
-            return false;
-
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode node = objectMapper.readTree(expectedValue);
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+        final ExpectedValueComparatorDto expectedValueComparatorDto = expectedValueComparatorParserComponent.parse(requirement.getExpectedValue());
+        return expectedValueComparatorDto.getStringValues().stream()
+                .anyMatch(value -> !educationRepository
+                        .findByResumeUserIdAndDegreeLikeIgnoreCase(resumeUserId, value)
+                        .isEmpty());
     }
 }

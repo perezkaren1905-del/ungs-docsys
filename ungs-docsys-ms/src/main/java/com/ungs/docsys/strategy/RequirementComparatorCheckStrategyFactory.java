@@ -3,36 +3,41 @@ package com.ungs.docsys.strategy;
 import com.ungs.docsys.enums.RequirementTargetComparator;
 import com.ungs.docsys.strategy.comparators.RequirementComparatorCheckCertification;
 import com.ungs.docsys.strategy.comparators.RequirementComparatorCheckEducation;
-import com.ungs.docsys.strategy.comparators.RequirementComparatorCheckExperience;
 import com.ungs.docsys.strategy.comparators.RequirementComparatorCheckLanguage;
 import com.ungs.docsys.strategy.comparators.RequirementComparatorCheckTechnicalSkill;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.PostConstruct;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
 
 @Component
+@AllArgsConstructor
 public class RequirementComparatorCheckStrategyFactory {
 
-    private final Map<RequirementTargetComparator, RequirementComparatorCheckStrategy> strategies = new HashMap<>();
+    private final RequirementComparatorCheckTechnicalSkill technicalSkillStrategy;
+    private final RequirementComparatorCheckCertification certificationStrategy;
+    private final RequirementComparatorCheckLanguage languageStrategy;
+    private final RequirementComparatorCheckEducation educationStrategy;
 
-    @Autowired
-    public RequirementComparatorCheckStrategyFactory(RequirementComparatorCheckExperience experience,
-                                                     RequirementComparatorCheckEducation education,
-                                                     RequirementComparatorCheckCertification certification,
-                                                     RequirementComparatorCheckTechnicalSkill skill,
-                                                     RequirementComparatorCheckLanguage language) {
-        strategies.put(RequirementTargetComparator.EXPERIENCE_DATA, experience);
-        strategies.put(RequirementTargetComparator.EDUCATION_DATA, education);
-        strategies.put(RequirementTargetComparator.CERTIFICATION_DATA, certification);
-        strategies.put(RequirementTargetComparator.TECHNICAL_SKILL_DATA, skill);
-        strategies.put(RequirementTargetComparator.LANGUAGE_DATA, language);
+    private final Map<RequirementTargetComparator, RequirementComparatorCheckStrategy> strategies = new EnumMap<>(RequirementTargetComparator.class);
+
+    @PostConstruct
+    public void init() {
+        strategies.put(RequirementTargetComparator.CERTIFICATION_DATA, certificationStrategy);
+        strategies.put(RequirementTargetComparator.TECHNICAL_SKILL_DATA, technicalSkillStrategy);
+        strategies.put(RequirementTargetComparator.LANGUAGE_DATA, languageStrategy);
+        strategies.put(RequirementTargetComparator.EDUCATION_DATA, educationStrategy);
     }
 
-    public RequirementComparatorCheckStrategy getStrategy(RequirementTargetComparator type) {
-        return Optional.ofNullable(strategies.get(type))
-                .orElseThrow(() -> new RuntimeException("No strategy for type: " + type));
+    public RequirementComparatorCheckStrategy get(RequirementTargetComparator key) {
+        return Optional.ofNullable(strategies.get(key))
+                .orElseThrow(() -> new IllegalArgumentException("Strategy not found for: " + key));
+    }
+
+    public Map<RequirementTargetComparator, RequirementComparatorCheckStrategy> getMap() {
+        return strategies;
     }
 }

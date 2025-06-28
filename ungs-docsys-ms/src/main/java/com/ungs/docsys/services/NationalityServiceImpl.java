@@ -1,12 +1,12 @@
 package com.ungs.docsys.services;
 
 import com.ungs.docsys.dtos.NationalityResponseDto;
+import com.ungs.docsys.exception.BusinessException;
 import com.ungs.docsys.mappers.NationalityMapper;
 import com.ungs.docsys.repositories.NationalityRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class NationalityServiceImpl implements NationalityService {
     public NationalityResponseDto getById(Long id) {
         return nationalityRepository.findById(id)
                 .map(nationalityMapper::toResponse)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nationality not found"));
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Nationality not found"));
     }
 
     @Override
