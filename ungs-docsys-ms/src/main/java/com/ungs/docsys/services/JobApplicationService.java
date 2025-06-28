@@ -11,5 +11,5 @@ public interface JobApplicationService {
     JobApplicationResponseDto partiallyUpdate(Long id, JobApplicationRequestDto request);
     List<JobApplicationResponseDto> getAll();
     JobApplicationResponseDto getById(Long id);
-    byte[] exportToExcel(Long id, AppUserClaimDto appUserClaimDto) throws IOException;
+    byte[] exportToExcel(Long id) throws IOException;
 }

@@ -33,16 +33,16 @@ public class JobApplicationResumeUserServiceImpl implements JobApplicationResume
     }
 
     @Override
-    public JobApplicationResumeUserResponseDto create(JobApplicationResumeUserRequestDto jobApplicationResumeUserRequestDto, AppUserClaimDto userClaimDto) {
+    public JobApplicationResumeUserResponseDto create(JobApplicationResumeUserRequestDto jobApplicationResumeUserRequestDto) {
         final JobApplicationResumeUser jobApplicationResumeUser = jobApplicationResumeUserMapper.toModel(jobApplicationResumeUserRequestDto);
-        throwIfCandidateHasApplied(jobApplicationResumeUser.getResumeUser().getAppUser(), userClaimDto);
+        throwIfCandidateHasApplied(jobApplicationResumeUserRequestDto);
         final List<RequirementJobApplication> requirementJobApplications = jobApplicationResumeUser.getJobApplication().getRequirementJobApplications();
         setRequirementsAppliedValues(jobApplicationResumeUserRequestDto, requirementJobApplications, jobApplicationResumeUser);
         return jobApplicationResumeUserMapper.toResponse(jobApplicationResumeUserRepository.save(jobApplicationResumeUser));
     }
 
-    private void throwIfCandidateHasApplied(AppUser appUser, AppUserClaimDto userClaimDto) {
-        if(Objects.equals(appUser.getId(), userClaimDto.getId())) {
+    private void throwIfCandidateHasApplied(JobApplicationResumeUserRequestDto jobApplicationResumeUserRequestDto) {
+        if(!getByParams(jobApplicationResumeUserRequestDto.getJobApplicationId(), jobApplicationResumeUserRequestDto.getResumeUserId()).isEmpty()) {
             throw new BusinessException(HttpStatus.CONFLICT, "Candidate already applied to job application");
         }
     }

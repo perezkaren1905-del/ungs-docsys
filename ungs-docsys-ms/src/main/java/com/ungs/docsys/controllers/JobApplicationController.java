@@ -82,10 +82,9 @@ public class JobApplicationController {
     @ApiResponse(responseCode = "404", description = "Job application not found")
     @GetMapping("/{id}/export")
     public ResponseEntity<byte[]> export(
-            @RequestHeader("Authorization") String authorization,
             @PathVariable Long id) throws IOException {
         JobApplicationResponseDto jobApplicationResponseDto = jobApplicationService.getById(id);
-        byte[] data = jobApplicationService.exportToExcel(id, jwtUtil.extractUserClaim(authorization));
+        byte[] data = jobApplicationService.exportToExcel(id);
         String fileName = ExcelExportUtils.generateExportFileName(jobApplicationResponseDto.getTitle());
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

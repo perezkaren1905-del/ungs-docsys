@@ -2,7 +2,6 @@ package com.ungs.docsys.controllers;
 
 import com.ungs.docsys.dtos.JobApplicationResumeUserRequestDto;
 import com.ungs.docsys.dtos.JobApplicationResumeUserResponseDto;
-import com.ungs.docsys.security.JwtUtil;
 import com.ungs.docsys.services.JobApplicationResumeUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,7 +18,6 @@ import java.util.List;
 public class JobApplicationResumeUserController {
 
     private final JobApplicationResumeUserService jobApplicationResumeUserService;
-    private final JwtUtil jwtUtil;
 
     @Operation(summary = "Get Job Application Resume User by ID")
     @ApiResponse(responseCode = "200", description = "Success")
@@ -33,7 +31,7 @@ public class JobApplicationResumeUserController {
     public ResponseEntity<JobApplicationResumeUserResponseDto> create(
             @RequestHeader String authorization,
             @RequestBody @Valid JobApplicationResumeUserRequestDto jobApplicationResumeUserRequestDto) {
-        return ResponseEntity.ok(jobApplicationResumeUserService.create(jobApplicationResumeUserRequestDto, jwtUtil.extractUserClaim(authorization)));
+        return ResponseEntity.ok(jobApplicationResumeUserService.create(jobApplicationResumeUserRequestDto));
     }
 
     @Operation(summary = "Get Job Application Resume Users by params")

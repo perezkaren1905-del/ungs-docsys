@@ -53,15 +53,12 @@ public class SecurityConfig {
     };
 
     private static final String[] ROLE_RECRUITER_GET_ACCESS = {
-            "/v1/job-applications/**"
     };
 
     private static final String[] ROLE_CANDIDATE_POST_ACCESS = {
-            "/v1/resume-user"
     };
 
     private static final String[] ROLE_CANDIDATE_GET_ACCESS = {
-            "/v1/resume-user/**"
     };
 
     @Bean

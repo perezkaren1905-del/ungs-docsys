@@ -1,10 +1,12 @@
 package com.ungs.docsys.utils;
 
-import com.ungs.docsys.dtos.AppUserClaimDto;
-import com.ungs.docsys.dtos.JobApplicationResumeUserResponseDto;
+import com.ungs.docsys.exception.BusinessException;
+import com.ungs.docsys.models.JobApplicationResumeUser;
+import com.ungs.docsys.models.UserInfo;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,22 +24,23 @@ public class ExcelExportUtils {
         }
     }
 
-    public static void writeResumeUserRow(Row row, JobApplicationResumeUserResponseDto dto, AppUserClaimDto appUserClaimDto) {
-        row.createCell(0).setCellValue(appUserClaimDto.getFirstName());
-        row.createCell(1).setCellValue(appUserClaimDto.getLastName());
-        row.createCell(2).setCellValue(appUserClaimDto.getIdentificationType().getCode());
-        row.createCell(3).setCellValue(appUserClaimDto.getIdentificationNumber());
-        row.createCell(4).setCellValue(appUserClaimDto.getCuilCuit());
-        row.createCell(5).setCellValue(appUserClaimDto.getEmail());
-        row.createCell(6).setCellValue(appUserClaimDto.getPhone());
+    public static void writeResumeUserRow(Row row, JobApplicationResumeUser jobApplicationResumeUser) {
+        final UserInfo userInfo = jobApplicationResumeUser.getResumeUser().getAppUser().getUserInfos().stream().findFirst().orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "User info not found"));
+        row.createCell(0).setCellValue(userInfo.getFirstName());
+        row.createCell(1).setCellValue(userInfo.getLastName());
+        row.createCell(2).setCellValue(userInfo.getIdentificationType().getCode());
+        row.createCell(3).setCellValue(userInfo.getIdentificationNumber());
+        row.createCell(4).setCellValue(userInfo.getCuilCuit());
+        row.createCell(5).setCellValue(jobApplicationResumeUser.getResumeUser().getAppUser().getEmail());
+        row.createCell(6).setCellValue(userInfo.getPhone());
 
-        row.createCell(7).setCellValue(dto.getRequirementGlobalCount());
-        row.createCell(8).setCellValue(dto.getRequirementMandatoryCount());
-        row.createCell(9).setCellValue(dto.getRequirementPreferredCount());
+        row.createCell(7).setCellValue(jobApplicationResumeUser.getRequirementGlobalCount());
+        row.createCell(8).setCellValue(jobApplicationResumeUser.getRequirementMandatoryCount());
+        row.createCell(9).setCellValue(jobApplicationResumeUser.getRequirementPreferredCount());
 
-        row.createCell(10).setCellValue(dto.getRequirementGlobalApplied());
-        row.createCell(11).setCellValue(dto.getRequirementMandatoryApplied());
-        row.createCell(12).setCellValue(dto.getRequirementPreferredApplied());
+        row.createCell(10).setCellValue(jobApplicationResumeUser.getRequirementGlobalApplied());
+        row.createCell(11).setCellValue(jobApplicationResumeUser.getRequirementMandatoryApplied());
+        row.createCell(12).setCellValue(jobApplicationResumeUser.getRequirementPreferredApplied());
     }
 
     public static String generateExportFileName(String title) {
