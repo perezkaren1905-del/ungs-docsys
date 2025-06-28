@@ -66,4 +66,14 @@ export class JobApplicationService {
         const response = await lastValueFrom(this.httpService.get(url, { headers }));
         return response.data;
     }
+
+    async export(id: number, authorization: string): Promise<{data: Buffer; headers: Record<string, string>}> {
+        const url = `${this.urlBase}/v1/job-applications/${id}/export`;
+        const headers = { authorization };
+        const response = await lastValueFrom(this.httpService.get(url, { headers, responseType: 'arraybuffer'}));
+         return {
+            data: Buffer.from(response.data),
+            headers: response.headers,
+        };
+    }
 }

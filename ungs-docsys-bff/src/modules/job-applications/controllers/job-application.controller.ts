@@ -1,9 +1,10 @@
-import { Controller, Post, Patch, Body, Param, Headers, HttpCode, HttpStatus, UnauthorizedException, HttpException, Delete, Get } from '@nestjs/common';
+import { Controller, Post, Patch, Body, Param, Headers, HttpCode, HttpStatus, UnauthorizedException, HttpException, Delete, Get, Res} from '@nestjs/common';
 import { JobApplicationService } from '../services/job-application.service';
 import { JobApplicationRequestDto } from '../dtos/job-application-request.dto';
 import { JobApplicationUpdateRequestDto } from '../dtos/job-application-update-request.dts';
 import { JobApplicationResponseDto } from '../dtos/job-application-response.dto';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Response } from 'express';
 
 @Controller("/v1/job-applications")
 export class JobApplicationController {
@@ -81,4 +82,21 @@ export class JobApplicationController {
       async getById(@Headers('authorization') authorization: string, @Param('id') id: number): Promise<JobApplicationResponseDto> {
         return await this.jobApplicationService.getById(id, authorization);
       }
+
+    @Get(':id/export')
+    @ApiOperation({ summary: 'Export job application to Excel' })
+    @ApiResponse({ status: 200, description: 'Excel file downloaded' })
+    async export(
+        @Headers('authorization') authorization: string, 
+        @Param('id') id: number, 
+        @Res() res: Response): Promise<void> {
+        const { data, headers } = await this.jobApplicationService.export(id, authorization);
+
+        res.set({
+            'Content-Type': headers['content-type'] || 'application/octet-stream',
+            'Content-Disposition': headers['content-disposition'],
+        });
+
+        res.send(data);
+    }
 }
