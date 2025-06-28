@@ -89,14 +89,14 @@ export class JobApplicationController {
     async export(
         @Headers('authorization') authorization: string, 
         @Param('id') id: number, 
-        @Res() res: Response): Promise<void> {
+        @Res() response: Response): Promise<void> {
         const { data, headers } = await this.jobApplicationService.export(id, authorization);
 
-        res.set({
+        response.set({
             'Content-Type': headers['content-type'] || 'application/octet-stream',
             'Content-Disposition': headers['content-disposition'],
         });
 
-        res.send(data);
+        response.send(data);
     }
 }
