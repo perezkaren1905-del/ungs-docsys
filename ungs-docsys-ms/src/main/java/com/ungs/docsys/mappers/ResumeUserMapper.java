@@ -6,13 +6,17 @@ import java.util.Collections;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, uses = { UserInfoMapper.class })
 public abstract class ResumeUserMapper {
+
+    @Autowired
+    protected UserInfoMapper userInfoMapper;
 
     public abstract ResumeUser toResumeUser(ResumeUserRequestDto dto);
 
@@ -69,6 +73,7 @@ public abstract class ResumeUserMapper {
     @Mapping(target = "technicalSkills", expression = "java(toTechnicalSkillResponseList(resumeUser.getTechnicalSkills()))")
     @Mapping(target = "certifications", expression = "java(toCertificationResponseList(resumeUser.getCertifications()))")
     @Mapping(target = "resumeFiles", expression = "java(toResumeFileResponseList(resumeUser.getResumeFiles()))")
+    @Mapping(target = "userInfo", expression = "java(resumeUser.getAppUser().getUserInfos() != null && !resumeUser.getAppUser().getUserInfos().isEmpty() ? userInfoMapper.toResponse(resumeUser.getAppUser().getUserInfos().get(0)) : null)")
     public abstract ResumeUserResponseDto toResponse(ResumeUser resumeUser);
 
     public ContactResponseDto toContactResponse(List<Contact> contacts) {

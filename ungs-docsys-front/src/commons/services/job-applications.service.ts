@@ -45,4 +45,32 @@ export class JobApplicationsService {
             throw error;
         }
     }
+
+    public static async downloadExport(id: number): Promise<void> {
+        try {
+            const response = await axios.get<ArrayBuffer>(`${this.apiUrl}/v1/job-applications/${id}/export`, {
+                ...HttpUtilsService.getAuthHeaders(),
+                responseType: "arraybuffer",
+            });
+            const contentType = response.headers["content-type"];
+            const contentDisposition = response.headers["content-disposition"];
+
+            const filename = contentDisposition?.split("filename=")[1]?.replace(/"/g, "") || "export.xlsx";
+
+            if (!response.data) {
+                throw new Error("No se recibió data en la respuesta.");
+            }
+            const blob = new Blob([response.data], { type: contentType });
+            const url = window.URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", filename);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.error("Error al descargar el archivo:", error);
+        }
+    }
 }

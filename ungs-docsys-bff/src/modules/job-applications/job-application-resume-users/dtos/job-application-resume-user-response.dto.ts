@@ -6,6 +6,7 @@ export class JobApplicationResumeUserResponseDto {
     resumeUser: ResumeUserResponseDto;
     requirementGlobalCount: number;
     requirementMandatoryCount: number;
+    requirementPreferredCount: number;
     requirementGlobalApplied: number;
     requirementMandatoryApplied: number;
     requirementPreferredApplied: number;

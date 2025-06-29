@@ -8,6 +8,7 @@ import ViewJobApp from '../pages/jobAppMng/viewJobApp/ViewJobApp';
 import ViewResume from '../pages/resumeMng/viewResume/ViewResume';
 import LoadResume from '../pages/resumeMng/loadResume/LoadResume';
 import ResumeForm from '../pages/Resume/ResumeForm';
+import JobApplicationResumeManagment from '../pages/JobApplicationResumeManagment/job-application-resume-managment';
 
 const RECRUITER_ROLE = "RECRUITER";
 const CANDIDATE_ROLE = "CANDIDATE";
@@ -45,16 +46,21 @@ export const routes = [
       requiredRoles: [RECRUITER_ROLE, CANDIDATE_ROLE]
     },
     {
-      path: "viewResume",
-      element: <ViewResume />
-    },
-    {
       path: "loadResume",
       element: <LoadResume />
     },
     {
       path: "resume",
       element: <ResumeForm />,
-      requiredRoles: [RECRUITER_ROLE, CANDIDATE_ROLE]
+      requiredRoles: [CANDIDATE_ROLE]
+    },
+    {
+      path: "resume/:resumeUserId",
+      element: <ResumeForm />,
+      requiredRoles: [RECRUITER_ROLE]
+    },
+    {
+      path: "job-application-resume-managment/:jobApplicationId",
+      element: <JobApplicationResumeManagment />
     }
 ];

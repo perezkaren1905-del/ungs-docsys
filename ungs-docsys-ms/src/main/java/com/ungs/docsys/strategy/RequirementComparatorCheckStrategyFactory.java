@@ -1,10 +1,7 @@
 package com.ungs.docsys.strategy;
 
 import com.ungs.docsys.enums.RequirementTargetComparator;
-import com.ungs.docsys.strategy.comparators.RequirementComparatorCheckCertification;
-import com.ungs.docsys.strategy.comparators.RequirementComparatorCheckEducation;
-import com.ungs.docsys.strategy.comparators.RequirementComparatorCheckLanguage;
-import com.ungs.docsys.strategy.comparators.RequirementComparatorCheckTechnicalSkill;
+import com.ungs.docsys.strategy.comparators.*;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,6 +18,7 @@ public class RequirementComparatorCheckStrategyFactory {
     private final RequirementComparatorCheckCertification certificationStrategy;
     private final RequirementComparatorCheckLanguage languageStrategy;
     private final RequirementComparatorCheckEducation educationStrategy;
+    private final RequirementComparatorCheckExperience experienceStrategy;
 
     private final Map<RequirementTargetComparator, RequirementComparatorCheckStrategy> strategies = new EnumMap<>(RequirementTargetComparator.class);
 
@@ -30,6 +28,7 @@ public class RequirementComparatorCheckStrategyFactory {
         strategies.put(RequirementTargetComparator.TECHNICAL_SKILL_DATA, technicalSkillStrategy);
         strategies.put(RequirementTargetComparator.LANGUAGE_DATA, languageStrategy);
         strategies.put(RequirementTargetComparator.EDUCATION_DATA, educationStrategy);
+        strategies.put(RequirementTargetComparator.EXPERIENCE_DATA, experienceStrategy);
     }
 
     public RequirementComparatorCheckStrategy get(RequirementTargetComparator key) {

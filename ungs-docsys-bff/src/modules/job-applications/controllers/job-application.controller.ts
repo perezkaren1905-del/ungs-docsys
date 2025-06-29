@@ -95,8 +95,8 @@ export class JobApplicationController {
         response.set({
             'Content-Type': headers['content-type'] || 'application/octet-stream',
             'Content-Disposition': headers['content-disposition'],
+            'Access-Control-Expose-Headers': 'Content-Disposition'
         });
-
         response.send(data);
     }
 }
