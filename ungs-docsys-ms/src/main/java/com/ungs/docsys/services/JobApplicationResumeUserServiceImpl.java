@@ -3,10 +3,7 @@ package com.ungs.docsys.services;
 import com.ungs.docsys.dtos.*;
 import com.ungs.docsys.enums.RequirementTargetComparator;
 import com.ungs.docsys.exception.BusinessException;
-import com.ungs.docsys.mappers.JobApplicationMapper;
 import com.ungs.docsys.mappers.JobApplicationResumeUserMapper;
-import com.ungs.docsys.mappers.RequirementMapper;
-import com.ungs.docsys.mappers.ResumeUserMapper;
 import com.ungs.docsys.models.*;
 import com.ungs.docsys.repositories.JobApplicationResumeUserRepository;
 import com.ungs.docsys.repositories.JobApplicationResumeUserSpecification;
@@ -24,16 +21,9 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class JobApplicationResumeUserServiceImpl implements JobApplicationResumeUserService {
-
     private final JobApplicationResumeUserRepository jobApplicationResumeUserRepository;
-    private final JobApplicationService jobApplicationService;
-    private final ResumeUserService resumeUserService;
-    private final RequirementService requirementService;
     private final RequirementComparatorCheckStrategyFactory strategyFactory;
     private final JobApplicationResumeUserMapper jobApplicationResumeUserMapper;
-    private final JobApplicationMapper jobApplicationMapper;
-    private final ResumeUserMapper resumeUserMapper;
-    private final RequirementMapper requirementMapper;
 
     @Override
     public JobApplicationResumeUserResponseDto getById(Long id) {
@@ -43,16 +33,16 @@ public class JobApplicationResumeUserServiceImpl implements JobApplicationResume
     }
 
     @Override
-    public JobApplicationResumeUserResponseDto create(JobApplicationResumeUserRequestDto jobApplicationResumeUserRequestDto, AppUserClaimDto userClaimDto) {
+    public JobApplicationResumeUserResponseDto create(JobApplicationResumeUserRequestDto jobApplicationResumeUserRequestDto) {
         final JobApplicationResumeUser jobApplicationResumeUser = jobApplicationResumeUserMapper.toModel(jobApplicationResumeUserRequestDto);
-        throwIfCandidateHasApplied(jobApplicationResumeUser.getResumeUser().getAppUser(), userClaimDto);
+        throwIfCandidateHasApplied(jobApplicationResumeUserRequestDto);
         final List<RequirementJobApplication> requirementJobApplications = jobApplicationResumeUser.getJobApplication().getRequirementJobApplications();
         setRequirementsAppliedValues(jobApplicationResumeUserRequestDto, requirementJobApplications, jobApplicationResumeUser);
         return jobApplicationResumeUserMapper.toResponse(jobApplicationResumeUserRepository.save(jobApplicationResumeUser));
     }
 
-    private void throwIfCandidateHasApplied(AppUser appUser, AppUserClaimDto userClaimDto) {
-        if(Objects.equals(appUser.getId(), userClaimDto.getId())) {
+    private void throwIfCandidateHasApplied(JobApplicationResumeUserRequestDto jobApplicationResumeUserRequestDto) {
+        if(!getByParams(jobApplicationResumeUserRequestDto.getJobApplicationId(), jobApplicationResumeUserRequestDto.getResumeUserId()).isEmpty()) {
             throw new BusinessException(HttpStatus.CONFLICT, "Candidate already applied to job application");
         }
     }

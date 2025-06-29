@@ -30,7 +30,7 @@ export class JobApplicationResumeUsersController {
     type: [JobApplicationResumeUserResponseDto],
   })
   async getByParams(@Headers('authorization') authorization: string, @Query('jobApplicationId') jobApplicationId?: number, @Query('resumeUserId') resumerUserId?: number): Promise<JobApplicationResumeUserResponseDto[]> {
-    return await this.jobApplicationResumeUsersService.getByParams(jobApplicationId, resumerUserId, authorization);
+    return await this.jobApplicationResumeUsersService.getByParams(authorization, jobApplicationId, resumerUserId);
   }
 
   @Post()

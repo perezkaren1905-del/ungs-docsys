@@ -12,13 +12,16 @@ import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, uses = { ResumeUserMapper.class })
 public abstract class JobApplicationResumeUserMapper {
     @Autowired
     private JobApplicationRepository jobApplicationRepository;
     @Autowired
     private ResumeUserRepository resumeUserRepository;
+    @Autowired
+    protected ResumeUserMapper resumeUserMapper;
 
+    @Mapping(target = "resumeUser", expression = "java(resumeUserMapper.toResponse(jobApplicationResumeUser.getResumeUser()))")
     public abstract JobApplicationResumeUserResponseDto toResponse(JobApplicationResumeUser jobApplicationResumeUser);
     @Mapping(target = "jobApplication", source = "jobApplicationId")
     @Mapping(target = "resumeUser", source = "resumeUserId")

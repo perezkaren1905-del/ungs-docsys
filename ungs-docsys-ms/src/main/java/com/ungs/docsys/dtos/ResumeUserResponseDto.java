@@ -20,5 +20,7 @@ public class ResumeUserResponseDto {
     private List<TechnicalSkillResponseDto> technicalSkills;
     private List<CertificationResponseDto> certifications;
     private List<ResumeFileResponseDto> resumeFiles;
+    private AppUserResponseDto appUser;
+    private UserInfoResponseDto userInfo;
 }
 

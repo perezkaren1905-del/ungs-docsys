@@ -10,7 +10,7 @@ public interface JobApplicationResumeUserService {
 
     JobApplicationResumeUserResponseDto getById(Long id);
 
-    JobApplicationResumeUserResponseDto create(JobApplicationResumeUserRequestDto jobApplicationResumeUserRequestDto, AppUserClaimDto userClaimDto);
+    JobApplicationResumeUserResponseDto create(JobApplicationResumeUserRequestDto jobApplicationResumeUserRequestDto);
 
     List<JobApplicationResumeUserResponseDto> getByParams(Long jobApplicationId, Long resumeUserId);
 }

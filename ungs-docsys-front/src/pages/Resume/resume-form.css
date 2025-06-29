@@ -10,6 +10,10 @@
     padding: 1rem;
 }
 
+.resume-container-recruiter {
+    display: inline!important;
+}
+
 .resume-header h2 {
     margin: 0;
     font-weight: bold;
@@ -130,4 +134,18 @@
     height: 100px;
     border-color: green;
     background: rgb(109, 211, 109);
+}
+
+.go-back-button {
+    display: flex; /* Flexbox para alinear */
+    align-items: center; /* Centra verticalmente */
+    justify-content: center; /* Centra horizontalmente si querés */
+    gap: 8px; /* Espacio entre el ícono y el texto */
+    border: 2px solid #003366; /* Color y grosor del borde */
+    border-radius: 25px; /* Bordes redondeados */
+    padding: 8px 16px; /* Espaciado interno */
+    background-color: transparent; /* O color de fondo deseado */
+    cursor: pointer; /* Cambia el cursor al pasar el mouse */
+    font-weight: bold; /* Texto más marcado */
+    margin-bottom: 20px;
 }

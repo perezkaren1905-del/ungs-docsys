@@ -18,10 +18,10 @@ export class JobApplicationResumeUsersService {
     return response.data;
   }
 
-  async getByParams(jobApplicationId: number, resumeUserId: number, authorization: string): Promise<JobApplicationResumeUserResponseDto[]> {
+  async getByParams(authorization: string, jobApplicationId?: number, resumeUserId?: number): Promise<JobApplicationResumeUserResponseDto[]> {
     const url = `${this.urlBase}/v1/job-application-resume-users`;
     const headers = { authorization };
-    const params = { jobApplicationId, resumeUserId }
+    const params = this.sanitizeParams({ jobApplicationId, resumeUserId })
     const response = await lastValueFrom(this.httpService.get(url, { headers, params }));
     return response.data;
   }
@@ -35,4 +35,13 @@ export class JobApplicationResumeUsersService {
     );
     return response.data;
   }
+
+  private sanitizeParams(params: any) {
+    return Object.fromEntries(
+      Object.entries(params).filter(
+        ([_, value]) => value !== undefined && !Number.isNaN(value)
+      )
+    );
+  }
+
 }

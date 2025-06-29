@@ -1,2 +1,0 @@
-ALTER TABLE recruitment.job_application_resume_user ADD CONSTRAINT fk_job_application_resume_user_resume_user FOREIGN KEY (resume_user_id) REFERENCES recruitment.resume_user(id) ON DELETE CASCADE;
-ALTER TABLE recruitment.job_application_resume_user ADD CONSTRAINT fk_job_application_resume_user_job_application FOREIGN KEY (job_application_id) REFERENCES recruitment.job_application(id) ON DELETE CASCADE;

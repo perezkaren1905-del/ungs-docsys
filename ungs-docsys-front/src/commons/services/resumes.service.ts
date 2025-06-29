@@ -26,4 +26,14 @@ export class ResumesService {
             throw error;
         }
     }
+
+    public static async getById(id: number): Promise<ResumeUserResponseDto[]> {
+        try {
+            const response = await axios.get<ResumeUserResponseDto[]>(`${this.apiUrl}/v1/resume-user/${id}`, {...HttpUtilsService.getAuthHeaders()});
+            return response.data;
+        } catch (error) {
+            console.error("Error al obtener curriculum:", error);
+            throw error;
+        }
+    }
 }

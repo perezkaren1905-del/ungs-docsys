@@ -41,9 +41,9 @@ export default function CreateJobApp() {
     name: 'requirements'
   });
 
-  const mapExpectedValueToJsonStringfy = (expectedValueString) => {
+  const mapExpectedValueToJsonStringfy = (expectedValueString, expectedAgeValue) => {
     const expectedValueJson = {
-      numericValue: 0,
+      numericValue: Number(expectedAgeValue),
       stringValues: expectedValueString.split('|').map(val => val.trim()).filter(val => val !== '')
     }
     return JSON.stringify(expectedValueJson);
@@ -53,7 +53,7 @@ export default function CreateJobApp() {
     const requirementsRequest = data.requirements.map(requirement => {
       return {
         description: requirement.description,
-        expectedValue: mapExpectedValueToJsonStringfy(requirement.expectedValue),
+        expectedValue: mapExpectedValueToJsonStringfy(requirement.expectedValue, requirement.expectedAgeValue),
         requirementTypeId: Number(requirement.requirementTypeId),
         requirementTargetComparatorId: Number(requirement.requirementTargetComparatorId),
         operator: requirement.operator
@@ -73,9 +73,8 @@ export default function CreateJobApp() {
       await JobApplicationsService.create(request);
       navigate("/jobAppList");
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
-    console.log(JSON.stringify(request));
   };
 
   const getUserClaim = () => {
@@ -128,9 +127,6 @@ export default function CreateJobApp() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
     fetchJobApplicationPeriods();
     fetchJobProfileLevels();
     fetchRequirementTargetComparators();
@@ -173,7 +169,7 @@ export default function CreateJobApp() {
               >
                 <option value="">Seleccione</option>
                 {jobProfileLevels.map(jobProfileLevel => (
-                  <option key={jobProfileLevel.id} value={jobProfileLevel.id}>{`${jobProfileLevel.level}, ${jobProfileLevel.description}`}</option>
+                  <option key={jobProfileLevel.id} value={jobProfileLevel.id}>{`${jobProfileLevel.description}`}</option>
                 ))}
               </select>
             </div>
@@ -272,8 +268,12 @@ export default function CreateJobApp() {
                     </div>
 
                     <div className="info-row job-form-row">
-                      <span className="label">Valores a comparar:</span>
+                      <span className="label">Valores alfanumericos comparar:</span>
                       <input {...register(`requirements.${index}.expectedValue`)} placeholder="Separe los valores por |. Ej: Sistemas|Computacion|Electronica..."/>
+                    </div>
+                    <div className="info-row job-form-row">
+                      <span className="label">Años de experiencia:</span>
+                      <input {...register(`requirements.${index}.expectedAgeValue`)} type="number"/>
                     </div>
 
                   </div>
@@ -284,7 +284,7 @@ export default function CreateJobApp() {
                   </div>
                 </div>
               ))}
-            <button type="button" className="go-back-button add-requirement-button" onClick={() => appendRequirements({ description: '', requirementTypeId: '', operator: '', expectedValue: '', requirementTargetComparatorId: '' })}>
+            <button type="button" className="go-back-button add-requirement-button" onClick={() => appendRequirements({ description: '', requirementTypeId: '', operator: '', expectedAgeValue: '', expectedYearValue: 0,requirementTargetComparatorId: '' })}>
               + Añadir
             </button>
           </div>

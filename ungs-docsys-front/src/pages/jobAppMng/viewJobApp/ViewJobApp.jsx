@@ -11,6 +11,7 @@ import { JobApplicationApprovalService } from "../../../commons/services/job-app
 import { ResumesService } from "../../../commons/services/resumes.service";
 import { ToastContext } from "../../../context/ToastContext";
 import { JobApplicationResumeUsersService } from "../../../commons/services/job-application-resume-users.service";
+import ChecklistIcon from '@mui/icons-material/Checklist';
 
 export default function ViewJobApp() {
   const navigate = useNavigate();
@@ -135,6 +136,10 @@ export default function ViewJobApp() {
     }
   };
 
+  const goToCandidateList = () => {
+    navigate(`/job-application-resume-managment/${jobApplication.id}`);
+  }
+
   const refresh = async () => {
     await fetchJobApplication();
     await setPublishButton();
@@ -181,7 +186,14 @@ export default function ViewJobApp() {
             <button className="managment-button-format edit-button">
               Editar
             </button>
-          </div>) : null}
+          </div>) : (
+            <div className="managment-buttons"> 
+              <button className="managment-button-format edit-button" onClick={() => goToCandidateList()}>
+                <ChecklistIcon fontSize="large"/>
+              Ver candidatos
+            </button>
+            </div>
+          )}
           
         </div>
 
@@ -190,7 +202,7 @@ export default function ViewJobApp() {
         <div className="jobapp-info">
           <div className="info-row">
             <span className="label">Tipo de docente:</span>
-            <span className="value">{`${jobApplication.jobProfileLevel?.level}, ${jobApplication.jobProfileLevel?.description}`}</span>
+            <span className="value">{`${jobApplication.jobProfileLevel?.description}`}</span>
           </div>
           <div className="info-row">
             <span className="label">Período de búsqueda:</span>
@@ -283,7 +295,7 @@ export default function ViewJobApp() {
         <div className="jobapp-info">
           <div className="info-row">
             <span className="label">Tipo de docente:</span>
-            <span className="value">{`${jobApplication.jobProfileLevel?.level}, ${jobApplication.jobProfileLevel?.description}`}</span>
+            <span className="value">{`${jobApplication.jobProfileLevel?.description}`}</span>
           </div>
           <div className="info-row">
             <span className="label">Período de búsqueda:</span>

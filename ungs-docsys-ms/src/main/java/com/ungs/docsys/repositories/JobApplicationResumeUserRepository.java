@@ -10,5 +10,4 @@ import java.util.List;
 @Repository
 public interface JobApplicationResumeUserRepository extends JpaRepository<JobApplicationResumeUser, Long>,
         JpaSpecificationExecutor<JobApplicationResumeUser> {
-    List<JobApplicationResumeUser> findAllByJobApplicationId(Long jobApplicationId);
 }

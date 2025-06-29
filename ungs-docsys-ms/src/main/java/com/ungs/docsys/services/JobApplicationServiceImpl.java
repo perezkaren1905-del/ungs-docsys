@@ -5,16 +5,23 @@ import com.ungs.docsys.exception.BusinessException;
 import com.ungs.docsys.mappers.JobApplicationMapper;
 import com.ungs.docsys.mappers.RequirementMapper;
 import com.ungs.docsys.models.JobApplication;
+import com.ungs.docsys.models.JobApplicationResumeUser;
 import com.ungs.docsys.models.RequirementJobApplication;
-import com.ungs.docsys.repositories.AppUserRepository;
-import com.ungs.docsys.repositories.JobApplicationRepository;
-import com.ungs.docsys.repositories.RequirementJobApplicationRepository;
+import com.ungs.docsys.repositories.*;
+import com.ungs.docsys.utils.ExcelExportUtils;
 import lombok.AllArgsConstructor;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +35,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     private final JobApplicationMapper jobApplicationMapper;
     private final RequirementMapper requirementMapper;
     private final AppUserRepository appUserRepository;
+
+    private final JobApplicationResumeUserRepository jobApplicationResumeUserRepository;
 
     @Override
     @Transactional
@@ -85,6 +94,31 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         return jobApplicationResponseDto;
     }
 
+    @Override
+    public byte[] exportToExcel(Long jobApplicationId) {
+        Specification<JobApplicationResumeUser> spec = Specification
+                .where(JobApplicationResumeUserSpecification.hasJobApplicationId(jobApplicationId));
+        List<JobApplicationResumeUser> jobApplicationResumeUsers = jobApplicationResumeUserRepository.findAll(spec);
+
+
+        try (Workbook workbook = ExcelExportUtils.createWorkbookFromTemplate("templates/candidatos.xlsx")) {
+            Sheet sheet = workbook.getSheetAt(0);
+
+            AtomicInteger rowIndex = new AtomicInteger(1);
+            jobApplicationResumeUsers.forEach(jobApplicationResumeUser -> {
+                Row newRow = sheet.createRow(rowIndex.getAndIncrement());
+                ExcelExportUtils.writeResumeUserRow(newRow, jobApplicationResumeUser);
+            });
+
+            try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                workbook.write(out);
+                return out.toByteArray();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error generating Excel", e);
+        }
+    }
+
     private List<JobApplicationResponseDto> getJobApplicationsResponse() {
 
         return jobApplicationRepository.findAll().stream()
@@ -99,8 +133,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
     private List<RequirementResponseDto> getRequirementResponseDtos(JobApplication jobApplication) {
         return requirementJobApplicationRepository.findByJobApplicationId(jobApplication.getId())
-                        .stream().map(requirementJobApplication -> requirementMapper.toResponse(requirementJobApplication.getRequirement()))
-                        .collect(Collectors.toList());
+                .stream().map(requirementJobApplication -> requirementMapper.toResponse(requirementJobApplication.getRequirement()))
+                .collect(Collectors.toList());
     }
 
     private JobApplication getJobApplicationById(Long id) {
