@@ -1,0 +1,69 @@
+.info-section {
+  overflow-x: auto;
+  max-width: 100%;
+  padding: 1rem;
+}
+
+.table-section {
+  width: 100%;
+  min-width: 1200px;
+  border-collapse: separate;      /* Permite espaciar columnas */
+  border-spacing: 0 0.5rem;       /* Espacio entre filas: vertical horizontal */
+  text-align: center;
+}
+
+.top-button-section {
+    display: flex;
+}
+
+
+.table-section th,
+.table-section td {
+  padding: 0.75rem 1rem;          /* Espacio interno: arriba/abajo e izquierda/derecha */
+  background-color: white;       /* Fondo blanco para cada celda */
+  border: 1px solid #ddd;        /* Borde sutil */
+  border-radius: 4px;
+  color: black;
+  width: 50px;
+}
+
+.table-section thead th {
+  background-color: #f3f4f6;     /* Fondo distinto para encabezado */
+  font-weight: bold;
+}
+
+.managment-top-buttons {
+  display: flex;
+  justify-content: flex-end; /* Alinea el botón a la derecha */
+  padding: 10px; /* Opcional, para que no quede pegado */
+}
+
+.export-button {
+  display: flex;
+  align-items: center; /* Centra verticalmente ícono y texto */
+  gap: 8px; /* Espacio entre ícono y texto */
+  font-size: 26px; /* Tamaño legible */
+  cursor: pointer;
+  border: 2px solid #000000; /* Color y grosor del borde */
+  border-radius: 25px; 
+  padding: 8px 12px;
+  height: 58px;
+  transition: background-color 0.3s ease;
+}
+
+.back-section, .managment-top-buttons {
+  flex: 0 0 50%; /* Fija el ancho al 50% */
+  display: flex; /* para poder alinear el contenido interno */
+  align-items: center; /* centra verticalmente */
+}
+
+.section-title h2 {
+  color: #000000;
+}
+
+.go-to-resume-button{
+  border-radius: 5px;
+  background: #c4c4c4;
+  border: 2px solid #000000;
+  padding: 5px;
+}

@@ -1,0 +1,46 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #083b5c; /* Azul oscuro */
+    padding: 1rem 2rem;
+    color: white;
+}
+
+.navbar-logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.logo-bold {
+    font-weight: 700;
+}
+
+.logo-light {
+    font-weight: 300;
+}
+
+.navbar-links span {
+    margin: 0 1rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.navbar-links span:hover {
+    color: #f0ad4e; /* Amarillo suave para hover */
+}
+
+.navbar-user {
+    text-align: right;
+}
+
+.user-name {
+    font-weight: bold;
+    display: block;
+}
+
+.user-role {
+    font-size: 0.9rem;
+    color: #dcdcdc;
+}

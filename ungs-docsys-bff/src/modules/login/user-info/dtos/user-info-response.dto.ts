@@ -17,4 +17,6 @@ export class UserInfoResponseDto {
     birthDate: Date;
     @ApiProperty()
     nationality: string;
+    @ApiProperty()
+    cuilCuit: string;
 }

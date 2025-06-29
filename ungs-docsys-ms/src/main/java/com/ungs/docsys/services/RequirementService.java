@@ -13,4 +13,5 @@ public interface RequirementService {
     Page<RequirementResponseDto> getByParams(Pageable pageable);
     RequirementResponseDto save(RequirementRequestDto requirementRequestDto, AppUserClaimDto appUserClaimDto);
     RequirementResponseDto partiallyUpdate(RequirementRequestDto requirementRequestDto, Long id, AppUserClaimDto appUserClaimDto);
+    List<RequirementResponseDto> getByJobApplicationId(Long jobApplicationId);
 }
