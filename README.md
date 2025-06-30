@@ -136,3 +136,11 @@ Por último ingresar desde el navegador a la url http://localhost:5173 si la eje
 ## 📄 Licencia
 
 Proyecto desarrollado con fines académicos por estudiantes de la Universidad Nacional de General Sarmiento (UNGS), 2025.
+
+## Autores
+## Autores
+- [@facundo-avila](https://github.com/facundo-avila) | Facundo Avila - faku1234faku@gmail.com
+- [@pabloabregu](https://github.com/pabloabregu) | Pablo Abregu - pablo.oclp5@gmail.com
+- [@trejopablofer](https://github.com/trejopablofer) | Pablo Trejo - trejopablofer@gmail.com
+
+---
