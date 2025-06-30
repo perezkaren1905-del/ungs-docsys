@@ -139,8 +139,8 @@ Proyecto desarrollado con fines académicos por estudiantes de la Universidad Na
 
 ## Autores
 ## Autores
-- [@facundo-avila](https://github.com/facundo-avila) | Facundo Avila - faku1234faku@gmail.com
-- [@pabloabregu](https://github.com/pabloabregu) | Pablo Abregu - pablo.oclp5@gmail.com
-- [@trejopablofer](https://github.com/trejopablofer) | Pablo Trejo - trejopablofer@gmail.com
+- Facundo Avila - facundomauricio.avila@gmail.com
+- Pablo Abregu - pablo.abregu@outlook.com
+- Pablo Trejo - trejopablofer@gmail.com
 
 ---
