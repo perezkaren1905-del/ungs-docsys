@@ -4,7 +4,7 @@ import Header from "../../../components/UI/Header";
 import "../../../assets/styles/Home.css";
 import { JwtService } from "../../../commons/utils/jwt.service";
 import { JobApplicationsService } from '../../../commons/services/job-applications.service';
-import NavBar from '../../../components/UI/Navbar';
+import Navbar from '../../../components/UI/Navbar';
 
 export default function JobAppList() {
   const navigate = useNavigate();
@@ -146,7 +146,7 @@ export default function JobAppList() {
       <Header
         user={getUserClaim()}
       />
-      <NavBar />
+      <Navbar />
 
       <div className="app-container">
 
