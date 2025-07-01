@@ -1,58 +1,16 @@
---
--- PostgreSQL database dump
---
+-- PostgreSQL init script for docsys
 
--- Dumped from database version 17.4 (Debian 17.4-1.pgdg120+2)
--- Dumped by pg_dump version 17.0
-
--- Started on 2025-06-29 16:54:11
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
+-- Opcional: configuraciones globales (no afectan)
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-DROP DATABASE docsys;
---
--- TOC entry 3634 (class 1262 OID 16404)
--- Name: docsys; Type: DATABASE; Schema: -; Owner: admin
---
+-- Crear schema y tablas
 
-CREATE DATABASE docsys WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'en_US.utf8';
-
-
-ALTER DATABASE docsys OWNER TO admin;
-
-\connect docsys
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- TOC entry 6 (class 2615 OID 16405)
--- Name: recruitment; Type: SCHEMA; Schema: -; Owner: admin
---
-
-CREATE SCHEMA recruitment;
-
-
-ALTER SCHEMA recruitment OWNER TO admin;
+CREATE SCHEMA IF NOT EXISTS recruitment AUTHORIZATION admin;
 
 SET default_tablespace = '';
 
