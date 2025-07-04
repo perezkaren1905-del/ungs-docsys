@@ -1,10 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './NavBar.css';
+import './Navbar.css';
 import { useState, useEffect } from 'react';
 import { JwtService } from '../../commons/utils/jwt.service';
 
-export default function NavBar() {
+export default function Navbar() {
     const navigate = useNavigate();
     const [userClaim, setUserClaim] = useState({});
 
