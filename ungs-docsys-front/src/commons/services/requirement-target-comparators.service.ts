@@ -3,7 +3,7 @@ import { HttpUtilsService } from "../utils/http-utils.service";
 import { RequirementTargetComparatorResponseDto } from "../dtos/requirement-target-comparator-response.dto";
 
 export class RequirementTargetComparatorsService {
-    private static apiUrl = "http://localhost:3000";
+    private static apiUrl = import.meta.env.VITE_DOCSYS_BFF_URL;
 
     public static async getAll(): Promise<RequirementTargetComparatorResponseDto[]> {
         try {

@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Header from "../../components/UI/Header";
 import './resume-form.css';
 import { ResumesService } from "../../commons/services/resumes.service";
-import NavBar from "../../components/UI/Navbar";
+import Navbar from "../../components/UI/Navbar";
 import SaveIcon from '@mui/icons-material/Save';
 import EditDocumentIcon from '@mui/icons-material/EditDocument';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -562,7 +562,7 @@ export default function ResumeForm() {
                 user={getUserClaim()}
             />
 
-            <NavBar />
+            <Navbar />
 
             <div className="app-container">
                 {renderResumeContent()}
