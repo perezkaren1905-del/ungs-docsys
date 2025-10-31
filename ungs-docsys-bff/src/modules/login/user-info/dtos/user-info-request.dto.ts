@@ -47,6 +47,7 @@ export class UserInfoRequestDto {
 
     @ApiProperty({ example: '12345678', maxLength: 50 })
     @IsNotEmpty({ message: 'Identification number is required' })
+    @Matches(/^\d+$/, { message: 'Identification number must contain only digits' })
     @MaxLength(50, { message: 'Identification number must not exceed 50 characters' })
     identificationNumber: string;
 
@@ -57,6 +58,7 @@ export class UserInfoRequestDto {
 
     @ApiProperty({ example: '+123456789', maxLength: 50 })
     @IsNotEmpty({ message: 'Phone is required' })
+    @Matches(/^\+?\d{6,15}$/, { message: 'Phone must contain only digits and may start with + (6–15 digits total)' })
     @MaxLength(50, { message: 'Phone must not exceed 50 characters' })
     phone: string;
     

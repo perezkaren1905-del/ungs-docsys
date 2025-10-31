@@ -11,10 +11,12 @@ export default function SignUp() {
   const {
     register,
     handleSubmit,
+    trigger,
     setValue,
-    control,
-    formState: { errors },
+    watch,
+    formState: { errors, isValid },
   } = useForm({
+    mode: "onChange",
     defaultValues: {
       tipoDocumento: "DNI",
     },
@@ -24,7 +26,6 @@ export default function SignUp() {
   const [nationalities, setNationalities] = useState([]);
   const [documentTypes, setDocumentTypes] = useState([]);
   const [step, setStep] = useState(1);
-  const [isGestionarVacantes, setIsGestionarVacantes] = useState(null);
 
   const onNext = async (data) => {
     console.log(JSON.stringify(data));
@@ -49,9 +50,28 @@ export default function SignUp() {
     }
     console.log(step);
   };
-
-  const onSubmit = async (data) => {
-    onNext(data);
+  
+  const handleNext = () => setStep((prevStep) => prevStep + 1);
+  const handleBack = () => setStep((prev) => prev - 1);
+  // Validar paso 1
+  const handleRole = async (roleId) => {
+    setValue("roleId", roleId);
+    const valid = await trigger("roleId");
+    if (valid) handleNext();
+  };
+  // Validar paso 2
+  const handleNextStep2 = async () => {
+    const valid = await trigger([
+      "firstName",
+      "lastName",
+      "identificationTypeId",
+      "identificationNumber",
+      "cuil",
+      "phone",
+      "birthDate",
+      "nationalityId",
+    ]);
+    if (valid) handleNext();
   };
 
   useEffect(() => {
@@ -77,24 +97,27 @@ export default function SignUp() {
     getAllIdentificationTypes();
   }, []);
 
-  const handleNext = () => {
-    if (step === 3) {
-      if (!isGestionarVacantes) {
-        navigate("/viewResume")
-      }
-      else {
-        navigate("/jobAppList");
-      }
-    } else {
-      setStep((prevStep) => prevStep + 1);
-    }
-  };
-  const handleBack = () => {
-    if (step === 1) {
-      navigate("/");
-    } else {
-      setStep((prevStep) => prevStep - 1);
-    }
+  // Observa si los campos del paso actual son válidos
+  const roleId = watch("roleId");
+  const step2Fields = watch([
+    "firstName",
+    "lastName",
+    "identificationTypeId",
+    "identificationNumber",
+    "cuil",
+    "phone",
+    "birthDate",
+    "nationalityId",
+  ]);
+  const step3Fields = watch(["email", "password", "confirmPassword"]);
+  
+  // Helpers para saber si los pasos están completos
+  const isStep1Complete = !!roleId;
+  const isStep2Complete = step2Fields.every((v) => v && v !== "" && !Object.keys(errors).length);
+  const isStep3Complete = step3Fields.every((v) => v && v !== "" && !Object.keys(errors).length);
+  
+  const onSubmit = async (data) => {
+    onNext(data);
   };
 
   const validateFecha = (value) => {
@@ -104,13 +127,8 @@ export default function SignUp() {
     return true;
   };
 
-  const handleRole = (roleId) => {
-    setValue("roleId", roleId);
-    setStep((prevStep) => prevStep + 1);
-  }
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="form-container">
+    <form onSubmit={handleSubmit(onNext)} className="form-container">
       <button className="back-button" type="button" onClick={handleBack}>
         &lt; Volver
       </button>
@@ -121,10 +139,6 @@ export default function SignUp() {
             <button
               className="option-button"
               type="button"
-              /*onClick={() => {
-                setIsGestionarVacantes(true);
-                handleNext();
-              }}*/
               onClick={() => handleRole(1)}
             >
               Gestionar las vacantes de trabajo
@@ -132,10 +146,6 @@ export default function SignUp() {
             <button
               className="option-button"
               type="button"
-             /* onClick={() => {
-                setIsGestionarVacantes(false);
-                handleNext();
-              }}*/
               onClick={() => handleRole(2)}
             >
               Buscar y postularte a vacantes de trabajo
@@ -156,19 +166,35 @@ export default function SignUp() {
             <div className="form-group">
               <label>Nombre</label>
               <input
-                className={errors.firstName ? "input-error" : ""}
                 type="text"
-                {...register("firstName", { required: "Campo obligatorio" })}
+                className={errors.firstName ? "input-error" : ""}
+                {...register("firstName", {
+                  required: "Campo obligatorio",
+                  maxLength: { value: 150, message: "Máximo 150 caracteres" },
+                  pattern: {
+                    value: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
+                    message: "Solo se permiten letras"
+                  }
+                })}
               />
+              {errors.firstName && <p className="error-text">{errors.firstName.message}</p>}
             </div>
 
             <div className="form-group">
               <label>Apellido</label>
               <input
-                className={errors.lastName ? "input-error" : ""}
                 type="text"
-                {...register("lastName", { required: "Campo obligatorio" })}
+                className={errors.lastName ? "input-error" : ""}
+                {...register("lastName", {
+                  required: "Campo obligatorio",
+                  maxLength: { value: 150, message: "Máximo 150 caracteres" },
+                  pattern: {
+                    value: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
+                    message: "Solo se permiten letras"
+                  }
+                })}
               />
+              {errors.lastName && <p className="error-text">{errors.lastName.message}</p>}
             </div>
 
             <div className="form-group">
@@ -187,50 +213,76 @@ export default function SignUp() {
                   </option>
                 ))}
               </select>
+              {errors.identificationTypeId && <p className="error-text">{errors.identificationTypeId.message}</p>}
             </div>
 
             <div className="form-group">
               <label>N° de Documento</label>
               <input
-                className={errors.identificationTypeId ? "input-error" : ""}
                 type="text"
+                className={errors.identificationNumber ? "input-error" : ""}
                 {...register("identificationNumber", {
                   required: "Campo obligatorio",
+                  maxLength: { value: 50, message: "Máximo 50 caracteres" },
+                  pattern: {
+                    value: /^[0-9]+$/,
+                    message: "Solo se permiten números"
+                  }
                 })}
               />
+              {errors.identificationNumber && <p className="error-text">{errors.identificationNumber.message}</p>}
             </div>
 
             <div className="form-group">
               <label>CUIL</label>
               <input
-                className={errors.cuil ? "input-error" : ""}
                 type="text"
-                {...register("cuil", { required: "Campo obligatorio" })}
+                className={errors.cuil ? "input-error" : ""}
+                {...register("cuil", {
+                  required: "Campo obligatorio",
+                  pattern: {
+                    value: /^\d{11}$/,
+                    message: "Debe contener exactamente 11 dígitos numéricos"
+                  }
+                })}
               />
+              {errors.cuil && <p className="error-text">{errors.cuil.message}</p>}
             </div>
 
             <div className="form-group">
               <label>Teléfono</label>
               <input
-                className={errors.phone ? "input-error" : ""}
                 type="tel"
-                {...register("phone", { required: "Campo obligatorio" })}
+                className={errors.phone ? "input-error" : ""}
+                {...register("phone", {
+                  required: "Campo obligatorio",
+                  maxLength: { value: 50, message: "Máximo 50 caracteres" },
+                  pattern: {
+                    value: /^[0-9+\-\s]+$/,
+                    message: "Formato inválido de teléfono"
+                  }
+                })}
               />
+              {errors.phone && <p className="error-text">{errors.phone.message}</p>}
             </div>
 
             <div className="form-group">
               <label>Fecha de nacimiento</label>
               <input
                 type="text"
-                className={errors.fecha ? "input-error" : ""}
+                className={errors.birthDate ? "input-error" : ""}
                 {...register("birthDate", {
-                  required: "La fecha es obligatoria.",
-                  validate: validateFecha,
+                  required: "La fecha es obligatoria",
+                  pattern: {
+                    value: /^\d{4}-\d{2}-\d{2}$/,
+                    message: "Formato inválido (YYYY-MM-DD)"
+                  }
                 })}
                 placeholder="YYYY-MM-DD"
                 value={fecha}
                 onChange={(e) => setFecha(e.target.value)}
               />
+              {errors.birthDate && <p className="error-text">{errors.birthDate.message}</p>}
             </div>
 
             <div className="form-group">
@@ -249,9 +301,15 @@ export default function SignUp() {
                   </option>
                 ))}
               </select>
+              {errors.nationalityId && <p className="error-text">{errors.nationalityId.message}</p>}
             </div>
 
-            <button className="next-button" type="submit">
+            <button
+              className="next-button"
+              type="button"
+              onClick={handleNextStep2}
+              disabled={!isStep2Complete}
+            >
               Siguiente
             </button>
           </div>
@@ -267,9 +325,16 @@ export default function SignUp() {
               <input
                 type="email"
                 placeholder="Ingresa tu correo electrónico"
-                {...register("email", { required: "Campo obligatorio" })}
-              ></input>
-              
+                className={errors.email ? "input-error" : ""}
+                {...register("email", {
+                  required: "Campo obligatorio",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Formato de correo inválido"
+                  }
+                })}
+              />
+              {errors.email && <p className="error-text">{errors.email.message}</p>}
             </div>
 
             <div class="form-group">
@@ -282,15 +347,43 @@ export default function SignUp() {
                   <li>Al menos 1 caracter especial</li>
                 </ul>
               </div>
-              <input type="password" placeholder="Crea una contraseña" {...register("password", { required: "Campo obligatorio" })}></input>
+              <input
+                type="password"
+                placeholder="Crea una contraseña"
+                className={errors.password ? "input-error" : ""}
+                {...register("password", {
+                  required: "Campo obligatorio",
+                  minLength: { value: 8, message: "Mínimo 8 caracteres" },
+                  maxLength: { value: 255, message: "Máximo 255 caracteres" },
+                  pattern: {
+                    value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+                    message: "Debe tener al menos una letra, un número y un carácter especial"
+                  }
+                })}
+              />
+              {errors.password && <p className="error-text">{errors.password.message}</p>}
             </div>
 
             <div class="form-group">
               <h3>Repetir contraseña</h3>
-              <input type="password" placeholder="Repite tu contraseña"></input>
+              <input
+                type="password"
+                placeholder="Repite tu contraseña"
+                className={errors.confirmPassword ? "input-error" : ""}
+                {...register("confirmPassword", {
+                  required: "Campo obligatorio",
+                  validate: (value, formValues) =>
+                    value === formValues.password || "Las contraseñas no coinciden"
+                })}
+              />
+              {errors.confirmPassword && <p className="error-text">{errors.confirmPassword.message}</p>}
             </div>
 
-            <button type="submit" className="login-button">
+            <button
+              type="submit"
+              className="login-button"
+              disabled={!isStep3Complete || !isValid}
+            >
               Registrarme
             </button>
           </div>

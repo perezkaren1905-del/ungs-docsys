@@ -1,104 +1,111 @@
 .form-container {
-    background-color: #00000000; /* fondo exterior oscuro */
-    padding: 40px;
-    border-radius: 10px;
-    max-width: 500px;
-    margin: auto;
-    color: white;
-  }
-  
-  .form-inner {
-    background-color: #d6d6d6; /* fondo del bloque del formulario */
-    padding: 50px;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .form-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    width: 100%;
-    font-weight: bold;
-    color: #333;
-  }
-  .form-group input,
-  .form-group input,
-  .form-group select {
-    width: 100%; /* Ensure both input and select take the same width */
-    max-width: 400px; /* Set a larger width while keeping it responsive */
-    padding: 10px; /* Adjust padding for better appearance */
-    border: 2px solid #00aaff;
-    border-radius: 8px;
-    outline: none;
-    font-size: 16px; /* Slightly larger font size for better readability */
-  }
-  .form-group input,
-  .form-group select {
-    width: 100%;
-    padding: 6px 10px;
-    border: 2px solid #00aaff;
-    border-radius: 8px;
-    outline: none;
-    font-size: 14px;
-  }
-  
-  .form-group select {
-    appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" fill="black" viewBox="0 0 4 5"><path d="M2 0L0 2h4L2 0z"/></svg>');
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px;
-  }
-  
-  /* Fecha de nacimiento */
-  .date-group {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .date-group select {
-    width: 100%;
-  }
-  
-  /* Botón */
-  .next-button {
-    background-color: #003c5f;
-    color: white;
-    font-weight: bold;
-    border: 2px solid #00aaff;
-    border-radius: 12px;
-    padding: 12px;
-    margin-top: 20px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: 0.3s;
-  }
-  
-  .next-button:hover {
-    background-color: #005d89;
-  }
+  background-color: #00000000; /* fondo exterior oscuro */
+  padding: 40px;
+  border-radius: 10px;
+  max-width: 500px;
+  margin: auto;
+  color: white;
+}
 
-  .input-error {
-    border-color: red !important;
-  }
+.form-inner {
+  background-color: #d6d6d6; /* fondo del bloque del formulario */
+  padding: 50px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
 
-  .form-error-general {
-    color: red;
-    font-weight: bold;
-    margin-top: 10px;
-    text-align: center;
-  }
-  /* Add this to your SignUp.css */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  width: 100%;
+  font-weight: bold;
+  color: #333;
+}
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 6px 10px;
+  border: 2px solid #00aaff;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+  background-color: #3B3B3B; /* ✅ evita el gris/azul */
+  color: #fff; /* texto oscuro sobre fondo claro */
+}
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 6px 10px;
+  border: 2px solid #00aaff;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+}
+
+.form-group select {
+  appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" fill="black" viewBox="0 0 4 5"><path d="M2 0L0 2h4L2 0z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+}
+
+/* Fecha de nacimiento */
+.date-group {
+  display: flex;
+  gap: 10px;
+}
+
+.date-group select {
+  width: 100%;
+}
+
+/* Botón */
+.next-button {
+  background-color: #003c5f;
+  color: white;
+  font-weight: bold;
+  border: 2px solid #00aaff;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.next-button:hover {
+  background-color: #005d89;
+}
+
+.error-text {
+  color: #d9534f;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.input-error {
+  border: 1px solid #d9534f !important;
+}
+
+.form-error-general {
+  color: red;
+  font-weight: bold;
+  margin-top: 4px;
+  text-align: center;
+}
+/* Add this to your SignUp.css */
 
 /* Step 1 container */
 .step-1-container {
@@ -146,4 +153,23 @@
   .option-buttons-row {
     flex-direction: column;
   }
+}
+
+/* Estado deshabilitado del botón "Siguiente" */
+.next-button:disabled {
+  background-color: #b0b0b0; /* gris tenue */
+  border-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+  opacity: 0.7;
+  transition: none; /* sin efecto hover */
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  background-color: #3B3B3B;
+  border-color: #00aaff; /* color de tu tema */
+  box-shadow: 0 0 4px rgba(0, 170, 255, 0.6);
 }
