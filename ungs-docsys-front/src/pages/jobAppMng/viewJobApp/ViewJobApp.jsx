@@ -26,8 +26,12 @@ export default function ViewJobApp() {
   const [reason, setReason] = useState('');
   const [showPublishButton, setShowPublishButton] = useState(false);
   const { showToast } = useContext(ToastContext);
+  const [hasApprovedOrRejected, setHasApprovedOrRejected] = useState(false);
 
+  const PENDING_STATUS_ID = 1;
+  const APPROVED_STATUS_ID = 2;
   const PUBLISHED_STATUS_ID = 3;
+  const DECLINED_STATUS_ID = 4;
 
   const getUserClaim = () => {
     const claims = JwtService.getClaims();
@@ -81,7 +85,14 @@ export default function ViewJobApp() {
       const jobApplicationApprovalsResponse = await JobApplicationApprovalService.getByParams(Number(id));
       const approvedCount = jobApplicationApprovalsResponse.filter(item => item.approved === true);
       const hasRejected = jobApplicationApprovalsResponse.some(item => item.approved === false);
-      setShowPublishButton(approvedCount.length >= 2 && !hasRejected);
+      setShowPublishButton(approvedCount.length >= 1 && !hasRejected);
+
+       // 🔹 Nuevo: detectar si este admin ya aprobó/rechazó
+      const currentUser = JwtService.getClaims();
+      const currentUserDecision = jobApplicationApprovalsResponse.find(
+        item => item.userEmail === currentUser.sub // o userId, depende de tu backend
+      );
+      setHasApprovedOrRejected(!!currentUserDecision);
     } catch (error) {
       console.error(error);
     }
@@ -166,34 +177,53 @@ export default function ViewJobApp() {
               Volver
             </button>
           </div>
-          { jobApplication?.jobApplicationStatus?.id !== PUBLISHED_STATUS_ID ? (<div className="managment-buttons">
-            <button className="managment-button-format aprove-button" onClick={() => handleApproval(true)}>
-              Aprobar
-            </button>
-            <button className="managment-button-format reject-button" onClick={() => handleApproval(false)}>
-              Rechazar
-            </button>
-            {showPublishButton ? (
-              <button
-                className="managment-button-format publish-button"
-                onClick={() => handlePublish()}
-              >
-                Publicar
-              </button>
-            ) : null}
+          { jobApplication?.jobApplicationStatus?.id !== PUBLISHED_STATUS_ID ? (
+            <div className="managment-buttons">
+              {/* 🔹 Ocultar los de aprobar/rechazar si ya decidió */}
+              { !hasApprovedOrRejected && (
+                <>
+                  <button 
+                    className="managment-button-format aprove-button" 
+                    onClick={() => handleApproval(true)}
+                  >
+                    Aprobar
+                  </button>
+                  <button 
+                    className="managment-button-format reject-button" 
+                    onClick={() => handleApproval(false)}
+                  >
+                    Rechazar
+                  </button>
+                </>
+              )}
 
-            <button className="managment-button-format edit-button">
-              Editar
-            </button>
-          </div>) : (
-            <div className="managment-buttons"> 
-              <button className="managment-button-format edit-button" onClick={() => goToCandidateList()}>
-                <ChecklistIcon fontSize="large"/>
-              Ver candidatos
-            </button>
+              {/* 🔹 Mostrar botón de publicar si corresponde */}
+              { showPublishButton && (
+                <button
+                  className="managment-button-format publish-button"
+                  onClick={() => handlePublish()}
+                >
+                  Publicar
+                </button>
+              )}
+
+              {/* 🔹 Botón de editar siempre visible mientras no esté publicado */}
+              <button className="managment-button-format edit-button">
+                Editar
+              </button>
             </div>
-          )}
-          
+          ) : (
+            /* 🔹 Si ya está publicado, mostrar solo Ver candidatos */
+            <div className="managment-buttons">
+              <button 
+                className="managment-button-format edit-button" 
+                onClick={() => goToCandidateList()}
+              >
+                <ChecklistIcon fontSize="large" />
+                Ver candidatos
+              </button>
+            </div>
+          )}   
         </div>
 
         <h1 style={{ textAlign: 'center' }}>{jobApplication.title}</h1>

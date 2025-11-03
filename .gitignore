@@ -22,6 +22,12 @@ ungs-docsys-front/yarn-debug.log*
 ungs-docsys-front/yarn-error.log*
 ungs-docsys-front/lerna-debug.log*
 
+# Environment Variables
+ungs-docsys-front/.env
+ungs-docsys-front/vite.config.js
+.env.bff
+ungs-docsys-bff/.env
+
 # Lockfiles
 ungs-docsys-bff/pnpm-lock.yaml
 ungs-docsys-bff/yarn.lock
