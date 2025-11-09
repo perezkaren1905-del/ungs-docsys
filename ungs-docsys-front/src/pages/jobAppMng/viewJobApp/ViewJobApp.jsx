@@ -54,6 +54,22 @@ export default function ViewJobApp() {
         reason: reason
       };
       const jobApplicationApprovalResponse = await JobApplicationApprovalService.create(jobApplicationApprovalRequest);
+
+      let newStatusId = null;
+      if (approvalDecision) {
+        newStatusId = APPROVED_STATUS_ID;
+      } else {
+        newStatusId = DECLINED_STATUS_ID;
+      }
+
+      if (newStatusId) {
+        await JobApplicationsService.partiallyUpdate(
+          { jobApplicationStatusId: newStatusId },
+          id
+        );
+      }
+
+
       showToast(`Has ${approvalDecision ? 'aprobado' : 'rechazado'} la propuesta`, "success");
     } catch (error) {
       console.error(error);
@@ -87,10 +103,9 @@ export default function ViewJobApp() {
       const hasRejected = jobApplicationApprovalsResponse.some(item => item.approved === false);
       setShowPublishButton(approvedCount.length >= 1 && !hasRejected);
 
-       // 🔹 Nuevo: detectar si este admin ya aprobó/rechazó
       const currentUser = JwtService.getClaims();
       const currentUserDecision = jobApplicationApprovalsResponse.find(
-        item => item.userEmail === currentUser.sub // o userId, depende de tu backend
+        item => item.userEmail === currentUser.sub
       );
       setHasApprovedOrRejected(!!currentUserDecision);
     } catch (error) {
@@ -179,7 +194,7 @@ export default function ViewJobApp() {
           </div>
           { jobApplication?.jobApplicationStatus?.id !== PUBLISHED_STATUS_ID ? (
             <div className="managment-buttons">
-              {/* 🔹 Ocultar los de aprobar/rechazar si ya decidió */}
+              {/* Ocultar los de aprobar/rechazar si ya decidió */}
               { !hasApprovedOrRejected && (
                 <>
                   <button 
@@ -197,7 +212,7 @@ export default function ViewJobApp() {
                 </>
               )}
 
-              {/* 🔹 Mostrar botón de publicar si corresponde */}
+              {/* Mostrar botón de publicar si corresponde */}
               { showPublishButton && (
                 <button
                   className="managment-button-format publish-button"
@@ -207,13 +222,13 @@ export default function ViewJobApp() {
                 </button>
               )}
 
-              {/* 🔹 Botón de editar siempre visible mientras no esté publicado */}
+              {/* Botón de editar siempre visible mientras no esté publicado */}
               <button className="managment-button-format edit-button">
                 Editar
               </button>
             </div>
           ) : (
-            /* 🔹 Si ya está publicado, mostrar solo Ver candidatos */
+            /* Si ya está publicado, mostrar solo Ver candidatos */
             <div className="managment-buttons">
               <button 
                 className="managment-button-format edit-button" 
