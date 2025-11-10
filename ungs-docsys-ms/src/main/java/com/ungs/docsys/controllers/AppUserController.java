@@ -2,6 +2,8 @@ package com.ungs.docsys.controllers;
 
 import com.ungs.docsys.dtos.AppUserRequestDto;
 import com.ungs.docsys.dtos.AppUserSignInResponseDto;
+import com.ungs.docsys.dtos.AppUserResponseDto;
+import com.ungs.docsys.dtos.AppUserAdminResponseDto;
 import com.ungs.docsys.services.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/users")
@@ -27,5 +32,13 @@ public class AppUserController {
     public ResponseEntity<AppUserSignInResponseDto> signIn(@Valid @RequestBody AppUserRequestDto request) {
         AppUserSignInResponseDto appUserSignInResponseDto = appUserService.singIn(request);
         return ResponseEntity.status(HttpStatus.OK).body(appUserSignInResponseDto);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Get all users (admin only)")
+    @ApiResponse(responseCode = "200", description = "List of users retrieved successfully")
+    public ResponseEntity<List<AppUserAdminResponseDto>> getAllUsers() {
+        return ResponseEntity.ok(appUserService.getAllUsersForAdmin());
     }
 }

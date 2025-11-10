@@ -3,6 +3,7 @@ package com.ungs.docsys.services;
 import com.ungs.docsys.dtos.AppUserClaimDto;
 import com.ungs.docsys.dtos.AppUserRequestDto;
 import com.ungs.docsys.dtos.AppUserResponseDto;
+import com.ungs.docsys.dtos.AppUserAdminResponseDto;
 import com.ungs.docsys.dtos.AppUserSignInResponseDto;
 import com.ungs.docsys.exception.BusinessException;
 import com.ungs.docsys.mappers.AppUserMapper;
@@ -16,6 +17,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -42,5 +45,12 @@ public class AppUserServiceImpl implements AppUserService {
         return appUserRepository.findAppUserByEmailAndActiveIsTrue(username)
                 .map(appUserMapper::toResponse)
                 .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "User not found"));
+    }
+
+    @Override
+    public List<AppUserAdminResponseDto> getAllUsersForAdmin() {
+        return appUserRepository.findAll().stream()
+                .map(appUserMapper::toAdminResponse)
+                .toList();
     }
 }
